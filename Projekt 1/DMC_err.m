@@ -1,4 +1,5 @@
-clear all;
+function err = DMC_err( param )
+%DMC_ERR liczy wartosc bledu regulatora dla zadanych parametrow przy D=120
 
 n = 6000; %dlugosc symulacji, skróæ do 3000 w rysunkach do pdfa i wspomnij
           %o tym w sprawku. wyd³u¿ona do usuniêcia oscylacji
@@ -10,8 +11,8 @@ Yzad(1501:n)=1.85; %wtedy nalezy dodac w glownej petli odpowiednio
 Yzad(2201:n)=2.25; %odjac/dodac Ypp
 Ypp = 2.2; %punkt pracy
 Upp = 1.5;
-Y(1:n) = 2.2; %inicjalizacje tablic
-U(1:n) = 1.5;
+Y(1:n) = Ypp; %inicjalizacje tablic
+U(1:n) = Upp;
 u = U - Upp;
 err = 0;
 
@@ -19,34 +20,30 @@ err = 0;
 s = fscanf(fopen('step_responses.txt', 'r'),'%f', [1 Inf]);
 fclose('all');
 
-
-D=120; 
 %parametry regulatora dobrane eksperymentalnie
-%N=30; Nu=3; lambda=0.8;
-%parametry dobrane skryptem param_optimizer
-%N=12; Nu=7; lambda=0.0103;
-%N=14; Nu=20; lambda=0.2290;
-%N=13; Nu=13; lambda=0;
-%N=37.000000; Nu=3.000000; lambda=0.015540; %final w/ err=sum(|e|) as quality index
-N=64.000000; Nu=9.000000; lambda=0.013380; %final w/ normal err
+
+D=120;
+%param(1)=30;
+%param(2)=3;
+%param(3)=0.8;
+
 %inicjalizacja macierzy dUp
 for i=1:D-1
    dup(i)=0;
 end
 
-%generacja macierzy
-
-M=zeros(N,Nu);
-for i=1:N
-   for j=1:Nu
+%generacja pozostalych macierzy
+M=zeros(param(1),param(2));
+for i=1:param(1)
+   for j=1:param(2)
       if (i>=j)
          M(i,j)=s(i-j+1);
       end;
    end;
 end;
 
-Mp=zeros(N,D-1);
-for i=1:N
+Mp=zeros(param(1),D-1);
+for i=1:param(1)
    for j=1:D-1
       if i+j<=D
          Mp(i,j)=s(i+j)-s(j);
@@ -58,7 +55,7 @@ end;
 
 %przeksztalcanie wyliczonych macierzy do potrzebnych nam parametrow
 
-K=((M'*M+lambda*eye(Nu))^-1)*M';
+K=((M'*M+param(3)*eye(param(2)))^-1)*M';
 Ku=K(1,:)*Mp;
 Ke=sum(K(1,:));
 
@@ -70,6 +67,7 @@ for i=21:n
    
    e=Yzad(i)-Y(i); %uchyb
    err = err + e^2;
+   %err = err + abs(e);
    
    du=Ke*e-Ku*dup'; %regulator
    
@@ -97,16 +95,6 @@ for i=21:n
    U(i)=u(i)+Upp; %przesuniecie do punktu pracy
 end
 
-err
 
-figure;
-title('obiekt z regulatorem PID');
-subplot('Position', [0.1 0.12 0.8 0.15]);
-stairs(U);
-ylabel('u'); 
-xlabel('k');
-subplot('Position', [0.1 0.37 0.8 0.6]);
-stairs(Y);
-ylabel('y'); 
-hold on; 
-stairs(Yzad,':');
+end
+
