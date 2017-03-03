@@ -20,6 +20,9 @@ subplot('Position', [0.1 0.37 0.8 0.6]);
 stairs(Y);
 ylabel('y');
 
+
+    
+    
 % skok o 0.5 w chwili k=20
 U(20:n) = 2;
 for k = 12:n
@@ -52,8 +55,8 @@ ylabel('s');
  
 for i = 1:101
     Us(i) = 1.5 - 0.5 + (i-1)*(1/100);
-    U(1:14) = 2.2;
-    U(15:n) = Us(i);
+    U(1:20) = 1.5;
+    U(20:n) = Us(i);
     for k = 12:n
         Y(k) = symulacja_obiektu5Y(U(k-10), U(k-11), Y(k-1), Y(k-2));
     end
@@ -61,5 +64,32 @@ for i = 1:101
 end
 figure;
 plot(Us, Ys);
+xlabel('u');
+ylabel('y');
 
-close all;
+
+figure;
+
+%plotting multiple responses for Z2
+
+for i = 0:5
+    skok = 2 - i*0.2;
+    U(20:n) = skok;
+    for k = 12:n
+        Y(k) = symulacja_obiektu5Y(U(k-10), U(k-11), Y(k-1), Y(k-2));
+    end
+    %stairs(Y);
+    subplot('Position', [0.1 0.12 0.8 0.15]);
+    stairs(U);
+    xlabel('k');
+    ylabel('u');
+    hold on;
+    subplot('Position', [0.1 0.37 0.8 0.6]);
+    stairs(Y);
+    ylabel('y');
+    hold on;
+end
+legend({'U_s=2','U_s=1,8','U_s=1,6','U_s=1,4','U_s=1,2','U_s=1'}, 'FontSize',7.5);
+    
+
+%close all;

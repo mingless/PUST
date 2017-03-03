@@ -2,6 +2,10 @@ clear all;
 
 %remove/lower the parameters in optimoptions to shorten optimization time
 
+%plotted functions (in the saved images) are slightly different than
+%the ones used for optimization. For DMC I've only increased length by 3000
+%at the end, in PID all steps were lengthened - check in corresponding
+%_err.m files
 
 %DMC
 

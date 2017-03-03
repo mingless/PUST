@@ -1,7 +1,7 @@
 close all;
 clear all;
 
-n = 6000; %dlugosc symulacji, skróæ do 3000 w rysunkach do pdfa i wspomnij
+n = 3000; %dlugosc symulacji, skróæ do 3000 w rysunkach do pdfa i wspomnij
           %o tym w sprawku. wyd³u¿ona do usuniêcia oscylacji
           %przy optymalizacji
 Yzad(1:n) = 2.2;  %rozne wartosci symulacji w roznych przedzialach
@@ -18,7 +18,7 @@ err = 0;
 
 
 %K = 4; Ti = inf; Td = 0; Ts = 0.5;
-%K = 2.64; Ti = 14; Td = 3.36; Ts = 0.5; %eksperymentalnie dobrane wspolczynniki, Ts z zadania
+%K = 2.64; Ti = 14; Td = 3.36; Ts = 0.5; %eksperymentalnie dobrane wspolczynniki, Ts z zadania, err = 19.6632
 %K = 52.7065; Ti = 8.8554; Td = 2.9005; Ts = 0.5; %przy optymalizacji bledu
 %K = 5.036; Ti = 2.882; Td = 3.2845; Ts = 0.5;
 %K = 1.0969; Ti = 1.3559; Td = 0.5757; Ts = 0.5;
@@ -26,9 +26,9 @@ err = 0;
 %K=4.551979; Ti=10.038185; Td=3.660651; Ts=0.5; %final w/ err=sum(|e|) as quality index
 %K=5.903638; Ti=7.615168; Td=4.223055; Ts=0.5; %n=6000
 %K=5.513605; Ti=6.977240; Td=5.106577; Ts=0.5; %yzad as in this file, n=10000
-K=5.422910; Ti=8.551461; Td=3.914535; Ts=0.5; %calculated w/ delays 
+K=5.422910; Ti=8.551461; Td=3.914535; Ts=0.5; %calculated w/ delays
 %                               in yzad, look at PID_err. probably not  
-%                               really optimal anymore, but seems to
+%  err=16.7418                  really optimal anymore, but seems to
 %                               finally stabilize, though still not cleanly
 
 %it doesn't seem like it's gonna get any prettier with optimization for

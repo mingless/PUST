@@ -1,6 +1,6 @@
 clear all;
 
-n = 6000; %dlugosc symulacji, skróæ do 3000 w rysunkach do pdfa i wspomnij
+n = 3000; %dlugosc symulacji, skróæ do 3000 w rysunkach do pdfa i wspomnij
           %o tym w sprawku. wyd³u¿ona do usuniêcia oscylacji
           %przy optymalizacji
 Yzad(1:n) = 2.2;  %rozne wartosci symulacji w roznych przedzialach
@@ -22,7 +22,7 @@ fclose('all');
 
 D=120; 
 %parametry regulatora dobrane eksperymentalnie
-%N=30; Nu=3; lambda=0.8;
+%N=30; Nu=3; lambda=0.8; %err=15.6111
 %parametry dobrane skryptem param_optimizer
 %N=12; Nu=7; lambda=0.0103;
 %N=14; Nu=20; lambda=0.2290;
