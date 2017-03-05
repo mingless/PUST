@@ -10,7 +10,7 @@ Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zas
 
 
 \chapter{Podpunkt 2}
-Po uwzględnieniu ograniczeń wartości sygnału sterującego dla reprezentacji odpowiedzi skokowych wybranych zostało sześć różnych wartości zmian sygnału sterującego. Wykres odpowiedzi skokowych zamieszczony został na rys. \ref{Z2multiplesteps}.
+Po uwzględnieniu ograniczeń wartości sygnału sterującego dla reprezentacji odpowiedzi skokowych wybranych zostało sześć różnych wartości zmian sygnału sterującego: od $U_{pp}$ do $U_s$, w chwili $k=20$. Wykres odpowiedzi skokowych zamieszczony został na rys. \ref{Z2multiplesteps}.
 
 \begin{figure}[ht]
 \centering
@@ -30,11 +30,11 @@ Symulując odpowiedź układu dla różnych wartości sygnału sterującego otrz
 \end{figure}
 
 
-Z odpowiedzi układu wnioskujemy, że właściwości statyczne i dynamiczne procesu są w bardzo dobrym przybliżeniu liniowe. Obliczona wartość wzmocnienia statycznego procesu to $K=\num{0,7706}$.
+Z odpowiedzi układu wnioskujemy, że zadany model jest samostabilizujący (statyczny), o opóźnieniu $\tau =10$, a jego charakterystyka statyczna jest w bardzo dobrym przybliżeniu liniowa. Obliczona wartość wzmocnienia statycznego procesu to $K=\num{0,7706}$.
 
 
 \chapter{Podpunkt 3}
-Na potrzeby algorytmu DMC przekształcona została odpowiedź skokowa dla skoku z punktu pracy o wartość dopuszczoną przez ograniczenia, t.j. dla skoku od $U_{\mathrm{pp}}=\num{1,5}$ do $U^{\mathrm{max}}=\num{2,0}$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys. \ref{Z3step}.
+Na potrzeby algorytmu DMC przekształcona została odpowiedź skokowa dla skoku z punktu pracy o wartość dopuszczoną przez ograniczenia, t.j. dla skoku od $U_{\mathrm{pp}}=\num{1,5}$ do $U^{\mathrm{max}}=\num{2,0}$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys. \ref{Z3step}. Kolejne wartości wyznaczonej odpowiedzi skokowej zadanego modelu zapisane są w pliku \verb+step_responses.txt+.
 
 \begin{equation}
 S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
@@ -93,21 +93,21 @@ U(k) = U(k) + U_{\mathrm{pp}}
 Symulacja cyfrowa algorytmu DMC odbywa się w oparciu o wzory (\ref{YYdUk}--\ref{dukdmc}).
 
 \begin{equation}
-Y^{\mathrm{zad}}(k)=\left[
+\boldsymbol{Y}^{\mathrm{zad}}(k)=\left[
 \begin{array}{c}
 y^{\mathrm{zad}}(k)\\
 \vdots\\
 y^{\mathrm{zad}}(k)
 \end{array}
 \right] \
-Y(k)=\left[
+\boldsymbol{U}(k)=\left[
 \begin{array}{c}
 y(k)\\
 \vdots\\
 y(k)
 \end{array}
 \right] \
-\triangle U(k)=\left[
+\triangle \boldsymbol{U}(k)=\left[
 \begin{array}{c}
 \triangle u(k|k)\\
 \vdots\\
@@ -118,7 +118,7 @@ y(k)
 \end{equation}
 
 \begin{equation}
-\triangle U^{\mathrm{P}}(k)=\left[
+\triangle \boldsymbol{U}^{\mathrm{P}}(k)=\left[
 \begin{array}{c}
 \triangle u(k-1)\\
 \vdots\\
@@ -155,7 +155,7 @@ s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1
 \end{equation}
 
 \begin{equation}
-Y^{0}(k) = Y(k) + \boldsymbol{M}^{\mathrm{P}} \triangle U^{\mathrm{P}}(k)
+\boldsymbol{Y}^{0}(k) = \boldsymbol{Y}(k) + \boldsymbol{M}^{\mathrm{P}} \triangle \boldsymbol{U}^{\mathrm{P}}(k)
 \label{Y0k}
 \end{equation}
 
@@ -165,48 +165,66 @@ Y^{0}(k) = Y(k) + \boldsymbol{M}^{\mathrm{P}} \triangle U^{\mathrm{P}}(k)
 \end{equation}
 
 \begin{equation}
-\triangle U(k) = \boldsymbol{K}(Y^{\mathrm{zad}}(k) - Y^{0}(k))
+\triangle \boldsymbol{U}(k) = \boldsymbol{K}(\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
 \label{dukdmc}
 \end{equation}
 
+Do regulacji zbędne okazały się jednak sygnały przewidywane w chwilach dalszych niż $k$. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$ - za jego pomocą liczona jest tylko wartość sterowania w chwili aktualnej:
+
+\begin{equation}
+	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
+\end{equation}
+
 \chapter{Podpunkt 5}
-Jakość regulacji oceniania była jakościowo na podstawie przebiegów oraz ilościowo zgodnie z zadanym wskaźnikiem jakości regulacji
+Wybrane przez nas regulatory oceniano na jakościowo na podstawie przebiegów - ich gładkości oraz wielkości przeregulowań, oraz ilościowo, zgodnie z zadanym wskaźnikiem jakości regulacji
 \begin{equation}
 E = \sum_{k=1}^{k_{\mathrm{konc}}}(y^{\mathrm{zad}}(k) - y(k))^2
 \label{E}
 \end{equation}
-gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Dla
+gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Wartości wyjść zadane w symulacji przedstawiono na poniższych wykresach za pomocą pomarańczowej, przerywanej linii.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=1]{images/Z5manualPID}
-\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora PID, $E=\num{19,6632}$}
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z5manualPID}}
+\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora PID: \\$K = 2,64$, $Ti=14,00$, $Td=3,36$, wyznaczony błąd $E=\num{19,6632}$}
 \label{Z5manualPID}
 \end{figure}
 
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=1]{images/Z5manualDMC}
-\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora DMC, $E=\num{15,6111}$}
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z5manualDMC}}
+\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora DMC: \\$N=30$, $Nu=3$, $\lambda=\num{0,8}$, wyznaczony błąd $E=\num{15,6111}$}
 \label{Z5manualDMC}
 \end{figure}
 
 \chapter{Podpunkt 6}
-Optymalizacja wskaźnika jakości została przeprowadzona przy użyciu skryptu zamieszczonego w pliku \verb+param_optimizer.m+, do optymalizacji globalnej wykorzystuje on funkcję \verb+ga+(algorytm genetyczny).
+Optymalizacja wskaźnika jakości została przeprowadzona przy użyciu skryptu zamieszczonego w pliku \verb+param_optimizer.m+, do optymalizacji globalnej wykorzystuje on funkcję \verb+ga+(algorytm genetyczny). Przy jego użyciu zmodyfikowane jednak zostały zadane wartości wyjściowe - wydłużono czasy między skokami. Bez zrobienia tego, przy symulacji regulatora z otrzymanymi parametrami układ wpadał w znaczące oscylacje - priorytetyzowane okazywało się wtedy jak najszybsze przejście do nowej wartości ze skoku ponad wygładzenie sygnału ustalonego. Wydłużenie czasów pomaga tego uniknąć, choć niejakie oscylacje nadal są widoczne w zoptymalizowanym regulatorze PID.
 
+Dla przejrzystości wykresów zoptymalizowanych regulatorów przedstawiono na nich symulację przy przebiegu czasowym wartości zadanych wziętym z poprzedniego zadania, bez wydłużenia okresów między kolejnymi skokami.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=1]{images/Z6optimizedPID}
-\caption{Wyniki symulacji dla regulatora PID otrzymanego w wyniku optymalizacji, $E=\num{16,7418}$}
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z6Yzad}}
+\caption{Przebieg czasowy wartości zadanych dla regulatorów użyty przy optymalizacji wskaźnika jakości}
 \label{Z6optimizedPID}
 \end{figure}
 
+\begin{figure}[ht]
+\centering
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z6optimizedPID}}
+\caption{Wyniki symulacji dla regulatora PID otrzymanego w wyniku optymalizacji:\\ $K=5,422910$, $Ti=8,551461$, $Td=3,914535$, wyznaczony błąd $E=\num{16,7418}$}
+\label{Z6optimizedPID}
+\end{figure}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=1]{images/Z6optimizedDMC}
-\caption{Wyniki symulacji dla regulatora DMC otrzymanego w wyniku optymalizacji, $E=\num{15,5746}$}
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z6optimizedDMC.eps}}
+\caption{Wyniki symulacji dla regulatora DMC otrzymanego w wyniku optymalizacji:\\ $N=33$, $Nu=4$, $\lambda=\num{0,018527}$, wyznaczony błąd $E=\num{15,5746}$}
 \label{Z6optimizedDMC}
 \end{figure}

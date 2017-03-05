@@ -63,7 +63,7 @@ end;
 
 err = sum(e.^2)
 
-figure('Position',  [403 246 1060 420]);
+figure('Position',  [403 246 820 420]);
 %title('PID z parametrami eksperymentalnymi, err=19.68');
 subplot('Position', [0.1 0.12 0.8 0.15]);
 stairs(U);

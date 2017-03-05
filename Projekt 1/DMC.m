@@ -102,7 +102,7 @@ end
 
 err
 
-figure('Position',  [403 246 1060 420]);;
+figure('Position',  [403 246 820 420]);;
 title('obiekt z regulatorem PID');
 subplot('Position', [0.1 0.12 0.8 0.15]);
 stairs(U);
