@@ -1,14 +1,14 @@
 function err = DMC_err( param )
 %DMC_ERR liczy wartosc bledu regulatora dla zadanych parametrow przy D=120
 
-n = 6000; %dlugosc symulacji, skróæ do 3000 w rysunkach do pdfa i wspomnij
+n = 10000; %dlugosc symulacji, skróæ do 3000 w rysunkach do pdfa i wspomnij
           %o tym w sprawku. wyd³u¿ona do usuniêcia oscylacji
           %przy optymalizacji
 Yzad(1:n) = 2.2;  %rozne wartosci symulacji w roznych przedzialach
 Yzad(21:n) = 2.5; %mozliwe, ze trzeba je zmienic na relatywne od
-Yzad(1001:n)=2.4;  %punktu pracy, tj w przedziale y(umin)<yzad<y(umax)
-Yzad(1501:n)=1.85; %wtedy nalezy dodac w glownej petli odpowiednio
-Yzad(2201:n)=2.25; %odjac/dodac Ypp
+Yzad(2001:n)=2.4;  %punktu pracy, tj w przedziale y(umin)<yzad<y(umax)
+Yzad(4501:n)=1.85; %wtedy nalezy dodac w glownej petli odpowiednio
+Yzad(7201:n)=2.25; %odjac/dodac Ypp
 Ypp = 2.2; %punkt pracy
 Upp = 1.5;
 Y(1:n) = Ypp; %inicjalizacje tablic

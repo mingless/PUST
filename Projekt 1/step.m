@@ -14,10 +14,13 @@ end
 figure;
 subplot('Position', [0.1 0.12 0.8 0.15]);
 stairs(U);
+ylim([1 2]);
+decimal_comma(gca, 'XY');
 xlabel('k');
 ylabel('u');
 subplot('Position', [0.1 0.37 0.8 0.6]);
 stairs(Y);
+decimal_comma(gca, 'XY');
 ylabel('y');
 
 
@@ -33,10 +36,12 @@ figure;
 title('skok o 0.5 w chwili k=20');
 subplot('Position', [0.1 0.12 0.8 0.15]);
 stairs(U);
+decimal_comma(gca, 'XY');
 xlabel('k');
 ylabel('u');
 subplot('Position', [0.1 0.37 0.8 0.6]);
 stairs(Y);
+decimal_comma(gca, 'XY');
 ylabel('y');
 
 % odpowiedź skokowa z zad 2 do zad 3
@@ -48,6 +53,7 @@ end
 figure;
 title('odpowiedź skokowa obiektu');
 stairs(s);
+decimal_comma(gca, 'XY');
 xlabel('k');
 ylabel('s');
 
@@ -64,6 +70,7 @@ for i = 1:101
 end
 figure;
 plot(Us, Ys);
+decimal_comma(gca, 'XY');
 xlabel('u');
 ylabel('y');
 
@@ -83,10 +90,12 @@ for i = 0:5
     stairs(U);
     xlabel('k');
     ylabel('u');
+    decimal_comma(gca, 'XY');
     hold on;
     subplot('Position', [0.1 0.37 0.8 0.6]);
     stairs(Y);
     ylabel('y');
+    decimal_comma(gca, 'XY');
     hold on;
 end
 legend({'U_s=2','U_s=1,8','U_s=1,6','U_s=1,4','U_s=1,2','U_s=1'}, 'FontSize',7.5);

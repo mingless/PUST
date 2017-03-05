@@ -8,6 +8,7 @@ Yzad(21:n) = 2.5; %mozliwe, ze trzeba je zmienic na relatywne od
 Yzad(1001:n)=2.4;  %punktu pracy, tj w przedziale y(umin)<yzad<y(umax)
 Yzad(1501:n)=1.85; %wtedy nalezy dodac w glownej petli odpowiednio
 Yzad(2201:n)=2.25; %odjac/dodac Ypp
+
 Ypp = 2.2; %punkt pracy
 Upp = 1.5;
 Y(1:n) = 2.2; %inicjalizacje tablic
@@ -28,7 +29,9 @@ D=120;
 %N=14; Nu=20; lambda=0.2290;
 %N=13; Nu=13; lambda=0;
 %N=37.000000; Nu=3.000000; lambda=0.015540; %final w/ err=sum(|e|) as quality index
-N=64.000000; Nu=9.000000; lambda=0.013380; %final w/ normal err
+%N=64.000000; Nu=9.000000; lambda=0.013380; %final w/ normal err
+N=33.000000; Nu=4.000000; lambda=0.018527; %really final, after changing DMC_err yzad
+                                %err = 15.5746
 %inicjalizacja macierzy dUp
 for i=1:D-1
    dup(i)=0;
@@ -99,14 +102,18 @@ end
 
 err
 
-figure;
+figure('Position',  [403 246 1060 420]);;
 title('obiekt z regulatorem PID');
 subplot('Position', [0.1 0.12 0.8 0.15]);
 stairs(U);
 ylabel('u'); 
 xlabel('k');
+decimal_comma(gca, 'XY');
 subplot('Position', [0.1 0.37 0.8 0.6]);
 stairs(Y);
 ylabel('y'); 
+decimal_comma(gca, 'XY');
 hold on; 
 stairs(Yzad,':');
+
+

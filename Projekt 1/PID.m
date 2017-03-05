@@ -63,14 +63,16 @@ end;
 
 err = sum(e.^2)
 
-figure;
+figure('Position',  [403 246 1060 420]);
 %title('PID z parametrami eksperymentalnymi, err=19.68');
 subplot('Position', [0.1 0.12 0.8 0.15]);
 stairs(U);
 ylabel('u'); 
 xlabel('k');
+decimal_comma(gca, 'XY');
 subplot('Position', [0.1 0.37 0.8 0.6]);
 stairs(Y);
 ylabel('y'); 
 hold on; 
 stairs(Yzad,':');
+decimal_comma(gca, 'XY');
