@@ -53,21 +53,134 @@ S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
 \chapter{Podpunkt 4}
 Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+, zaś w plikach \verb+PID_err.m+ oraz \verb+DMC_err.m+ umieszczono funkcje pomocnicze do obliczania wartości błędu.
 
+Symulacja cyfrowego algorytmu PID odbywa się w oparciu o postać dyskretną
+\begin{equation}
+\triangle U(k) = r_2 e(k-2) + r_1 e(k-1) + r_0 e(k)
+\label{du}
+\end{equation}
+gdzie $e(k)=Y^{\mathrm{zad}}(k) - Y(k)$ to uchyb. We wzorach (\ref{du2}--\ref{upp}) sterowanie jest przycinane zgodnie z ograniczeniami, a następnie przesuwane do punktu pracy.
+
+\begin{equation}
+\triangle U(k) = 
+\begin{cases}
+-\triangle U^{\mathrm{max}} & \textrm{gdy } \ \triangle U(k) \le -\triangle U^{\mathrm{max}} \\
+\triangle U^{\mathrm{max}} & \textrm{gdy } \ \triangle U^{\mathrm{max}} \le \triangle U(k) \\
+\triangle U(k) & \textrm{w p.p.}
+\end{cases}
+\label{du2}
+\end{equation}
+
+\begin{equation}
+U(k) = \triangle U(k) + U(k-1)
+\label{uk}
+\end{equation}
+
+\begin{equation}
+U(k) = 
+\begin{cases}
+U^{\mathrm{min}} & \textrm{gdy } \ U(k) \le U^{\mathrm{min}} \\
+U^{\mathrm{max}} & \textrm{gdy } \ U^{\mathrm{max}} \le U(k) \\
+U(k) & \textrm{w p.p.}
+\end{cases}
+\label{uk2}
+\end{equation}
+
+\begin{equation}
+U(k) = U(k) + U_{\mathrm{pp}}
+\label{upp}
+\end{equation}
+
+Symulacja cyfrowa algorytmu DMC odbywa się w oparciu o wzory (\ref{YYdUk}--\ref{dukdmc}).
+
+\begin{equation}
+Y^{\mathrm{zad}}(k)=\left[
+\begin{array}{c}
+y^{\mathrm{zad}}(k)\\
+\vdots\\
+y^{\mathrm{zad}}(k)
+\end{array}
+\right] \
+Y(k)=\left[
+\begin{array}{c}
+y(k)\\
+\vdots\\
+y(k)
+\end{array}
+\right] \
+\triangle U(k)=\left[
+\begin{array}{c}
+\triangle u(k|k)\\
+\vdots\\
+\triangle u(k+N_{\mathrm{u}}-1|k)
+\end{array}
+\right] \
+\label{YYdUk}
+\end{equation}
+
+\begin{equation}
+\triangle U^{\mathrm{P}}(k)=\left[
+\begin{array}{c}
+\triangle u(k-1)\\
+\vdots\\
+\triangle u(k-(D-1))
+\end{array}
+\right]
+\label{dUp}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{M}=\left[
+\begin{array}
+{cccc}
+s_{1} & 0 & \ldots & 0\\
+s_{2} & s_{1} & \ldots & 0\\
+\vdots & \vdots & \ddots & \vdots\\
+s_{N} & s_{N-1} & \ldots &  s_{N-N_{\mathrm{u}}+1}
+\end{array}
+\right]
+\label{Marray}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{M}^{\mathrm{P}}=\left[
+\begin{array}
+{cccc}
+s_{2} - s_{1} & s_{3} - s_{2} & \ldots & s_{\mathrm{D}} - s_{\mathrm{D-1}}\\
+s_{3} - s_{1} & s_{4} - s_{2} & \ldots & s_{\mathrm{D+1}} - s_{\mathrm{D-1}}\\
+\vdots & \vdots & \ddots & \vdots\\
+s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1}}\\
+\end{array}
+\right]
+\label{MParray}
+\end{equation}
+
+\begin{equation}
+Y^{0}(k) = Y(k) + \boldsymbol{M}^{\mathrm{P}} \triangle U^{\mathrm{P}}(k)
+\label{Y0k}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{K} = (\boldsymbol{M}^{\mathrm{T}} \boldsymbol{M} + \lambda \boldsymbol{I})^{-1} \boldsymbol{M}^{\mathrm{T}}
+\label{Karray}
+\end{equation}
+
+\begin{equation}
+\triangle U(k) = \boldsymbol{K}(Y^{\mathrm{zad}}(k) - Y^{0}(k))
+\label{dukdmc}
+\end{equation}
 
 \chapter{Podpunkt 5}
 Jakość regulacji oceniania była jakościowo na podstawie przebiegów oraz ilościowo zgodnie z zadanym wskaźnikiem jakości regulacji
-
 \begin{equation}
 E = \sum_{k=1}^{k_{\mathrm{konc}}}(y^{\mathrm{zad}}(k) - y(k))^2
 \label{E}
 \end{equation}
-
 gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Dla
 
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=1]{images/Z5manualPID}
-\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora PID, $E=\num{0}$}
+\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora PID, $E=\num{19,6632}$}
 \label{Z5manualPID}
 \end{figure}
 
@@ -75,17 +188,18 @@ gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Dla
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=1]{images/Z5manualDMC}
-\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora DMC, $E=\num{0}$}
+\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora DMC, $E=\num{15,6111}$}
 \label{Z5manualDMC}
 \end{figure}
 
 \chapter{Podpunkt 6}
+Optymalizacja wskaźnika jakości została przeprowadzona przy użyciu skryptu zamieszczonego w pliku \verb+param_optimizer.m+, do optymalizacji globalnej wykorzystuje on funkcję \verb+ga+(algorytm genetyczny).
 
 
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=1]{images/Z6optimizedPID}
-\caption{Wyniki symulacji dla regulatora PID otrzymanego w wyniku optymalizacji, $E=\num{0}$}
+\caption{Wyniki symulacji dla regulatora PID otrzymanego w wyniku optymalizacji, $E=\num{16,7418}$}
 \label{Z6optimizedPID}
 \end{figure}
 
@@ -93,6 +207,6 @@ gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Dla
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=1]{images/Z6optimizedDMC}
-\caption{Wyniki symulacji dla regulatora DMC otrzymanego w wyniku optymalizacji, $E=\num{0}$}
+\caption{Wyniki symulacji dla regulatora DMC otrzymanego w wyniku optymalizacji, $E=\num{15,5746}$}
 \label{Z6optimizedDMC}
 \end{figure}
