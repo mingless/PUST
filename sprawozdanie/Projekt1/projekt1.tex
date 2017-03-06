@@ -55,6 +55,12 @@ Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) 
 
 Symulacja cyfrowego algorytmu PID odbywa się w oparciu o postać dyskretną
 \begin{equation}
+r_2 = \frac{K T_{\mathrm{d}}}{T_{\mathrm{s}}} \
+r_1 = K \left( \frac{T_{\mathrm{s}}}{2 T_{\mathrm{i}}} - \frac{2 T_{\mathrm{d}}}{T_{\mathrm{s}}} - 1 \right) \
+r_0 = K \left( 1 + \frac{T_{\mathrm{s}}}{2 T_{\mathrm{i}}} + \frac{T_{\mathrm{d}}}{T_{\mathrm{s}}} \right) \\
+\label{r_t}
+\end{equation}
+\begin{equation}
 \triangle U(k) = r_2 e(k-2) + r_1 e(k-1) + r_0 e(k)
 \label{du}
 \end{equation}
