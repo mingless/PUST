@@ -69,9 +69,9 @@ gdzie $e(k)=Y^{\mathrm{zad}}(k) - Y(k)$ to uchyb. We wzorach (\ref{du2}--\ref{up
 \begin{equation}
 \triangle U(k) = 
 \begin{cases}
--\triangle U^{\mathrm{max}} & \textrm{gdy } \ \triangle U(k) \le -\triangle U^{\mathrm{max}} \\
-\triangle U^{\mathrm{max}} & \textrm{gdy } \ \triangle U^{\mathrm{max}} \le \triangle U(k) \\
-\triangle U(k) & \textrm{w p.p.}
+-\triangle U^{\mathrm{max}} &\quad \textrm{gdy } \ \triangle U(k) \le -\triangle U^{\mathrm{max}} \\
+\triangle U^{\mathrm{max}} &\quad \textrm{gdy } \ \triangle U(k) \ge \triangle U^{\mathrm{max}}  \\
+\triangle U(k) &\quad \textrm{w p.p.}
 \end{cases}
 \label{du2}
 \end{equation}
@@ -84,9 +84,9 @@ U(k) = \triangle U(k) + U(k-1)
 \begin{equation}
 U(k) = 
 \begin{cases}
-U^{\mathrm{min}} & \textrm{gdy } \ U(k) \le U^{\mathrm{min}} \\
-U^{\mathrm{max}} & \textrm{gdy } \ U^{\mathrm{max}} \le U(k) \\
-U(k) & \textrm{w p.p.}
+U^{\mathrm{min}} - U_{\mathrm{pp}} &\quad \textrm{gdy } \ U(k) \le U^{\mathrm{min}}-U_{\mathrm{pp}} \\
+U^{\mathrm{max}}-U_{\mathrm{pp}} &\quad \textrm{gdy } \ U(k) \ge U^{\mathrm{max}}-U_{\mathrm{pp}}  \\
+U(k) &\quad \textrm{w p.p.}
 \end{cases}
 \label{uk2}
 \end{equation}
@@ -208,6 +208,23 @@ gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Wartości wyjść 
 
 \chapter{Podpunkt 6}
 Optymalizacja wskaźnika jakości została przeprowadzona przy użyciu skryptu zamieszczonego w pliku \verb+param_optimizer.m+, do optymalizacji globalnej wykorzystuje on funkcję \verb+ga+(algorytm genetyczny). Przy jego użyciu zmodyfikowane jednak zostały zadane wartości wyjściowe - wydłużono czasy między skokami. Bez zrobienia tego, przy symulacji regulatora z otrzymanymi parametrami układ wpadał w znaczące oscylacje - priorytetyzowane okazywało się wtedy jak najszybsze przejście do nowej wartości ze skoku ponad wygładzenie sygnału ustalonego. Wydłużenie czasów pomaga tego uniknąć, choć niejakie oscylacje nadal są widoczne w zoptymalizowanym regulatorze PID.
+
+Przy optymalizacji algorytmem genetycznym dla obu regulatorów użyto losowych populacji (parametrów) początkowych. Program uruchomiono kilkukrotnie, uzyskując za każdym razem bardzo zbliżone wyniki. 
+
+Ograniczenia nałożone na przeszukiwane wartości dla regulatora PID to:
+\begin{equation}
+	0.01 \le K, \quad
+	1 \le T_\mathrm{i},\quad
+	0.01 \le T_\mathrm{d}
+\end{equation}
+
+a dla regulatora DMC przy parametrze $D=120$:
+\begin{equation}
+	1 \le N \le 180, \quad
+	1 \le N_\mathrm{u} \le 180, \quad 
+	0.01 \le \lambda
+\end{equation}
+
 
 Dla przejrzystości wykresów zoptymalizowanych regulatorów przedstawiono na nich symulację przy przebiegu czasowym wartości zadanych wziętym z poprzedniego zadania, bez wydłużenia okresów między kolejnymi skokami.
 
