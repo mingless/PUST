@@ -12,7 +12,7 @@ clear all;
 lb = [1,1,0.01];
 ub = [180,180,Inf];
 opts = optimoptions('ga', 'MaxStallGenerations', 80, 'PopulationSize',250);  %takes a few minutes
-[param,fval,exitflag] = ga(@DMC_err,3,[],[],[],[],lb,ub,[],[1 2],opts);
+[param,fval,exitflag] = ga(@DMC_err,3,[-1 1 0],[0],[],[],lb,ub,[],[1 2],opts);
 fprintf('DMC: \nN=%f; Nu=%f; lambda=%f;\n', param)
 
 %PID

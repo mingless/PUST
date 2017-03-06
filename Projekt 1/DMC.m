@@ -23,14 +23,14 @@ fclose('all');
 
 D=120; 
 %parametry regulatora dobrane eksperymentalnie
-%N=30; Nu=3; lambda=0.8; %err=15.6111
+N=30; Nu=3; lambda=0.8; %err=15.6111
 %parametry dobrane skryptem param_optimizer
 %N=12; Nu=7; lambda=0.0103;
 %N=14; Nu=20; lambda=0.2290;
 %N=13; Nu=13; lambda=0;
 %N=37.000000; Nu=3.000000; lambda=0.015540; %final w/ err=sum(|e|) as quality index
 %N=64.000000; Nu=9.000000; lambda=0.013380; %final w/ normal err
-N=33.000000; Nu=4.000000; lambda=0.018527; %really final, after changing DMC_err yzad
+%N=33.000000; Nu=4.000000; lambda=0.018527; %really final, after changing DMC_err yzad
                                 %err = 15.5746
 %inicjalizacja macierzy dUp
 for i=1:D-1
@@ -102,7 +102,7 @@ end
 
 err
 
-figure('Position',  [403 246 820 420]);;
+figure('Position',  [403 246 820 420]);
 title('obiekt z regulatorem PID');
 subplot('Position', [0.1 0.12 0.8 0.15]);
 stairs(U);
