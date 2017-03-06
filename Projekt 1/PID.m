@@ -71,7 +71,7 @@ ylabel('u');
 xlabel('k');
 decimal_comma(gca, 'XY');
 subplot('Position', [0.1 0.37 0.8 0.6]);
-stairs(Y);
+plot(Y);
 ylabel('y'); 
 hold on; 
 stairs(Yzad,':');

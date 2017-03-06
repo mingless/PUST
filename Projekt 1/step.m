@@ -93,7 +93,7 @@ for i = 0:5
     decimal_comma(gca, 'XY');
     hold on;
     subplot('Position', [0.1 0.37 0.8 0.6]);
-    stairs(Y);
+    plot(Y);
     ylabel('y');
     decimal_comma(gca, 'XY');
     hold on;
