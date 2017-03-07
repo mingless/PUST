@@ -38,12 +38,11 @@ Z odpowiedzi układu wnioskujemy, że zadany model jest samostabilizujący (stat
 
 \chapter{Podpunkt 3}
 Na potrzeby algorytmu DMC przekształcona została odpowiedź skokowa dla skoku z punktu pracy o wartość dopuszczoną przez ograniczenia, t.j. dla skoku od $U_{\mathrm{pp}}=\num{1,5}$ do $U^{\mathrm{max}}=\num{2,0}$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys. \ref{Z3step}. Kolejne wartości wyznaczonej odpowiedzi skokowej zadanego modelu zapisane są w pliku \verb+step_responses.txt+.
-
 \begin{equation}
 S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
 \label{step_norm}
 \end{equation}
-
+gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu, $\triangle U$ to wartość skoku sygnału sterującego, zaś $S_i$ to kolejne wartości odpowiedzi skokowej wykorzystywanej później przez algorytm DMC.
 
 \begin{figure}[ht]
 \centering
@@ -191,6 +190,8 @@ E = \sum_{k=1}^{k_{\mathrm{konc}}}(y^{\mathrm{zad}}(k) - y(k))^2
 \label{E}
 \end{equation}
 gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Wartości wyjść zadane w symulacji przedstawiono na poniższych wykresach za pomocą pomarańczowej, przerywanej linii.
+
+Początkowe parametry regulatora PID uzyskano metodą Zieglera-Nicholsa, a następnie sprawdzano ich otoczenie i potwierdzono ich jakość. Dla regulatora DMC wybrano parametr $D=120$ oraz początkowe parametry $N=180$, $N_{\mathrm{u}}=180$, $\lambda=1$, a następnie kolejno zmniejszano je, aż do uzyskania zadowalających przebiegów.
 
 \begin{figure}[ht]
 \centering
