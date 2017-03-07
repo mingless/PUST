@@ -1,3 +1,6 @@
+\chapter{Wstęp}
+Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
+
 \chapter{Podpunkt 1}
 Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($U_{\mathrm{pp}}$, $Y_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $U=U_{\mathrm{pp}}=\num{1,5}$, otrzymujemy na wyjściu oczekiwaną przez nas wartość $Y=Y_{\mathrm{pp}}=\num{2,2}$
 
@@ -175,14 +178,14 @@ s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1
 \label{dukdmc}
 \end{equation}
 
-Do regulacji zbędne okazały się jednak sygnały przewidywane w chwilach dalszych niż $k$. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$ - za jego pomocą liczona jest tylko wartość sterowania w chwili aktualnej:
+Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z chwili $k$ liczenie ich w dalszych chwilach może być w tym przypadku pominięte. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$ oznaczony tutaj przez $\boldsymbol{K}_1$ - za jego pomocą liczona jest wartość sterowania jedynie w chwili aktualnej:
 
 \begin{equation}
 	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
 \end{equation}
 
 \chapter{Podpunkt 5}
-Wybrane przez nas regulatory oceniano na jakościowo na podstawie przebiegów - ich gładkości oraz wielkości przeregulowań, oraz ilościowo, zgodnie z zadanym wskaźnikiem jakości regulacji
+Wybrane przez nas regulatory oceniano jakościowo na podstawie przebiegów - preferowane były przebiegi odpowiednio gładkie, bez wyraźnych oscylacji oraz z niewielkim, bądź niewystępującym przeregulowaniem, które były bliskie do zadanego przebiegu - oraz ilościowo, zgodnie z zadanym wskaźnikiem jakości regulacji
 \begin{equation}
 E = \sum_{k=1}^{k_{\mathrm{konc}}}(y^{\mathrm{zad}}(k) - y(k))^2
 \label{E}
@@ -193,7 +196,7 @@ gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Wartości wyjść 
 \centering
 \makebox[\textwidth][c]{
 \includegraphics[scale=1]{images/Z5manualPID}}
-\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora PID: \\$K = 2,64$, $T_{\mathrm{i}}=14,00$, $T_{\mathrm{d}}=3,36$, wyznaczony błąd $E=\num{19,6632}$}
+\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora PID: \\$K = \num{2,64}$, $T_{\mathrm{i}}=\num{14,00}$, $T_{\mathrm{d}}=\num{3,36}$, wyznaczony błąd $E=\num{19,6632}$}
 \label{Z5manualPID}
 \end{figure}
 
@@ -220,8 +223,7 @@ Ograniczenia nałożone na przeszukiwane wartości dla regulatora PID to:
 
 a dla regulatora DMC przy parametrze $D=120$:
 \begin{equation}
-	1 \le N \le 180, \quad
-	1 \le N_\mathrm{u} \le 180, \quad 
+	1 \le N_\mathrm{u} \le N \le 180, \quad 
 	0.01 \le \lambda
 \end{equation}
 
@@ -240,7 +242,7 @@ Dla przejrzystości wykresów zoptymalizowanych regulatorów przedstawiono na ni
 \centering
 \makebox[\textwidth][c]{
 \includegraphics[scale=1]{images/Z6optimizedPID}}
-\caption{Wyniki symulacji dla regulatora PID otrzymanego w wyniku optymalizacji:\\ $K=5,422910$, $T_{\mathrm{i}}=8,551461$, $T_{\mathrm{d}}=3,914535$, wyznaczony błąd $E=\num{16,7418}$}
+\caption{Wyniki symulacji dla regulatora PID otrzymanego w wyniku optymalizacji:\\ $K=\num{5,422910}$, $T_{\mathrm{i}}=\num{8,551461}$, $T_{\mathrm{d}}=\num{3,914535}$, wyznaczony błąd $E=\num{16,7418}$}
 \label{Z6optimizedPID}
 \end{figure}
 
