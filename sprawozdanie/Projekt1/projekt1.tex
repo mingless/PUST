@@ -172,7 +172,7 @@ s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1
 \label{dukdmc}
 \end{equation}
 
-Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z chwili $k$ liczenie ich w dalszych chwilach może być w tym przypadku pominięte. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$ oznaczony tutaj przez $\boldsymbol{K}_1$ - za jego pomocą liczona jest wartość sterowania jedynie w chwili aktualnej:
+Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z chwili $k$ liczenie ich w dalszych chwilach może być w tym przypadku pominięte. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$, oznaczony tutaj przez $\boldsymbol{K}_1$ - za jego pomocą liczona jest wartość sterowania jedynie w chwili aktualnej:
 
 \begin{equation}
 	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}(k) - \boldsymbol{M}^{\mathrm{P}} \triangle \boldsymbol{U}^{\mathrm{P}}(k))
