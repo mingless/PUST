@@ -108,7 +108,7 @@ y^{\mathrm{zad}}(k)\\
 y^{\mathrm{zad}}(k)
 \end{array}
 \right] \
-\boldsymbol{U}(k)=\left[
+\boldsymbol{Y}(k)=\left[
 \begin{array}{c}
 y(k)\\
 \vdots\\
@@ -163,11 +163,6 @@ s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1
 \end{equation}
 
 \begin{equation}
-\boldsymbol{Y}^{0}(k) = \boldsymbol{Y}(k) + \boldsymbol{M}^{\mathrm{P}} \triangle \boldsymbol{U}^{\mathrm{P}}(k)
-\label{Y0k}
-\end{equation}
-
-\begin{equation}
 \boldsymbol{K} = (\boldsymbol{M}^{\mathrm{T}} \boldsymbol{M} + \lambda \boldsymbol{I})^{-1} \boldsymbol{M}^{\mathrm{T}}
 \label{Karray}
 \end{equation}
@@ -180,8 +175,25 @@ s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1
 Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z chwili $k$ liczenie ich w dalszych chwilach może być w tym przypadku pominięte. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$ oznaczony tutaj przez $\boldsymbol{K}_1$ - za jego pomocą liczona jest wartość sterowania jedynie w chwili aktualnej:
 
 \begin{equation}
-	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
+	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}(k) - \boldsymbol{M}^{\mathrm{P}} \triangle \boldsymbol{U}^{\mathrm{P}}(k))
 \end{equation}
+
+Ponieważ dodatkowo wektor $\boldsymbol{K}_1$ oraz macierz $\boldsymbol{M}^{\mathrm{P}}$ nie zmieniają się w kolejnych iteracjach regulatora, dla dodatkowej optymalizacji przed główną pętlą obliczono następujące elementy:
+
+\begin{equation}
+	\boldsymbol{K}_{\mathrm{u}} = \boldsymbol{K}_1 \boldsymbol{M}^{\mathrm{P}}
+\end{equation}
+
+\begin{equation}
+	K_{\mathrm{e}} = \sum\limits_{i} K_{1i}	
+\end{equation}
+
+Wtedy wyznaczanie nowego sygnału sterowania we wspomnianej głównej pętli sprowadza się do krótszego obliczenia:
+
+\begin{equation}
+	\triangle u(k|k) = K_{\mathrm{e}} (y^{\mathrm{zad}}(k) - y(k)) - \boldsymbol{K}_{\mathrm{u}} \triangle \boldsymbol{U}^{\mathrm{P}}(k)
+\end{equation}
+	
 
 \chapter{Podpunkt 5}
 Wybrane przez nas regulatory oceniano jakościowo na podstawie przebiegów - preferowane były przebiegi odpowiednio gładkie, bez wyraźnych oscylacji oraz z niewielkim, bądź niewystępującym przeregulowaniem, które były bliskie do zadanego przebiegu - oraz ilościowo, zgodnie z zadanym wskaźnikiem jakości regulacji
