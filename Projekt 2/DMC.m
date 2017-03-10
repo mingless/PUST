@@ -1,25 +1,31 @@
 clear all;
 
 n = 200; 
-Yzad(1:20) = 0;
+Yzad(1:n) = 0;
+Z(1:n) = 0;
 Yzad(21:n) = 1;
+ Z(61:n) = 1; %zaklocenie skokowe
+%Z(61:n)=sin(linspace(0,10*pi,140)); %zaklocenie sinusoidalne
 pomiar = 1;
+szum = 1; snr = 10; %signal-to-noise ratio
+
+D=120; Dz=50; %dobrane na podstawie stabilizacji odpowiedzi
+% N=120; Nu=20; lambda=1; %err=7.8482
+% N=25; Nu=20; lambda=1; %err=7.8485    kolejne kroki dobierania
+% N=25; Nu=8; lambda=1; %err=7.7889
+N=25; Nu=8; lambda=0.05; %err=5.9223, eksperymentalnie
+
 
 
 Y(1:n) = 0; %inicjalizacja tablic
 U(1:n) = 0;
-Z(1:n) = 0;
-%  Z(121:n) = 1;
+
 err = 0;
 
 %odpowiedzi skokowe pobrane z utworzonego wczesniej pliku
 s = fscanf(fopen('input_step_response.txt', 'r'),'%f', [1 Inf]);
 sz = fscanf(fopen('noise_step_response.txt', 'r'),'%f', [1 Inf]);
 fclose('all');
-
-
-D=120; Dz=50;
-N=25; Nu=8; lambda=0.05; %err=5.9223
 
 for i=1:D-1
    dup(i)=0;
@@ -69,7 +75,11 @@ Kz=K(1,:)*Mz;
 Ke=sum(K(1,:));
 
 %glowna petla
-
+Zpom = Z;
+if szum
+    Zpom = awgn(Zpom,snr); %dodaje bialy szum gaussowski o zadanym stosunku
+                          %sygna³u do szumu (SNR)
+end
 for i=11:n
    
    Y(i)=symulacja_obiektu2y(U(i-5), U(i-6), Z(i-3), Z(i-4), Y(i-1), Y(i-2));
@@ -78,32 +88,21 @@ for i=11:n
    err = err + e^2;
    
    du=Ke*e-Ku*dup'; %regulator
-   if pomiar
+   if pomiar %regulator nie bierze pod uwage pomiaru zaklocen gdy pomiar=0
        du = du - Kz*dz';
    end
-%    if du>0.1 %ograniczenia na szybkosc zmiany sygnalu sterowania
-%        du = 0.1;
-%    elseif du<-0.1
-%        du = -0.1;
-%    end
-   
-   for n=D-1:-1:2
+
+   for n=D-1:-1:2 %przesuniecie macierzy dUp i dZ, dodanie nowej wartosci
       dup(n)=dup(n-1);
    end
    for n=Dz:-1:2
       dz(n)=dz(n-1);
    end
    dup(1)=du;
-   dz(1)=Z(i)-Z(i-1);
-   U(i)=U(i-1)+dup(1);
+   dz(1)=Zpom(i)-Zpom(i-1);
    
-%    if u(i)>0.5 %ograniczenia na min/max sygnalu sterowania
-%        u(i) = 0.5;
-%        dup(1) = u(i)-u(i-1);
-%    elseif u(i)<-0.5
-%        u(i) = -0.5;
-%        dup(1) = u(i)-u(i-1);
-%    end
+   
+   U(i)=U(i-1)+dup(1); %wyliczenie nowego sterowania
    
    
 end
@@ -119,6 +118,8 @@ xlabel('k');
 ylabel('u');
 subplot('Position', [0.1 0.295 0.8 0.118]);
 stairs(Z);
+hold on;
+stairs(Zpom);
 decimal_comma(gca, 'XY');
 ylabel('z');
 subplot('Position', [0.1 0.495 0.8 0.48]);
