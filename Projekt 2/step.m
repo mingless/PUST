@@ -23,7 +23,7 @@ stairs(Z);
 decimal_comma(gca, 'XY');
 ylabel('z');
 subplot('Position', [0.1 0.495 0.8 0.48]);
-stairs(Y);
+plot(Y);
 decimal_comma(gca, 'XY');
 ylabel('y');
 
@@ -157,6 +157,5 @@ for i = 0:5
     hold on;
 end
 legend({'Z_s=0,5','Z_s=0,3','Z_s=0,1','Z_s=-0,1','Z_s=-0,3','Z_s=-0,5'}, 'FontSize',8);
-    
 
 %close all;

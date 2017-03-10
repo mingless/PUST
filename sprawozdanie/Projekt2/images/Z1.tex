@@ -1,0 +1,72 @@
+
+\definecolor{mycolor1}{rgb}{0.00000,0.44700,0.74100}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=4.667in,
+height=0.645in,
+at={(0.583in,0.52in)},
+scale only axis,
+xmin=0,
+xmax=200,
+xtick={0,20,40,60,80,100,120,140,160,180,200},
+xlabel style={font=\color{white!15!black}},
+xlabel={k},
+ymin=-1,
+ymax=1,
+ytick={-1,0,1},
+ylabel style={font=\color{white!15!black}},
+ylabel={u},
+axis background/.style={fill=white}
+]
+\addplot[const plot, color=mycolor1, forget plot] table[row sep=crcr] {%
+1	0\\
+200	0\\
+};
+\end{axis}
+
+\begin{axis}[%
+width=4.667in,
+height=0.645in,
+at={(0.583in,1.613in)},
+scale only axis,
+xmin=0,
+xmax=200,
+xtick={0,20,40,60,80,100,120,140,160,180,200},
+ymin=-1,
+ymax=1,
+ytick={-1,0,1},
+ylabel style={font=\color{white!15!black}},
+ylabel={z},
+axis background/.style={fill=white}
+]
+\addplot[const plot, color=mycolor1, forget plot] table[row sep=crcr] {%
+1	0\\
+200	0\\
+};
+\end{axis}
+
+\begin{axis}[%
+width=4.667in,
+height=2.625in,
+at={(0.583in,2.707in)},
+scale only axis,
+xmin=0,
+xmax=200,
+xtick={0,20,40,60,80,100,120,140,160,180,200},
+ymin=-1,
+ymax=1,
+ytick={-1,-0.5,0,0.5,1},
+yticklabels={{-1},{-0,5},{0},{0,5},{1}},
+ylabel style={font=\color{white!15!black}},
+ylabel={y},
+axis background/.style={fill=white}
+]
+\addplot [color=mycolor1, forget plot]
+  table[row sep=crcr]{%
+1	0\\
+200	0\\
+};
+\end{axis}
+\end{tikzpicture}%
