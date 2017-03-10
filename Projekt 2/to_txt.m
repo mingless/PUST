@@ -10,7 +10,7 @@ function out_vec = to_txt( y, varargin )
         error('Invalid vector size.');
     end
     out_vec = zeros(length(y),2);
-    
+
     if nargin == 1 || isempty(varargin{1})
         out_vec(:,1) = (1:size(y,2));
     elseif (length(varargin{1}) ~= length(y))

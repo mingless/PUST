@@ -12,7 +12,7 @@ for k = 7:n
 end
 
 %wykresy
-figure('Position',  [403 146 560 525]); 
+figure('Position',  [403 146 560 525]);
 subplot('Position', [0.1 0.095 0.8 0.118]);
 stairs(U);
 decimal_comma(gca, 'XY');
@@ -31,7 +31,7 @@ ylabel('y');
 U(1:n) = 0; %zerowanie dla pewnosci
 Y(1:n) = 0;
 Z(1:n) = 0;
-    
+
 % skok jednostkowy wejœcia w chwili k=10
 U(10:n) = 1;
 for k = 7:n
@@ -43,7 +43,7 @@ s(1:n-10)=Y(11:n);
 %skok jednostkowy zaklocenia w chwili k=10
 U(10:n) = 0;
 Y(1:n) = 0;
-Z(10:n) = 1; 
+Z(10:n) = 1;
 for k = 7:n
     Y(k) = symulacja_obiektu2y(U(k-5), U(k-6), Z(k-3), Z(k-4), Y(k-1), Y(k-2));
 end
@@ -138,7 +138,7 @@ for i = 0:5
          Y(k) = symulacja_obiektu2y(U(k-5), U(k-6), Z(k-3), Z(k-4), Y(k-1), Y(k-2));
     end
     %stairs(Y);
-    
+
     subplot('Position', [0.1 0.095 0.8 0.118]);
     stairs(U);
     decimal_comma(gca, 'XY');
@@ -157,5 +157,6 @@ for i = 0:5
     hold on;
 end
 legend({'Z_s=0,5','Z_s=0,3','Z_s=0,1','Z_s=-0,1','Z_s=-0,3','Z_s=-0,5'}, 'FontSize',8);
+
 
 %close all;

@@ -1,6 +1,6 @@
 clear all;
 
-n = 200; 
+n = 200;
 Yzad(1:n) = 0;
 Z(1:n) = 0;
 Yzad(21:n) = 1;
@@ -52,7 +52,7 @@ for i=1:N
          Mp(i,j)=s(i+j)-s(j);
       else
          Mp(i,j)=s(D)-s(j);
-      end;      
+      end;
    end;
 end;
 
@@ -63,7 +63,7 @@ for i=1:N
          Mz(i,j)=sz(i+j)-sz(j);
       else
          Mz(i,j)=sz(Dz)-sz(j);
-      end;      
+      end;
    end;
 end;
 Mz = [sz(1:N)' Mz];
@@ -81,12 +81,12 @@ if szum
                           %sygna³u do szumu (SNR)
 end
 for i=11:n
-   
+
    Y(i)=symulacja_obiektu2y(U(i-5), U(i-6), Z(i-3), Z(i-4), Y(i-1), Y(i-2));
-   
+
    e=Yzad(i)-Y(i); %uchyb
    err = err + e^2;
-   
+
    du=Ke*e-Ku*dup'; %regulator
    if pomiar %regulator nie bierze pod uwage pomiaru zaklocen gdy pomiar=0
        du = du - Kz*dz';
@@ -100,11 +100,11 @@ for i=11:n
    end
    dup(1)=du;
    dz(1)=Zpom(i)-Zpom(i-1);
-   
-   
+
+
    U(i)=U(i-1)+dup(1); %wyliczenie nowego sterowania
-   
-   
+
+
 end
 
 err
