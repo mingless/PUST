@@ -4,18 +4,33 @@ Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pie
 \chapter{Podpunkt 1}
 Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($U_{\mathrm{pp}}$, $Y_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $U=U_{\mathrm{pp}}=\num{1,5}$, otrzymujemy na wyjściu oczekiwaną przez nas wartość $Y=Y_{\mathrm{pp}}=\num{2,2}$
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=1]{images/Z1}
+\caption{Odpowiedź procesu w punkcie pracy}
+\label{Z1}
+\end{figure}
 
 
 \chapter{Podpunkt 2}
 Po uwzględnieniu ograniczeń wartości sygnału sterującego dla reprezentacji odpowiedzi skokowych wybranych zostało sześć różnych wartości zmian sygnału sterującego: od $U_{pp}$ do $U_s$, w chwili $k=20$. Wykres odpowiedzi skokowych zamieszczony został na rys. \ref{Z2multiplesteps}.
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=1]{images/Z2multiplesteps}
+\caption{Wybrane odpowiedzi skokowe procesu}
+\label{Z2multiplesteps}
+\end{figure}
 
 Symulując odpowiedź układu dla różnych wartości sygnału sterującego otrzymujemy charakterystykę statyczną $y(u)$ widoczną na rys. \ref{Z2staticchar}.
 
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=1]{images/Z2staticchar}
+\caption{Charakterystyka statyczna procesu $y(u)$}
+\label{Z2staticchar}
+\end{figure}
 
 
 Z odpowiedzi układu wnioskujemy, że zadany model jest samostabilizujący (statyczny), o opóźnieniu $\tau =10$, a jego charakterystyka statyczna jest w bardzo dobrym przybliżeniu liniowa. Obliczona wartość wzmocnienia statycznego procesu to $K=\num{0,7706}$.
@@ -29,7 +44,12 @@ S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
 \end{equation}
 gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu, $\triangle U$ to wartość skoku sygnału sterującego, zaś $S_i$ to kolejne wartości odpowiedzi skokowej wykorzystywanej później przez algorytm DMC.
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=1]{images/Z3step}
+\caption{Charakterystyka statyczna procesu $y(u)$}
+\label{Z3step}
+\end{figure}
 
 
 \chapter{Podpunkt 4}
@@ -88,7 +108,7 @@ y^{\mathrm{zad}}(k)\\
 y^{\mathrm{zad}}(k)
 \end{array}
 \right] \
-\boldsymbol{U}(k)=\left[
+\boldsymbol{Y}(k)=\left[
 \begin{array}{c}
 y(k)\\
 \vdots\\
@@ -143,11 +163,6 @@ s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1
 \end{equation}
 
 \begin{equation}
-\boldsymbol{Y}^{0}(k) = \boldsymbol{Y}(k) + \boldsymbol{M}^{\mathrm{P}} \triangle \boldsymbol{U}^{\mathrm{P}}(k)
-\label{Y0k}
-\end{equation}
-
-\begin{equation}
 \boldsymbol{K} = (\boldsymbol{M}^{\mathrm{T}} \boldsymbol{M} + \lambda \boldsymbol{I})^{-1} \boldsymbol{M}^{\mathrm{T}}
 \label{Karray}
 \end{equation}
@@ -157,11 +172,28 @@ s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1
 \label{dukdmc}
 \end{equation}
 
-Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z chwili $k$ liczenie ich w dalszych chwilach może być w tym przypadku pominięte. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$ oznaczony tutaj przez $\boldsymbol{K}_1$ - za jego pomocą liczona jest wartość sterowania jedynie w chwili aktualnej:
+Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z chwili $k$ liczenie ich w dalszych chwilach może być w tym przypadku pominięte. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$, oznaczony tutaj przez $\boldsymbol{K}_1$ - za jego pomocą liczona jest wartość sterowania jedynie w chwili aktualnej:
 
 \begin{equation}
-	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
+	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}(k) - \boldsymbol{M}^{\mathrm{P}} \triangle \boldsymbol{U}^{\mathrm{P}}(k))
 \end{equation}
+
+Ponieważ dodatkowo wektor $\boldsymbol{K}_1$ oraz macierz $\boldsymbol{M}^{\mathrm{P}}$ nie zmieniają się w kolejnych iteracjach regulatora, dla dodatkowej optymalizacji przed główną pętlą obliczono następujące elementy:
+
+\begin{equation}
+	\boldsymbol{K}_{\mathrm{u}} = \boldsymbol{K}_1 \boldsymbol{M}^{\mathrm{P}}
+\end{equation}
+
+\begin{equation}
+	K_{\mathrm{e}} = \sum\limits_{i} K_{1i}	
+\end{equation}
+
+Wtedy wyznaczanie nowego sygnału sterowania we wspomnianej głównej pętli sprowadza się do krótszego obliczenia:
+
+\begin{equation}
+	\triangle u(k|k) = K_{\mathrm{e}} (y^{\mathrm{zad}}(k) - y(k)) - \boldsymbol{K}_{\mathrm{u}} \triangle \boldsymbol{U}^{\mathrm{P}}(k)
+\end{equation}
+	
 
 \chapter{Podpunkt 5}
 Wybrane przez nas regulatory oceniano jakościowo na podstawie przebiegów - preferowane były przebiegi odpowiednio gładkie, bez wyraźnych oscylacji oraz z niewielkim, bądź niewystępującym przeregulowaniem, które były bliskie do zadanego przebiegu - oraz ilościowo, zgodnie z zadanym wskaźnikiem jakości regulacji
@@ -173,10 +205,22 @@ gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Wartości wyjść 
 
 Początkowe parametry regulatora PID uzyskano metodą Zieglera-Nicholsa, a następnie sprawdzano ich otoczenie i potwierdzono ich jakość. Dla regulatora DMC wybrano parametr $D=120$ oraz początkowe parametry $N=180$, $N_{\mathrm{u}}=180$, $\lambda=1$, a następnie kolejno zmniejszano je, aż do uzyskania zadowalających przebiegów.
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z5manualPID}}
+\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora PID: \\$K = \num{2,64}$, $T_{\mathrm{i}}=\num{14,00}$, $T_{\mathrm{d}}=\num{3,36}$, wyznaczony błąd $E=\num{19,6632}$}
+\label{Z5manualPID}
+\end{figure}
 
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z5manualDMC}}
+\caption{Wyniki symulacji dla dobranego eksperymentalnie regulatora DMC: \\$N=30$, $N_{\mathrm{u}}=3$, $\lambda=\num{0,8}$, wyznaczony błąd $E=\num{15,6111}$}
+\label{Z5manualDMC}
+\end{figure}
 
 \chapter{Podpunkt 6}
 Optymalizacja wskaźnika jakości została przeprowadzona przy użyciu skryptu zamieszczonego w pliku \verb+param_optimizer.m+, do optymalizacji globalnej wykorzystuje on funkcję \verb+ga+(algorytm genetyczny). Przy jego użyciu zmodyfikowane jednak zostały zadane wartości wyjściowe - wydłużono czasy między skokami. Bez zrobienia tego, przy symulacji regulatora z otrzymanymi parametrami układ wpadał w znaczące oscylacje - priorytetyzowane okazywało się wtedy jak najszybsze przejście do nowej wartości ze skoku ponad wygładzenie sygnału ustalonego. Wydłużenie czasów pomaga tego uniknąć, choć niejakie oscylacje nadal są widoczne w zoptymalizowanym regulatorze PID.
@@ -199,8 +243,26 @@ a dla regulatora DMC przy parametrze $D=120$:
 
 Dla przejrzystości wykresów zoptymalizowanych regulatorów przedstawiono na nich symulację przy przebiegu czasowym wartości zadanych wziętym z poprzedniego zadania, bez wydłużenia okresów między kolejnymi skokami.
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z6Yzad}}
+\caption{Przebieg czasowy wartości zadanych dla regulatorów użyty przy optymalizacji wskaźnika jakości}
+\label{Z6optimizedPID}
+\end{figure}
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z6optimizedPID}}
+\caption{Wyniki symulacji dla regulatora PID otrzymanego w wyniku optymalizacji:\\ $K=\num{5,422910}$, $T_{\mathrm{i}}=\num{8,551461}$, $T_{\mathrm{d}}=\num{3,914535}$, wyznaczony błąd $E=\num{16,7418}$}
+\label{Z6optimizedPID}
+\end{figure}
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\makebox[\textwidth][c]{
+\includegraphics[scale=1]{images/Z6optimizedDMC.eps}}
+\caption{Wyniki symulacji dla regulatora DMC otrzymanego w wyniku optymalizacji:\\ $N=33$, $N_{\mathrm{u}}=4$, $\lambda=\num{0,018527}$, wyznaczony błąd $E=\num{15,5746}$}
+\label{Z6optimizedDMC}
+\end{figure}
