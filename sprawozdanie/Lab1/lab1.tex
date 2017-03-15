@@ -2,20 +2,40 @@
 Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
 
 \chapter{Podpunkt 1}
-Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($U_{\mathrm{pp}}$, $Y_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $U=U_{\mathrm{pp}}=\num{1,5}$, otrzymujemy na wyjściu oczekiwaną przez nas wartość $Y=Y_{\mathrm{pp}}=\num{2,2}$
+Sprawdzenie możliwości sterowania i pomiaru w komunikacji ze stanowiskiem odbyło się poprzez wysłanie do stanowiska kilku różnych wartości sterowania i zaobserwowanie odpowiedniej odpowiedzi stanowiska oraz zmian w napływających danych.
 
-\input{images/step_w_s_40}
+Wartości sterowania w punkcie pracy zadane przez prowadzącego laboratoria to: $W_1=50\%$, $G_1=25+5=30$, zgodnie z treścią zadania wartość $W_1$ nie była zmieniana, sterowanie odbywało się sygnałem $G_1$, zaś sygnał $T_1$ traktowany był jako sygnał wyjściowy. W dalszej części sprawozdania zamiennie będziemy używać oznaczeń $G_1$, $U$ na sygnał sterujący oraz oznaczeń $T_1$, $Y$ na sygnał wyjściowy.
+
+Wartość pomiaru temperatury w punkcie pracy odbyła się zgodnie z poleceniem poprzez zadanie wartości sygnałów sterujących $W_1$, $G_1$, a następnie zarejestrowanie wartości sygnału $T_1$ po ustabilizowaniu się układu. Warto w tym momencie zauważyć, że ze względu na charakter układu i jego podatność na zakłócenia zaobserwowano drobne zmiany punktu pracy. Dlatego też w dalszych pracach za punkt pracy przyjęto średnią z trzech pomiarów, która wyniosła $T_1=\num{32,31}$.
 
 
 \chapter{Podpunkt 2}
-Po uwzględnieniu ograniczeń wartości sygnału sterującego dla reprezentacji odpowiedzi skokowych wybranych zostało sześć różnych wartości zmian sygnału sterującego: od $U_{pp}$ do $U_s$, w chwili $k=20$. Wykres odpowiedzi skokowych zamieszczony został na rys. \ref{Z2multiplesteps}.
+Na potrzeby wyznaczenia odpowiedzi skokowych wybrane zostały trzy różne wartości skoku $\triangle U = \{10, 20, 30\}$. Na rys. \ref{R1} zamieszczono wyznaczone odpowiedzi.
 
+\begin{figure}[ht]
+\centering
+\input{images/step_w_s_40}
+\caption{Odpowiedź dla skoku z punktu pracy o $\triangle U = 10$}
+\label{R1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
 \input{images/step_w_s_50}
+\caption{Odpowiedź dla skoku z punktu pracy o $\triangle U = 20$}
+\label{R2}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{images/step_w_s_60}
+\caption{Odpowiedź dla skoku z punktu pracy o $\triangle U = 30$}
+\label{R3}
+\end{figure}
 
 Symulując odpowiedź układu dla różnych wartości sygnału sterującego otrzymujemy charakterystykę statyczną $y(u)$ widoczną na rys. \ref{Z2staticchar}.
 
 
-\input{images/step_w_s_60}
 
 \input{images/approximated_step_response}
 
