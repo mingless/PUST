@@ -1,10 +1,22 @@
 \chapter{Wstęp}
 Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
 
+Zadane wartości:
+
+$W1=50\%$
+
+$G1_{\mathrm{pp}}=U_{\mathrm{pp}}=25+5=30$
+
+$T=1s$ - okres próbkowania
+
+Ograniczenia:
+
+$0 \le G1(k) \le 100$
+
 \chapter{Podpunkt 1}
 Sprawdzenie możliwości sterowania i pomiaru w komunikacji ze stanowiskiem odbyło się poprzez wysłanie do stanowiska kilku różnych wartości sterowania i zaobserwowanie odpowiedniej odpowiedzi stanowiska oraz zmian w napływających danych.
 
-Wartości sterowania w punkcie pracy zadane przez prowadzącego laboratoria to: $W_1=50\%$, $G_1=25+5=30$ Zgodnie z treścią zadania wartość $W_1$ nie była zmieniana, sterowanie odbywało się sygnałem $G_1$, zaś sygnał $T_1$ traktowany był jako sygnał wyjściowy. W dalszej części sprawozdania zamiennie będziemy używać oznaczeń $G_1$, $U$ na sygnał sterujący oraz oznaczeń $T_1$, $Y$ na sygnał wyjściowy.
+Wartości sterowania w punkcie pracy zadane przez prowadzącego laboratoria to: $W_1=50\%$, $G_1=25+5=30$. Zgodnie z treścią zadania wartość $W_1$ nie była zmieniana, sterowanie odbywało się sygnałem $G_1$, zaś sygnał $T_1$ traktowany był jako sygnał wyjściowy. W dalszej części sprawozdania zamiennie będziemy używać oznaczeń $G_1$, $U$ na sygnał sterujący oraz oznaczeń $T_1$, $Y$ na sygnał wyjściowy.
 
 Pomiar wartości temperatury w punkcie pracy odbył się zgodnie z poleceniem poprzez zadanie wartości sygnałów sterujących $W_1$, $G_1$, a następnie zarejestrowanie wartości sygnału $T_1$ po ustabilizowaniu się układu. Warto w tym momencie zauważyć, że ze względu na charakter układu i jego podatność na zakłócenia zaobserwowano drobne zmiany punktu pracy. Dlatego też w dalszych pracach za punkt pracy przyjęto średnią z trzech pomiarów, która wyniosła $T_1=\num{32,31}$.
 
@@ -21,9 +33,13 @@ Na potrzeby wyznaczenia odpowiedzi skokowych wybrane zostały trzy różne warto
 
 Obliczając wzmocnienie statyczne dla każdej z trzech odpowiedzi skokowych na podstawie wzoru:
 \begin{equation}
- K~=\frac{Y_{\mathrm{konc}}-Y_{\mathrm{pp}}}{\triangle U}
+ K=\frac{Y_{\mathrm{konc}}-Y_{\mathrm{pp}}}{\triangle U}
  \end{equation}
-dostajemy $K_1=\num{0,275}$, $K_2=\num{0,281}$, $K_3=\num{0,2853}$. Wyznaczone wzmocnienia dla okazały się bardzo zbliżone dla różnych skoków, charakterystykę obiektu można więc uznać w przybliżeniu za liniową. Otrzymane podczas optymalizacji w kolejnym podpunkcie wzmocnienie wyniosło $K=\num{0,285}$.
+dostajemy $K_1=\num{0,275}$, $K_2=\num{0,281}$, $K_3=\num{0,2853}$.
+
+Wyznaczone wzmocnienia są bardzo zbliżone dla różnych skoków, warto też zauważyć, że temperatura ani przed skokiem, ani po stabilizacji nie przyjmuje stałej wartości, a jedynie oscyluje w ograniczonym przedziale. Wynikająca z wyboru punktu pracy oraz punktu stabilizacji niepewność wyznaczonych wzmocnień wynosi ok. $\pm \num{0,01}$ (wyznaczona jako różnica między wartościami skrajnymi).
+
+Charakterystykę obiektu można więc uznać w badanym zakresie za w dobrym przybliżeniu liniową. Otrzymane podczas optymalizacji w kolejnym podpunkcie wzmocnienie wyniosło $K_{\mathrm{mod}}=\num{0,285}$ i tą też wartość możemy ostatecznie przyjąć za wzmonienie statyczne procesu.
 
 
 \chapter{Podpunkt 3}
@@ -43,12 +59,14 @@ gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu, $\tri
 
 \begin{figure}[ht]
 \centering
-\input{images/model_approximation}
+\input{images/model_approximation2}
 \caption{Porównanie aproksymacji z odpowiedzią rzeczywistą dla skoku z punktu pracy o $\triangle U = 10$}
 \label{R3}
 \end{figure}
 
-Optymalizacja przeprowadzona została przy użyciu 
+Optymalizacja przeprowadzona została początkowo przy użyciu metody \verb+ga+ wykorzystującej algorytm genetyczny jednakże ze względu na otrzymywanie bardzo niestabilnych rozwiązań zastosowaliśmy ostatecznie metodę \verb+fmincon+ z parametrami początkowymi $[\num{0,5} ~ 20 ~ 25]$. Wartości parametrów początkowych zostały oszacowane na podstawie poprzednich wyników uzyskanych za pomocą algorytmu genetycznego. Funkcja ta została wykorzystana w pętli do optymalizacji parametrów $K$, $T_1$ oraz $T_2$ zaś parametr $T_{\mathrm{D}}$ był inkrementowany w kolejnych iteracjach pętli.
+
+Ostatecznie najlepszy wynik otrzymany został dla $T_{\mathrm{D}}=26$, $K=\num{0.284889175853091}$, $T_1=\num{6.766718807934197e-11}$, $T_2=\num{92.458806630315240}$.
 
 \chapter{Podpunkt 4}
 Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+, zaś w plikach \verb+PID_err.m+ oraz \verb+DMC_err.m+ umieszczono funkcje pomocnicze do obliczania wartości błędu.
