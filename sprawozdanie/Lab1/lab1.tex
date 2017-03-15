@@ -14,13 +14,40 @@ Na potrzeby wyznaczenia odpowiedzi skokowych wybrane zostały trzy różne warto
 
 \begin{figure}[ht]
 \centering
-\input{images/stepsver2}
+\input{images/steps}
 \caption{Odpowiedź dla skoków z punktu pracy o $\triangle U = \{10, 20, 30\}$}
 \label{R1}
 \end{figure}
 
+Obliczając wzmocnienie statyczne dla każdej z trzech odpowiedzi skokowych na podstawie wzoru: $K~=\frac{Y_{\mathrm{konc}}-Y_{\mathrm{pp}}}{\triangle U}$ dostajemy $K_1=\num{0,275}$, $K_2=\num{0,281}$, $K_3=\num{0,2853}$. Jak widać w przybliżeniu właściwości statyczne obiektu można uznać za liniowe gdyż wzmocnienia statyczne dla różnych wartości skoku są bardzo zbliżone. Otrzymane podczas optymalizacji w kolejnym podpunkcie wzmocnienie wyniosło $K=\num{0,285}$.
 
+
+\chapter{Podpunkt 3}
+Na potrzeby algorytmu DMC przekształcona została odpowiedź skokowa dla skoku z punktu pracy o $\triangle U = 10$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys. \ref{R2}. Kolejne wartości wyznaczonej odpowiedzi skokowej zadanego modelu zapisane są w pliku \verb+step_response.txt+.
+\begin{equation}
+S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
+\label{step_norm}
+\end{equation}
+gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu, $\triangle U$ to wartość skoku sygnału sterującego, zaś $S_i$ to kolejne wartości odpowiedzi skokowej wykorzystywanej później przez algorytm DMC.
+
+\begin{figure}[ht]
+\centering
 \input{images/approximated_step_response}
+\caption{Aproksymacja dla skoku z punktu pracy o $\triangle U = 10$}
+\label{R2}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{images/model_approximation}
+\caption{Porównanie aproksymacji z odpowiedzią rzeczywistą dla skoku z punktu pracy o $\triangle U = 10$}
+\label{R3}
+\end{figure}
+
+Optymalizacja przeprowadzona została przy użyciu 
+
+\chapter{Podpunkt 4}
+Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+, zaś w plikach \verb+PID_err.m+ oraz \verb+DMC_err.m+ umieszczono funkcje pomocnicze do obliczania wartości błędu.
 
 \input{images/PID1}
 
@@ -28,25 +55,7 @@ Na potrzeby wyznaczenia odpowiedzi skokowych wybrane zostały trzy różne warto
 
 \input{images/PIDsim_err_3527}
 
-\input{images/model_approximation}
-
 \input{images/DMC_err_3021_4}
-
-
-Z odpowiedzi układu wnioskujemy, że zadany model jest samostabilizujący (statyczny), o opóźnieniu $\tau =10$, a jego charakterystyka statyczna jest w bardzo dobrym przybliżeniu liniowa. Obliczona wartość wzmocnienia statycznego procesu to $K=\num{0,7706}$.
-
-
-\chapter{Podpunkt 3}
-Na potrzeby algorytmu DMC przekształcona została odpowiedź skokowa dla skoku z punktu pracy o wartość dopuszczoną przez ograniczenia, t.j. dla skoku od $U_{\mathrm{pp}}=\num{1,5}$ do $U^{\mathrm{max}}=\num{2,0}$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys. \ref{Z3step}. Kolejne wartości wyznaczonej odpowiedzi skokowej zadanego modelu zapisane są w pliku \verb+step_responses.txt+.
-\begin{equation}
-S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
-\label{step_norm}
-\end{equation}
-gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu, $\triangle U$ to wartość skoku sygnału sterującego, zaś $S_i$ to kolejne wartości odpowiedzi skokowej wykorzystywanej później przez algorytm DMC.
-
-
-\chapter{Podpunkt 4}
-Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+, zaś w plikach \verb+PID_err.m+ oraz \verb+DMC_err.m+ umieszczono funkcje pomocnicze do obliczania wartości błędu.
 
 Symulacja cyfrowego algorytmu PID odbywa się w oparciu o postać dyskretną
 \begin{equation}
@@ -177,34 +186,16 @@ Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z
 \end{equation}
 
 \chapter{Podpunkt 5}
-Wybrane przez nas regulatory oceniano jakościowo na podstawie przebiegów - preferowane były przebiegi odpowiednio gładkie, bez wyraźnych oscylacji oraz z niewielkim, bądź niewystępującym przeregulowaniem, które były bliskie do zadanego przebiegu - oraz ilościowo, zgodnie z zadanym wskaźnikiem jakości regulacji
-\begin{equation}
-E = \sum_{k=1}^{k_{\mathrm{konc}}}(y^{\mathrm{zad}}(k) - y(k))^2
-\label{E}
-\end{equation}
-gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Wartości wyjść zadane w symulacji przedstawiono na poniższych wykresach za pomocą pomarańczowej, przerywanej linii.
 
-Początkowe parametry regulatora PID uzyskano metodą Zieglera-Nicholsa, a następnie sprawdzano ich otoczenie i potwierdzono ich jakość. Dla regulatora DMC wybrano parametr $D=120$ oraz początkowe parametry $N=180$, $N_{\mathrm{u}}=180$, $\lambda=1$, a następnie kolejno zmniejszano je, aż do uzyskania zadowalających przebiegów.
+Tym samym parametry regulatora PID zostały dobrane na podstawie modelu (uzyskanego podczas aproksymacji) przy użyciu następującego fragmentu kodu:
 
+\begin{lstlisting}[style=Matlab-editor]
+s = tf('s');
 
-\chapter{Podpunkt 6}
-Optymalizacja wskaźnika jakości została przeprowadzona przy użyciu skryptu zamieszczonego w pliku \verb+param_optimizer.m+, do optymalizacji globalnej wykorzystuje on funkcję \verb+ga+(algorytm genetyczny). Przy jego użyciu zmodyfikowane jednak zostały zadane wartości wyjściowe - wydłużono czasy między skokami. Bez zrobienia tego, przy symulacji regulatora z otrzymanymi parametrami układ wpadał w znaczące oscylacje - priorytetyzowane okazywało się wtedy jak najszybsze przejście do nowej wartości ze skoku ponad wygładzenie sygnału ustalonego. Wydłużenie czasów pomaga tego uniknąć, choć niejakie oscylacje nadal są widoczne w zoptymalizowanym regulatorze PID.
+sys = K/((s*T1+1)*(s*T2+1))*exp(-Td*s);
+% wartości T1, T2 oraz Td otrzymano podczas optymalizacji
+% parametrów modelu wykorzystanego przy aproksymacji
 
-Przy optymalizacji algorytmem genetycznym dla obu regulatorów użyto losowych populacji (parametrów) początkowych. Program uruchomiono kilkukrotnie, uzyskując za każdym razem bardzo zbliżone wyniki. 
-
-Ograniczenia nałożone na przeszukiwane wartości dla regulatora PID to:
-\begin{equation}
-	0.01 \le K, \quad
-	1 \le T_\mathrm{i},\quad
-	0.01 \le T_\mathrm{d}
-\end{equation}
-
-a dla regulatora DMC przy parametrze $D=120$:
-\begin{equation}
-	1 \le N_\mathrm{u} \le N \le 180, \quad 
-	0.01 \le \lambda
-\end{equation}
-
-
-Dla przejrzystości wykresów zoptymalizowanych regulatorów przedstawiono na nich symulację przy przebiegu czasowym wartości zadanych wziętym z poprzedniego zadania, bez wydłużenia okresów między kolejnymi skokami.
+pidtune(sys,'PID');
+\end{lstlisting} 
 
