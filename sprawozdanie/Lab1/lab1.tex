@@ -66,150 +66,31 @@ gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu, $\tri
 
 Optymalizacja przeprowadzona została początkowo przy użyciu metody \verb+ga+ wykorzystującej algorytm genetyczny jednakże ze względu na otrzymywanie bardzo niestabilnych rozwiązań zastosowaliśmy ostatecznie metodę \verb+fmincon+ z parametrami początkowymi $[\num{0,5} ~ 20 ~ 25]$. Wartości parametrów początkowych zostały oszacowane na podstawie poprzednich wyników uzyskanych za pomocą algorytmu genetycznego. Funkcja ta została wykorzystana w pętli do optymalizacji parametrów $K$, $T_1$ oraz $T_2$ zaś parametr $T_{\mathrm{D}}$ był inkrementowany w kolejnych iteracjach pętli.
 
-Ostatecznie najlepszy wynik otrzymany został dla $T_{\mathrm{D}}=26$, $K=\num{0.284889175853091}$, $T_1=\num{6.766718807934197e-11}$, $T_2=\num{92.458806630315240}$.
+Ostatecznie najlepszy wynik otrzymany został dla $T_{\mathrm{D}}=26$, $K=\num{0.284889175853091}$, $T_1=\num{6.766718807934197e-11}$, $T_2=\num{92.458806630315240}$ (gdzie przez najlepszy rozumiany jest wynik minimalizujący sumę kwadratów błędów dla kolejnych elementów odpowiedzi).
 
 \chapter{Podpunkt 4}
-Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+, zaś w plikach \verb+PID_err.m+ oraz \verb+DMC_err.m+ umieszczono funkcje pomocnicze do obliczania wartości błędu.
-
-\input{images/PID1}
-
-\input{images/PID2}
-
-\input{images/PIDsim_err_3527}
-
-\input{images/DMC_err_3021_4}
-
-Symulacja cyfrowego algorytmu PID odbywa się w oparciu o postać dyskretną
-\begin{equation}
-r_2 = \frac{K T_{\mathrm{d}}}{T_{\mathrm{s}}} \
-r_1 = K \left( \frac{T_{\mathrm{s}}}{2 T_{\mathrm{i}}} - \frac{2 T_{\mathrm{d}}}{T_{\mathrm{s}}} - 1 \right) \
-r_0 = K \left( 1 + \frac{T_{\mathrm{s}}}{2 T_{\mathrm{i}}} + \frac{T_{\mathrm{d}}}{T_{\mathrm{s}}} \right) \\
-\label{r_t}
-\end{equation}
-\begin{equation}
-\triangle U(k) = r_2 e(k-2) + r_1 e(k-1) + r_0 e(k)
-\label{du}
-\end{equation}
-gdzie $e(k)=Y^{\mathrm{zad}}(k) - Y(k)$ to uchyb. We wzorach (\ref{du2}--\ref{upp}) sterowanie jest przycinane zgodnie z ograniczeniami, a następnie przesuwane do punktu pracy.
-
-\begin{equation}
-\triangle U(k) = 
-\begin{cases}
--\triangle U^{\mathrm{max}} &\quad \textrm{gdy } \ \triangle U(k) \le -\triangle U^{\mathrm{max}} \\
-\triangle U^{\mathrm{max}} &\quad \textrm{gdy } \ \triangle U(k) \ge \triangle U^{\mathrm{max}}  \\
-\triangle U(k) &\quad \textrm{w p.p.}
-\end{cases}
-\label{du2}
-\end{equation}
-
-\begin{equation}
-U(k) = \triangle U(k) + U(k-1)
-\label{uk}
-\end{equation}
-
-\begin{equation}
-U(k) = 
-\begin{cases}
-U^{\mathrm{min}} - U_{\mathrm{pp}} &\quad \textrm{gdy } \ U(k) \le U^{\mathrm{min}}-U_{\mathrm{pp}} \\
-U^{\mathrm{max}}-U_{\mathrm{pp}} &\quad \textrm{gdy } \ U(k) \ge U^{\mathrm{max}}-U_{\mathrm{pp}}  \\
-U(k) &\quad \textrm{w p.p.}
-\end{cases}
-\label{uk2}
-\end{equation}
-
-\begin{equation}
-U(k) = U(k) + U_{\mathrm{pp}}
-\label{upp}
-\end{equation}
-
-Symulacja cyfrowa algorytmu DMC odbywa się w oparciu o wzory (\ref{YYdUk}--\ref{dukdmc}).
-
-\begin{equation}
-\boldsymbol{Y}^{\mathrm{zad}}(k)=\left[
-\begin{array}{c}
-y^{\mathrm{zad}}(k)\\
-\vdots\\
-y^{\mathrm{zad}}(k)
-\end{array}
-\right] \
-\boldsymbol{U}(k)=\left[
-\begin{array}{c}
-y(k)\\
-\vdots\\
-y(k)
-\end{array}
-\right] \
-\triangle \boldsymbol{U}(k)=\left[
-\begin{array}{c}
-\triangle u(k|k)\\
-\vdots\\
-\triangle u(k+N_{\mathrm{u}}-1|k)
-\end{array}
-\right] \
-\label{YYdUk}
-\end{equation}
-
-\begin{equation}
-\triangle \boldsymbol{U}^{\mathrm{P}}(k)=\left[
-\begin{array}{c}
-\triangle u(k-1)\\
-\vdots\\
-\triangle u(k-(D-1))
-\end{array}
-\right]
-\label{dUp}
-\end{equation}
-
-\begin{equation}
-\boldsymbol{M}=\left[
-\begin{array}
-{cccc}
-s_{1} & 0 & \ldots & 0\\
-s_{2} & s_{1} & \ldots & 0\\
-\vdots & \vdots & \ddots & \vdots\\
-s_{N} & s_{N-1} & \ldots &  s_{N-N_{\mathrm{u}}+1}
-\end{array}
-\right]
-\label{Marray}
-\end{equation}
-
-\begin{equation}
-\boldsymbol{M}^{\mathrm{P}}=\left[
-\begin{array}
-{cccc}
-s_{2} - s_{1} & s_{3} - s_{2} & \ldots & s_{\mathrm{D}} - s_{\mathrm{D-1}}\\
-s_{3} - s_{1} & s_{4} - s_{2} & \ldots & s_{\mathrm{D+1}} - s_{\mathrm{D-1}}\\
-\vdots & \vdots & \ddots & \vdots\\
-s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1}}\\
-\end{array}
-\right]
-\label{MParray}
-\end{equation}
-
-\begin{equation}
-\boldsymbol{Y}^{0}(k) = \boldsymbol{Y}(k) + \boldsymbol{M}^{\mathrm{P}} \triangle \boldsymbol{U}^{\mathrm{P}}(k)
-\label{Y0k}
-\end{equation}
-
-\begin{equation}
-\boldsymbol{K} = (\boldsymbol{M}^{\mathrm{T}} \boldsymbol{M} + \lambda \boldsymbol{I})^{-1} \boldsymbol{M}^{\mathrm{T}}
-\label{Karray}
-\end{equation}
-
-\begin{equation}
-\triangle \boldsymbol{U}(k) = \boldsymbol{K}(\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
-\label{dukdmc}
-\end{equation}
-
-Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z chwili $k$ liczenie ich w dalszych chwilach może być w tym przypadku pominięte. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$ oznaczony tutaj przez $\boldsymbol{K}_1$ - za jego pomocą liczona jest wartość sterowania jedynie w chwili aktualnej:
-
-\begin{equation}
-	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
-\end{equation}
+Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+. Ponieważ są to implementacje identyczne z zastosowanymi podczas Projektu 1 ich objaśnienie zostanie pominięte. Warto tu jedynie zaznaczyć, że w zadaniu laboratoryjnym zmieniły się ograniczenia sygnału sterującego co poskutkowało odpowiednimi zmianami w programach.
 
 \chapter{Podpunkt 5}
+Początkowo ze względu na ograniczenia czasowe zaproponowana została trajektoria składająca się ze skoku o $\triangle U=10$ w chwili $k=40$ oraz skoku o $\triangle U=-5$ w chwili $k=140$. Niestety w tak krótkim czasie układ nie był w stanie się ustabilizować i tym samym chwila drugiego skoku została wydłużona do $k=340$ zaś dane zbierane były do $k=640$.
 
-Tym samym parametry regulatora PID zostały dobrane na podstawie modelu (uzyskanego podczas aproksymacji) przy użyciu następującego fragmentu kodu:
+Zadanie rozpoczęte zostało od próby dobrania parametrów metodą eksperymentalną zgodnie z treścią zadania, pierwszą taką próbę oddaje rys. \ref{R4} gdzie dla regulatora PID ustawiono $K=10$, $T_{\mathrm{i}}=\infty$, $T_{\mathrm{d}}=0$ oraz $T_{\mathrm{s}}=1$.
+
+\begin{figure}[ht]
+\centering
+\input{images/PID1}
+\caption{Aproksymacja dla skoku z punktu pracy o $\triangle U = 10$}
+\label{R4}
+\end{figure}
+Niestety ze względu na bardzo długi czas trwania pojedynczej próby w możliwym do wykorzystania czasie nie było możliwości przeprowadzenia więcej niż 2 dla każdego z regulatorów i tym samym porzucona została metoda eksperymentalna. W jej zastępstwie dla algorytmu DMC dobrano horyzont dynamiki $D$ na podstawie odpowiedzi skokowej, a następnie horyzonty sterowania i predykcji równe horyzontowi dynamiki (co skutkuje modelem o wysokim nakładzie obliczeniowym, ale optymalnym pod względem jakości sterowania). Tak dobrany regulator DMC przetestowany został na obiekcie i wyniki przedstawiono na rys. \ref{R5}.
+
+\begin{figure}[ht]
+\centering
+\input{images/DMC_err_3021_4}
+\caption{Aproksymacja dla skoku z punktu pracy o $\triangle U = 10$}
+\label{R5}
+\end{figure}
+Dla regulatora PID parametry zostały dobrane na podstawie modelu (uzyskanego podczas aproksymacji) przy użyciu następującego fragmentu kodu:
 
 \begin{lstlisting}[style=Matlab-editor]
 s = tf('s');
@@ -221,3 +102,18 @@ sys = K/((s*T1+1)*(s*T2+1))*exp(-Td*s);
 pidtune(sys,'PID');
 \end{lstlisting} 
 
+następnie rozpoczęte zostało jego testowanie na obiekcie niestety ze względu na koniec czasu przewidzianego na laboratorium zebrany został jedynie początek odpowiedzi widoczny na rys. \ref{R6}. W tej sytuacji testowanie regulatora zostało dokończone z wykorzystaniem symulacji obiektu (na podstawie modelu uzyskanego podczas aproksymacji) co przedstawiono na rys. \ref{R7}.
+
+\begin{figure}[ht]
+\centering
+\input{images/PID2}
+\caption{Aproksymacja dla skoku z punktu pracy o $\triangle U = 10$}
+\label{R6}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{images/PIDsim_err_3527}
+\caption{Aproksymacja dla skoku z punktu pracy o $\triangle U = 10$}
+\label{R7}
+\end{figure}
