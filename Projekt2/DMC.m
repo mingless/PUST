@@ -4,10 +4,10 @@ n = 200;
 Yzad(1:n) = 0;
 Z(1:n) = 0;
 Yzad(21:n) = 1;
-Z(61:n) = 1; %zaklocenie skokowe
-% Z(61:n)=sin(linspace(0,10*pi,140)); %zaklocenie sinusoidalne
+% Z(61:n) = 1; %zaklocenie skokowe
+Z(61:n)=sin(linspace(0,10*pi,140)); %zaklocenie sinusoidalne
 pomiar = 1;
-szum = 1; snr = 30; %signal-to-noise ratio
+szum = 0; snr = 30; %signal-to-noise ratio
 
 D=120; Dz=50; %dobrane na podstawie stabilizacji odpowiedzi
 % N=120; Nu=20; lambda=1; %err=7.8482
@@ -90,16 +90,17 @@ for i=11:n
    du=Ke*e-Ku*dup'; %regulator
    if pomiar %regulator nie bierze pod uwage pomiaru zaklocen gdy pomiar=0
        du = du - Kz*dz';
+       for n=Dz:-1:2
+            dz(n)=dz(n-1);
+       end
+       dz(1)=Zpom(i)-Zpom(i-1);
    end
 
    for n=D-1:-1:2 %przesuniecie macierzy dUp i dZ, dodanie nowej wartosci
       dup(n)=dup(n-1);
    end
-   for n=Dz:-1:2
-      dz(n)=dz(n-1);
-   end
    dup(1)=du;
-   dz(1)=Zpom(i)-Zpom(i-1);
+   
 
 
    U(i)=U(i-1)+dup(1); %wyliczenie nowego sterowania
