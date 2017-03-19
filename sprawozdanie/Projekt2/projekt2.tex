@@ -2,166 +2,178 @@
 Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
 
 \chapter{Podpunkt 1}
-Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($U_{\mathrm{pp}}$, $Y_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $U=U_{\mathrm{pp}}=\num{1,5}$, otrzymujemy na wyjściu oczekiwaną przez nas wartość $Y=Y_{\mathrm{pp}}=\num{2,2}$
+Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($U_{\mathrm{pp}}$, $Y_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $U=U_{\mathrm{pp}}=Z=Z_{\mathrm{pp}}=\num{0}$, otrzymujemy na wyjściu oczekiwaną przez nas wartość $Y=Y_{\mathrm{pp}}=\num{0}$
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\input{./images/Z1}
+\caption{Sprawdzenie poprawności punktu pracy}
+\label{Z1}
+\end{figure}
 
 
 \chapter{Podpunkt 2}
-Po uwzględnieniu ograniczeń wartości sygnału sterującego dla reprezentacji odpowiedzi skokowych wybranych zostało sześć różnych wartości zmian sygnału sterującego: od $U_{pp}$ do $U_s$, w chwili $k=20$. Wykres odpowiedzi skokowych zamieszczony został na rys. \ref{Z2multiplesteps}.
+Dla reprezentacji odpowiedzi skokowych wybranych zostało sześć różnych wartości zmian sygnału sterującego dla obu torów od $\triangle U = \num{-0,5}$ do $\triangle U = \num{0,5}$, w chwili $k=%FIXME$. Wykresy odpowiedzi skokowych zamieszczone zostały na rysunkach \ref{Z2a} i \ref{Z2b}.
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\input{./images/Z2multipleinputsteps}
+\caption{Odpowiedź dla skoków sygnału sterującego o $\triangle U = \{\num{-0,5}, \num{-0,3}, \num{-0,1}, \num{0,1}, \num{0,3}, \num{0,5}\}$}
+\label{Z2a}
+\end{figure}
 
-Symulując odpowiedź układu dla różnych wartości sygnału sterującego otrzymujemy charakterystykę statyczną $y(u)$ widoczną na rys. \ref{Z2staticchar}.
+\begin{figure}[ht]
+\centering
+\input{./images/Z2multiplenoisesteps}
+\caption{Odpowiedź dla skoków z punktu pracy o $\triangle U = \{10, 20, 30\}$}
+\label{Z2b}
+\end{figure}
+
+Symulując odpowiedź układu dla różnych wartości sygnału sterującego i zakłócającego otrzymujemy charakterystykę statyczną $y(u,z)$ widoczną na rys. \ref{Z2c}.
+
+\begin{figure}[ht]
+\centering
+\input{./images/Z2staticchar}
+\caption{Charakterystyka statyczna procesu $y(u,z)$}
+\label{Z2c}
+\end{figure}
 
 
-\input{images/Z1}
-
-
-Z odpowiedzi układu wnioskujemy, że zadany model jest samostabilizujący (statyczny), o opóźnieniu $\tau =10$, a jego charakterystyka statyczna jest w bardzo dobrym przybliżeniu liniowa. Obliczona wartość wzmocnienia statycznego procesu to $K=\num{0,7706}$.
+Z odpowiedzi układu wnioskujemy, że zadany model jest %FIXME: uzupełnić odpowiednio %%% , a jego charakterystyka statyczna jest w bardzo dobrym przybliżeniu %FIXME: jaka? Obliczona wartość wzmocnienia statycznego procesu %FIXME: uzupełnić odpowiednio %%%
 
 
 \chapter{Podpunkt 3}
-Na potrzeby algorytmu DMC przekształcona została odpowiedź skokowa dla skoku z punktu pracy o wartość dopuszczoną przez ograniczenia, t.j. dla skoku od $U_{\mathrm{pp}}=\num{1,5}$ do $U^{\mathrm{max}}=\num{2,0}$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys. \ref{Z3step}. Kolejne wartości wyznaczonej odpowiedzi skokowej zadanego modelu zapisane są w pliku \verb+step_responses.txt+.
-\begin{equation}
-S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
-\label{step_norm}
-\end{equation}
-gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu, $\triangle U$ to wartość skoku sygnału sterującego, zaś $S_i$ to kolejne wartości odpowiedzi skokowej wykorzystywanej później przez algorytm DMC.
+Na potrzeby algorytmu DMC wyznaczone zostały odpowiedzi skokowe torów wejście-wejście oraz zakłócenie-wejście, obie odpowiedzi wyznaczono dla skoku jednostkowego, widoczne są odpowiednio na rysunkach \ref{Z3a} oraz \ref{Z3b}.
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\input{./images/Z3inputstep}
+\caption{Odpowiedź skokowa sygnału sterującego}
+\label{Z3a}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./images/Z3noisestep}
+\caption{Odpowiedź skokowa sygnału zakłócającego}
+\label{Z3b}
+\end{figure}
 
 
 \chapter{Podpunkt 4}
-Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+, zaś w plikach \verb+PID_err.m+ oraz \verb+DMC_err.m+ umieszczono funkcje pomocnicze do obliczania wartości błędu.
+Program do symulacji cyfrowej algorytmu DMC (w wersji analitycznej z zakłóceniami) dla symulowanego procesu umieszczony został w pliku \verb+DMC.m+.
 
-Symulacja cyfrowego algorytmu PID odbywa się w oparciu o postać dyskretną
-\begin{equation}
-r_2 = \frac{K T_{\mathrm{d}}}{T_{\mathrm{s}}} \
-r_1 = K \left( \frac{T_{\mathrm{s}}}{2 T_{\mathrm{i}}} - \frac{2 T_{\mathrm{d}}}{T_{\mathrm{s}}} - 1 \right) \
-r_0 = K \left( 1 + \frac{T_{\mathrm{s}}}{2 T_{\mathrm{i}}} + \frac{T_{\mathrm{d}}}{T_{\mathrm{s}}} \right) \\
-\label{r_t}
-\end{equation}
-\begin{equation}
-\triangle U(k) = r_2 e(k-2) + r_1 e(k-1) + r_0 e(k)
-\label{du}
-\end{equation}
-gdzie $e(k)=Y^{\mathrm{zad}}(k) - Y(k)$ to uchyb. We wzorach (\ref{du2}--\ref{upp}) sterowanie jest przycinane zgodnie z ograniczeniami, a następnie przesuwane do punktu pracy.
+Skrypt ten można w skrócie rozbić na następujące elementy:
 
-\begin{equation}
-\triangle U(k) = 
-\begin{cases}
--\triangle U^{\mathrm{max}} &\quad \textrm{gdy } \ \triangle U(k) \le -\triangle U^{\mathrm{max}} \\
-\triangle U^{\mathrm{max}} &\quad \textrm{gdy } \ \triangle U(k) \ge \triangle U^{\mathrm{max}}  \\
-\triangle U(k) &\quad \textrm{w p.p.}
-\end{cases}
-\label{du2}
-\end{equation}
+%FIXME: Jakieś przykładowe listingi wrzuciłem tylko, zostaw co chcesz i dorzuć kilka linii komentarza.
 
-\begin{equation}
-U(k) = \triangle U(k) + U(k-1)
-\label{uk}
-\end{equation}
+\begin{lstlisting}[style=Matlab-editor]
+%generacja macierzy
+M=zeros(N,Nu);
+for i=1:N
+   for j=1:Nu
+      if (i>=j)
+         M(i,j)=s(i-j+1);
+      end;
+   end;
+end;
 
-\begin{equation}
-U(k) = 
-\begin{cases}
-U^{\mathrm{min}} - U_{\mathrm{pp}} &\quad \textrm{gdy } \ U(k) \le U^{\mathrm{min}}-U_{\mathrm{pp}} \\
-U^{\mathrm{max}}-U_{\mathrm{pp}} &\quad \textrm{gdy } \ U(k) \ge U^{\mathrm{max}}-U_{\mathrm{pp}}  \\
-U(k) &\quad \textrm{w p.p.}
-\end{cases}
-\label{uk2}
-\end{equation}
+Mp=zeros(N,D-1);
+for i=1:N
+   for j=1:D-1
+      if i+j<=D
+         Mp(i,j)=s(i+j)-s(j);
+      else
+         Mp(i,j)=s(D)-s(j);
+      end;
+   end;
+end;
 
-\begin{equation}
-U(k) = U(k) + U_{\mathrm{pp}}
-\label{upp}
-\end{equation}
+Mz=zeros(N,Dz-1);
+for i=1:N
+   for j=1:Dz-1
+      if i+j<=Dz
+         Mz(i,j)=sz(i+j)-sz(j);
+      else
+         Mz(i,j)=sz(Dz)-sz(j);
+      end;
+   end;
+end;
+Mz = [sz(1:N)' Mz];
+\end{lstlisting} 
 
-Symulacja cyfrowa algorytmu DMC odbywa się w oparciu o wzory (\ref{YYdUk}--\ref{dukdmc}).
+\begin{lstlisting}[style=Matlab-editor]
+%przeksztalcanie wyliczonych macierzy do potrzebnych nam parametrow
 
-\begin{equation}
-\boldsymbol{Y}^{\mathrm{zad}}(k)=\left[
-\begin{array}{c}
-y^{\mathrm{zad}}(k)\\
-\vdots\\
-y^{\mathrm{zad}}(k)
-\end{array}
-\right] \
-\boldsymbol{U}(k)=\left[
-\begin{array}{c}
-y(k)\\
-\vdots\\
-y(k)
-\end{array}
-\right] \
-\triangle \boldsymbol{U}(k)=\left[
-\begin{array}{c}
-\triangle u(k|k)\\
-\vdots\\
-\triangle u(k+N_{\mathrm{u}}-1|k)
-\end{array}
-\right] \
-\label{YYdUk}
-\end{equation}
+K=((M'*M+lambda*eye(Nu))^-1)*M';
+Ku=K(1,:)*Mp;
+Kz=K(1,:)*Mz;
+Ke=sum(K(1,:));
+\end{lstlisting}
 
-\begin{equation}
-\triangle \boldsymbol{U}^{\mathrm{P}}(k)=\left[
-\begin{array}{c}
-\triangle u(k-1)\\
-\vdots\\
-\triangle u(k-(D-1))
-\end{array}
-\right]
-\label{dUp}
-\end{equation}
+\begin{lstlisting}[style=Matlab-editor]
+%glowna petla
+Zpom = Z;
+if szum
+    Zpom = awgn(Zpom,snr); %dodaje bialy szum gaussowski o zadanym stosunku
+                          %sygna³u do szumu (SNR)
+end
+for i=11:n
 
-\begin{equation}
-\boldsymbol{M}=\left[
-\begin{array}
-{cccc}
-s_{1} & 0 & \ldots & 0\\
-s_{2} & s_{1} & \ldots & 0\\
-\vdots & \vdots & \ddots & \vdots\\
-s_{N} & s_{N-1} & \ldots &  s_{N-N_{\mathrm{u}}+1}
-\end{array}
-\right]
-\label{Marray}
-\end{equation}
+   Y(i)=symulacja_obiektu2y(U(i-5), U(i-6), Z(i-3), Z(i-4), Y(i-1), Y(i-2));
 
-\begin{equation}
-\boldsymbol{M}^{\mathrm{P}}=\left[
-\begin{array}
-{cccc}
-s_{2} - s_{1} & s_{3} - s_{2} & \ldots & s_{\mathrm{D}} - s_{\mathrm{D-1}}\\
-s_{3} - s_{1} & s_{4} - s_{2} & \ldots & s_{\mathrm{D+1}} - s_{\mathrm{D-1}}\\
-\vdots & \vdots & \ddots & \vdots\\
-s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots & s_{\mathrm{N+D-1}} - s_{\mathrm{D-1}}\\
-\end{array}
-\right]
-\label{MParray}
-\end{equation}
+   e=Yzad(i)-Y(i); %uchyb
+   err = err + e^2;
 
-\begin{equation}
-\boldsymbol{Y}^{0}(k) = \boldsymbol{Y}(k) + \boldsymbol{M}^{\mathrm{P}} \triangle \boldsymbol{U}^{\mathrm{P}}(k)
-\label{Y0k}
-\end{equation}
+   du=Ke*e-Ku*dup'; %regulator
+   if pomiar %regulator nie bierze pod uwage pomiaru zaklocen gdy pomiar=0
+       du = du - Kz*dz';
+   end
 
-\begin{equation}
-\boldsymbol{K} = (\boldsymbol{M}^{\mathrm{T}} \boldsymbol{M} + \lambda \boldsymbol{I})^{-1} \boldsymbol{M}^{\mathrm{T}}
-\label{Karray}
-\end{equation}
+   for n=D-1:-1:2 %przesuniecie macierzy dUp i dZ, dodanie nowej wartosci
+      dup(n)=dup(n-1);
+   end
+   for n=Dz:-1:2
+      dz(n)=dz(n-1);
+   end
+   dup(1)=du;
+   dz(1)=Zpom(i)-Zpom(i-1);
 
-\begin{equation}
-\triangle \boldsymbol{U}(k) = \boldsymbol{K}(\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
-\label{dukdmc}
-\end{equation}
 
-Ponieważ w zadanym przypadku do regulacji wykorzystywane są jedynie sygnały z chwili $k$ liczenie ich w dalszych chwilach może być w tym przypadku pominięte. Dla przyspieszenia działania symulacji używany jest więc tylko pierwszy wiersz macierzy $\boldsymbol{K}$ oznaczony tutaj przez $\boldsymbol{K}_1$ - za jego pomocą liczona jest wartość sterowania jedynie w chwili aktualnej:
+   U(i)=U(i-1)+dup(1); %wyliczenie nowego sterowania
 
-\begin{equation}
-	\triangle u(k|k) = \boldsymbol{K}_1 (\boldsymbol{Y}^{\mathrm{zad}}(k) - \boldsymbol{Y}^{0}(k))
-\end{equation}
+
+end
+\end{lstlisting}
+
+%FIXME: Tu opisz jak wybrałeś "wybrane wyniki symulacji" i co z tego wynika etc.
+
+\begin{figure}[ht]
+\centering
+\input{./images/Z4N25Nu8L0_05}
+\caption{}
+\label{Z4a}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\input{./images/Z4N25Nu8L1}
+\caption{}
+\label{Z4b}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\input{./images/Z4N25Nu20L1}
+\caption{}
+\label{Z4c}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\input{./images/Z4N120Nu20L1}
+\caption{}
+\label{Z4d}
+\end{figure}
+
+%TODO: Za 5 i 6 na razie się w ogóle nie zabierałem.
 
 \chapter{Podpunkt 5}
 Wybrane przez nas regulatory oceniano jakościowo na podstawie przebiegów - preferowane były przebiegi odpowiednio gładkie, bez wyraźnych oscylacji oraz z niewielkim, bądź niewystępującym przeregulowaniem, które były bliskie do zadanego przebiegu - oraz ilościowo, zgodnie z zadanym wskaźnikiem jakości regulacji
@@ -173,10 +185,19 @@ gdzie za koniec symulacji przyjęto $k_{\mathrm{konc}}=3000$. Wartości wyjść 
 
 Początkowe parametry regulatora PID uzyskano metodą Zieglera-Nicholsa, a następnie sprawdzano ich otoczenie i potwierdzono ich jakość. Dla regulatora DMC wybrano parametr $D=120$ oraz początkowe parametry $N=180$, $N_{\mathrm{u}}=180$, $\lambda=1$, a następnie kolejno zmniejszano je, aż do uzyskania zadowalających przebiegów.
 
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\input{./images/Z5bezpomiaru}
+\caption{}
+\label{Z5a}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\input{./images/Z5pomiar}
+\caption{}
+\label{Z5b}
+\end{figure}
 
-
-\input{images/Z1}
 
 \chapter{Podpunkt 6}
 Optymalizacja wskaźnika jakości została przeprowadzona przy użyciu skryptu zamieszczonego w pliku \verb+param_optimizer.m+, do optymalizacji globalnej wykorzystuje on funkcję \verb+ga+(algorytm genetyczny). Przy jego użyciu zmodyfikowane jednak zostały zadane wartości wyjściowe - wydłużono czasy między skokami. Bez zrobienia tego, przy symulacji regulatora z otrzymanymi parametrami układ wpadał w znaczące oscylacje - priorytetyzowane okazywało się wtedy jak najszybsze przejście do nowej wartości ze skoku ponad wygładzenie sygnału ustalonego. Wydłużenie czasów pomaga tego uniknąć, choć niejakie oscylacje nadal są widoczne w zoptymalizowanym regulatorze PID.
@@ -199,8 +220,15 @@ a dla regulatora DMC przy parametrze $D=120$:
 
 Dla przejrzystości wykresów zoptymalizowanych regulatorów przedstawiono na nich symulację przy przebiegu czasowym wartości zadanych wziętym z poprzedniego zadania, bez wydłużenia okresów między kolejnymi skokami.
 
-\input{images/Z1}
-
-\input{images/Z1}
-
-\input{images/Z1}
+\begin{figure}[ht]
+\centering
+\input{./images/Z6bezpomiaru}
+\caption{Odpowiedź dla skoków z punktu pracy o $\triangle U = \{10, 20, 30\}$}
+\label{Z6a}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\input{./images/Z6pomiar}
+\caption{Odpowiedź dla skoków z punktu pracy o $\triangle U = \{10, 20, 30\}$}
+\label{Z6b}
+\end{figure}
