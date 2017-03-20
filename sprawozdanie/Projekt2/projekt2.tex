@@ -39,7 +39,9 @@ Symulując odpowiedź układu dla różnych wartości sygnału sterującego i za
 \end{figure}
 
 
-Z otrzymanych wykresów można zauważyć, że charakterystyka statyczna otrzymanego obiektu jest liniowa. Opóźnienie obiektu na torze skoku sterowania wynosi $ \num{4} $, a na torze skoku zakłóceń $ \num{2} $. Dodatkowo widzimy, że czas stabilizacji po skoku zakłóceń jest znacznie mniejszy niż po skoku sterowania. Stosując wzory
+Z otrzymanych wykresów można zauważyć, że charakterystyka statyczna otrzymanego obiektu jest liniowa. Na obu torach jest to układ dynamicznie samostabilizujący się, a jego opóźnienie wynosi $ \num{4} $ przy skoku sterowania oraz $ \num{2} $ przy skoku zakłóceń. Dodatkowo widzimy, że czas stabilizacji na drugim z wymienionych torów jest znacznie mniejszy niż po skoku sterowania. 
+
+Stosując wzory
 \begin{equation}
 K = \frac{ \triangle Y }{ \triangle U},\quad K_{\mathrm{z}} = \frac{\triangle Y}{\triangle Z}
 \end{equation}
@@ -152,18 +154,18 @@ for i=11:n
 end
 \end{lstlisting}
 
-Parametr $ D = \num{120} $ wybrano na podstawie odpowiedzi skokowej. Dalsze parametry ustawiono początkowo na $ N = \num{120} $, $ N_\mathrm{u} = \num{20} $, $ \lambda = \num{1} $, a następnie kolejno je zmniejszano tak długo, jak jeszcze otrzymywaliśmy zadowalające przebiegi i wartości błędów przy odpowiedzi na skok jednostkowy sterowania w chwili $ k = \num{21} $. Kolejne kroki wyznaczania parametrów przedstawiono na poniższych rysunkach. Ostateczne otrzymane wartości to: $ N = \num{25} $, $ N_\mathrm{u} = \num{8} $, $ \lambda = \num{0,05} $
+Parametr $ D = \num{120} $ wybrano na podstawie odpowiedzi skokowej. Dalsze parametry ustawiono początkowo na $ N = \num{120} $, $ N_\mathrm{u} = \num{20} $, $ \lambda = \num{1} $. Następnie kolejno zmieniano ich wartości dla uzyskania jak najmniejszego błędu (jakościowa ocena byłaby ciężka - przebiegi różniły się bardzo nieznacznie). Kolejne kroki wyznaczania parametrów przedstawiono na poniższych rysunkach. Ostateczne otrzymane wartości to: $ N = \num{25} $, $ N_\mathrm{u} = \num{8} $, $ \lambda = \num{0,05} $
 
 \begin{figure}[ht]
 \centering
 \input{./images/Z4N120Nu20L1}
-\caption{$ N = \num{120} $, $ N_\mathrm{u} = \num{20} $, $ \lambda = \num{1} $.\\Błąd $ E = \num{7,8482} $.}
+\caption{$ N = \num{120} $, $ N_\mathrm{u} = \num{20} $, $ \lambda = \num{1} $.\\Błąd $ E = \num{7,8485} $.}
 \label{Z4a}
 \end{figure}
 \begin{figure}[ht]
 \centering
 \input{./images/Z4N25Nu20L1}
-\caption{$ N = \num{25} $, $ N_\mathrm{u} = \num{20} $, $ \lambda = \num{1} $.\\Błąd $ E = \num{7,8485} $.}
+\caption{$ N = \num{25} $, $ N_\mathrm{u} = \num{20} $, $ \lambda = \num{1} $.\\Błąd $ E = \num{7,8482} $.}
 \label{Z4b}
 \end{figure}
 \begin{figure}[ht]
@@ -179,8 +181,6 @@ Parametr $ D = \num{120} $ wybrano na podstawie odpowiedzi skokowej. Dalsze para
 \label{Z4d}
 \end{figure}
 
-%TODO: Za 5 i 6 na razie się w ogóle nie zabierałem.
-
 \chapter{Podpunkt 5}
 W tym zadaniu w symulacji dodaliśmy skok jednostkowy sygnału zakłóceń w chwili $ k = 61 $. Parametr $ D_\mathrm{z} = 50 $ dobrano na podstawie przebiegu odpowiedzi modelu na skok zakłóceń. Na poniższych rysunkach przedstawiono symulację regulatorów bez pomiaru i z pomiarem zakłóceń. Można zauważyć, że dodanie pomiaru wpływa na znaczne zmniejszenie błędu regulacji.
 
@@ -188,14 +188,8 @@ W tym zadaniu w symulacji dodaliśmy skok jednostkowy sygnału zakłóceń w chw
 \begin{figure}[ht]
 \centering
 \input{./images/Z5bezpomiaru}
-\caption{Symulacja regulatora przy skoku jednostkowym zakłóceń bez ich pomiaru.\\Błąd $ E = \num{7,5797} $.}
+\caption{Symulacja regulatora przy skoku jednostkowym zakłóceń.\\Bez pomiaru $ E = \num{7,5797} $, z pomiarem $ E = \num{6,1978} $.}
 \label{Z5a}
-\end{figure}
-\begin{figure}[ht]
-\centering
-\input{./images/Z5pomiar}
-\caption{Symulacja regulatora przy skoku jednostkowym zakłóceń z ich pomiarem.\\Błąd $ E = \num{6,1978} $.}
-\label{Z5b}
 \end{figure}
 
 
@@ -205,36 +199,30 @@ W tym zadaniu od chwili $ k = \num{61} $ na zakłócenie staje się zmienne sinu
 \begin{figure}[ht]
 \centering
 \input{./images/Z6bezpomiaru}
-\caption{Symulacja regulatora przy zakłóceniach zmiennych sinusoidalnie bez ich pomiaru.\\Błąd $ E = \num{28,7563} $.}
+\caption{Symulacja regulatora przy zakłóceniach zmiennych sinusoidalnie.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
 \label{Z6a}
-\end{figure}
-\begin{figure}[ht]
-\centering
-\input{./images/Z6pomiar}
-\caption{Symulacja regulatora przy zakłóceniach zmiennych sinusoidalnie z ich pomiarem.\\Błąd $ E = \num{11,4920} $.}
-\label{Z6b}
 \end{figure}
 
 \chapter{Podpunkt 7}
 Aby zasymulować rzeczywiste błędy pomiarowe, do wektora mierzonach zakłóceń dodano biały szum gaussowski o zróżnicowanych stosunkach sygnału do szumu (SNR). Dodanie ich nastąpiło za pomocą funkcji \verb|awgn()| zawartej w MatLABie.
 
-Dla $ \mathit{SNR} = 30\mathit{dB} $ i $ \mathit{SNR} = 20\mathit{dB} $ wyjście obiektu jest jeszcze stosunkowo gładkie. Zastosowanie pomiaru z $ \mathit{SNR} = 10\mathit{dB} $ skutkuje już jednak znaczącymi odchyleniami od wartości zadanej.
+Dla $ \mathit{SNR} = 30\mathit{dB} $ i $ \mathit{SNR} = 20\mathit{dB} $ wyjście obiektu jest jeszcze stosunkowo gładkie. Zastosowanie pomiaru z $ \mathit{SNR} = 10\mathit{dB} $ skutkuje już jednak znaczącymi odchyleniami od wartości zadanej, gdzie wartość funkcji błędu zaczyna się już zbliżać do błędu dla regulatora bez pomiaru zakłóceń.
 
 \begin{figure}[ht]
 	\centering
 	\input{./images/Z7snr30err6_2434}
-	\caption{Regulacja przy dodaniu do pomiaru szumu gaussowskiego z $ \mathit{SNR} = 30\mathit{dB} $.\\Błąd $ E = \num{6,2434}  $.}
+	\caption{Regulacja przy dodaniu do pomiaru szumu gaussowskiego z $ \mathit{SNR} = 30\mathit{dB} $.\\Bez pomiaru $ E = \num{7,5797} $, z pomiarem $ E = \num{6,2434}  $.}
 	\label{Z7a}
 \end{figure}
 \begin{figure}[ht]
 	\centering
 	\input{./images/Z7snr20err6_3075}
-	\caption{Regulacja przy dodaniu do pomiaru szumu gaussowskiego z $ \mathit{SNR} = 20\mathit{dB} $.\\Błąd $ E = \num{6,3075} $.}
+	\caption{Regulacja przy dodaniu do pomiaru szumu gaussowskiego z $ \mathit{SNR} = 20\mathit{dB} $.\\Bez pomiaru $ E = \num{7,5797} $, z pomiarem $ E = \num{6,3075} $.}
 	\label{Z7b}
 \end{figure}
 \begin{figure}[ht]
 	\centering
 	\input{./images/Z7snr10err6_6888}
-	\caption{Regulacja przy dodaniu do pomiaru szumu gaussowskiego z $ \mathit{SNR} = 10\mathit{dB} $.\\Błąd $ E = \num{6,6888} $. }
+	\caption{Regulacja przy dodaniu do pomiaru szumu gaussowskiego z $ \mathit{SNR} = 10\mathit{dB} $.\\Bez pomiaru $ E = \num{7,5797} $, z pomiarem $ E = \num{6,6888} $. }
 	\label{Z7c}
 \end{figure}

@@ -4,14 +4,14 @@ n = 200;
 Yzad(1:n) = 0;
 Z(1:n) = 0;
 Yzad(21:n) = 1;
-% Z(61:n) = 1; %zaklocenie skokowe
-Z(61:n)=sin(linspace(0,10*pi,140)); %zaklocenie sinusoidalne
+Z(61:n) = 1; %zaklocenie skokowe
+% Z(61:n)=sin(linspace(0,10*pi,140)); %zaklocenie sinusoidalne
 pomiar = 1;
 szum = 0; snr = 30; %signal-to-noise ratio
 
 D=120; Dz=50; %dobrane na podstawie stabilizacji odpowiedzi
-% N=120; Nu=20; lambda=1; %err=7.8482
-% N=25; Nu=20; lambda=1; %err=7.8485    kolejne kroki dobierania
+% N=120; Nu=20; lambda=1; %err=7.8485
+% N=25; Nu=20; lambda=1; %err=7.8482    kolejne kroki dobierania
 % N=25; Nu=8; lambda=1; %err=7.7889
 N=25; Nu=8; lambda=0.05; %err=5.9223, eksperymentalnie
 
