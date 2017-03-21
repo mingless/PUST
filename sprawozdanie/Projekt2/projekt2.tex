@@ -2,7 +2,7 @@
 Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
 
 \chapter{Podpunkt 1}
-Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($U_{\mathrm{pp}}$, $Y_{\mathrm{pp}}$, $Z_{\mathrm{pp}})$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $U=U_{\mathrm{pp}}=0$ i $Z=Z_{\mathrm{pp}}=\num{0}$, otrzymujemy na wyjściu oczekiwaną przez nas wartość $Y=Y_{\mathrm{pp}}=\num{0}$
+Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($U_{\mathrm{pp}}$, $Y_{\mathrm{pp}}$, $Z_{\mathrm{pp}})$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $U=U_{\mathrm{pp}}=0$ i $Z=Z_{\mathrm{pp}}=\num{0}$, otrzymujemy na wyjściu oczekiwaną przez nas wartość $Y=Y_{\mathrm{pp}}=\num{0}$.
 
 \begin{figure}[ht]
 \centering
@@ -39,7 +39,7 @@ Symulując odpowiedź układu dla różnych wartości sygnału sterującego i za
 \end{figure}
 
 
-Z otrzymanych wykresów można zauważyć, że charakterystyka statyczna otrzymanego obiektu jest liniowa. Na obu torach jest to układ dynamicznie samostabilizujący się, a jego opóźnienie wynosi $ \num{4} $ przy skoku sterowania oraz $ \num{2} $ przy skoku zakłóceń. Dodatkowo widzimy, że czas stabilizacji na drugim z wymienionych torów jest znacznie mniejszy niż po skoku sterowania. 
+Z otrzymanych wykresów można zauważyć, że charakterystyka statyczna otrzymanego obiektu jest liniowa. Na obu torach jest to układ dynamicznie samostabilizujący się, a jego opóźnienie wynosi $ \num{4} $ przy skoku sterowania oraz $ \num{2} $ przy skoku zakłóceń. Dodatkowo widzimy, że czas stabilizacji na drugim z wymienionych torów jest znacznie mniejszy niż po skoku sterowania.
 
 Stosując wzory
 \begin{equation}
@@ -204,7 +204,7 @@ W tym zadaniu od chwili $ k = \num{61} $ na zakłócenie staje się zmienne sinu
 \end{figure}
 
 \chapter{Podpunkt 7}
-Aby zasymulować rzeczywiste błędy pomiarowe, do wektora mierzonach zakłóceń dodano biały szum gaussowski o zróżnicowanych stosunkach sygnału do szumu (SNR). Dodanie ich nastąpiło za pomocą funkcji \verb|awgn()| zawartej w MatLABie.
+Aby zasymulować rzeczywiste błędy pomiarowe, do wektora mierzonach zakłóceń dodano biały szum gaussowski o zróżnicowanych stosunkach sygnału do szumu (SNR). Dodanie ich nastąpiło za pomocą funkcji \verb|awgn()| zawartej w MATLABie.
 
 Dla $ \mathit{SNR} = 30\mathit{dB} $ i $ \mathit{SNR} = 20\mathit{dB} $ wyjście obiektu jest jeszcze stosunkowo gładkie. Zastosowanie pomiaru z $ \mathit{SNR} = 10\mathit{dB} $ skutkuje już jednak znaczącymi odchyleniami od wartości zadanej, gdzie wartość funkcji błędu zaczyna się już zbliżać do błędu dla regulatora bez pomiaru zakłóceń.
 
