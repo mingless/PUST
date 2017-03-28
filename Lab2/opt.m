@@ -20,8 +20,8 @@ for it = 12:12
     % Yzad(1:300) = 0;
     % Yzad(50:300) = 0.5;
     % Yzad(100:300) = 1;
-    s = fscanf(fopen('skokz30_2.txt', 'r'), '%f', [1 inf]);
-    s = (s-33.2)/10;
+    s = fscanf(fopen('sims/skokz30_2.txt', 'r'), '%f', [1 inf]);
+    s = (s-33.2)/30;
     fclose('all');
     data(1:300) = 0;
     data(delay+3:300) = 1;  %Od pewnego momentu zaczynalo brakowac pomiarow 

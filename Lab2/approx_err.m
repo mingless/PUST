@@ -6,8 +6,8 @@ global delay
 % Y(1:300) = 0;
 % Y(50:300) = 0.5;
 % Y(100:300) = 1;
-s = fscanf(fopen('skokz30_2.txt', 'r'), '%f', [1 inf]);
-s = (s-33.2)/10;
+s = fscanf(fopen('sims/skokz30_2.txt', 'r'), '%f', [1 inf]);
+s = (s-33.2)/30;
 fclose('all');
 % delay = 3;
 data(1:300) = 0;
