@@ -30,11 +30,11 @@ Yzad(51:n) = Ypp + 3;
 pomiar = 0;
 szum = 0; snr = 0; %signal-to-noise ratio
 
-D=280; Dz=280; %dobrane na podstawie stabilizacji odpowiedzi
+D=300; Dz=300; %dobrane na podstawie stabilizacji odpowiedzi
 % N=120; Nu=20; lambda=1; %err=7.8485
 % N=25; Nu=20; lambda=1; %err=7.8482    kolejne kroki dobierania
 % N=25; Nu=8; lambda=1; %err=7.7889
-N=280; Nu=280; lambda=1; %err=5.9223, eksperymentalnie
+N=300; Nu=300; lambda=1; %err=5.9223, eksperymentalnie
 
 
 
@@ -110,7 +110,7 @@ if szum
 end
 for i=31:n
    %TODO: ZMIENIC NA MODEL Z ZAKLOCENIEM
-   Y(i)=[U(i-delay-1) U(i-delay-2) Y(i-1) Y(i-2)] * b;
+   Y(i)=[U(i-delay-1)+Z(i-delay-1)/3 U(i-delay-2)+Z(i-delay-2)/3 Y(i-1) Y(i-2)] * b;
 
    e=Yzad(i)-Y(i); %uchyb
    err = err + e^2;
