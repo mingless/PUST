@@ -28,7 +28,7 @@ $0 \le G1(k) \le 100$
 \chapter{Podpunkt 1}
 Sprawdzenie możliwości sterowania i pomiaru w komunikacji ze stanowiskiem odbyło się poprzez wysłanie do stanowiska kilku różnych wartości sterowania i zaobserwowanie odpowiedniej odpowiedzi stanowiska oraz zmian w napływających danych.
 
-Pomiar wartości temperatury w punkcie pracy odbył się zgodnie z poleceniem poprzez zadanie wartości sygnałów $W1$, $G1$, a następnie zarejestrowanie wartości sygnału $T1$ po ustabilizowaniu się układu. Warto w tym momencie zauważyć, że początkowo układ bardzo silnie oscylował wokół punktu pracy oraz w bardzo niewielkim stopniu reagował na sterowanie, dopiero po kilkudziesięciu minutach od rozpoczęcia laboratorium udało się zidentyfikować jako przyczynę tego zachowania okno otwarte w bezpośrednim sąsiedztwie układu. Po zamknięciu okna temperatura zarejestrowana w punkcie pracy to $T1=\num{33,2}$.
+Pomiar wartości temperatury w punkcie pracy odbył się zgodnie z poleceniem poprzez zadanie wartości sygnałów $W1$, $G1$, a następnie zarejestrowanie wartości sygnału $T1$ po ustabilizowaniu się układu. Warto w tym momencie zauważyć, że początkowo układ silnie oscylował wokół punktu pracy oraz dla kolejnego zadania początkowo nie byliśmy w stanie zaobserwować wyraźnej odpowiedzi skokowej przy pierwszym ze sprawdzanych skoków. Dopiero po kilkudziesięciu minutach od rozpoczęcia laboratorium udało się zidentyfikować jako przyczynę tego zachowania okno otwarte w bezpośrednim sąsiedztwie układu. Po zamknięciu okna temperatura zarejestrowana w punkcie pracy, wyśrodkowana z kilku pomiarów to $T1=\num{33,2}$.
 
 Na rys. \ref{R1} przestawiono stabilizację układu w punkcie pracy.
 
@@ -40,116 +40,89 @@ Na rys. \ref{R1} przestawiono stabilizację układu w punkcie pracy.
 \end{figure}
 
 \chapter{Podpunkt 2}
-Odpowiedzi skokowe toru zakłócenie-wyjście zbadane zostały dla trzech wartości skoku, zgodnie z zaleceniem wybrano wartości: $\triangle z = \{10, 20, 30\}$, w chwili $k=\num{41}$. Na rys. \ref{R1} zamieszczono wyznaczone odpowiedzi.
+Odpowiedzi skokowe toru zakłócenie-wyjście zbadane zostały dla trzech wartości skoku. Zgodnie z zaleceniem wybrano wartości: $\triangle Z = \{10, 20, 30\}$. Na rys. \ref{R2} zamieszczono wyznaczone odpowiedzi dla skoku pojawiającego się w chwili $k=\num{0}$.
 
 \begin{figure}[ht]
 \centering
 \input{images/Z2}
-\caption{Odpowiedź dla skoków zakłócenia z punktu pracy o $\triangle z = \{10, 20, 30\}$}
+\caption{Odpowiedź dla skoków zakłócenia z punktu pracy o $\triangle Z = \{10, 20, 30\}$}
 \label{R2}
 \end{figure}
 
 Różnice w wartościach przed wykonaniem samego skoku (które to powinny przyjmować wartość $U_{\mathrm{pp}}$) wynikają najprawdopodbniej z niedokładnego schłodzenia przez nas obiektu.
 
-Obliczając wzmocnienie statyczne dla odpowiedzi skokowej na podstawie wzoru:
+Obliczając wzmocnienie statyczne dla odpowiedzi układu na skok zakłócenia na podstawie wzoru:
 \begin{equation}
-K=\frac{Y_{\mathrm{konc}}-Y_{\mathrm{pp}}}{\triangle U}
+K=\frac{Y_{\mathrm{konc}}-Y_{\mathrm{pp}}}{\triangle Z}
 \end{equation}
-dostajemy $K_{\mathrm{z}}=\num{0}$.
-
-Wyznaczone wzmocnienia są TODO: Jakie? dla różnych skoków, warto też zauważyć, że temperatura ani przed skokiem, ani po stabilizacji nie przyjmuje stałej wartości, a jedynie oscyluje w ograniczonym przedziale. Wynikająca z wyboru punktu pracy oraz punktu stabilizacji niepewność wyznaczonych wzmocnień wynosi ok. $\pm \num{0,01}$ (wyznaczona jako różnica między wartościami skrajnymi).
+przy wykorzystaniu wartości ze skoku o $ \triangle Z = 30 $ dostajemy $K_{\mathrm{z}} \approx \num{0.095}$.
 
 
 \chapter{Podpunkt 3}
-Na potrzeby algorytmu DMC pobrano i znormalizowano odpowiedzi skokowe dla obu torów sygnału. Skok sterowania wykonano z punktu pracy o $\triangle U = 10$, zaś skok zakłócenia z punktu pracy o $\triangle z = 30$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys. \ref{R3}. Kolejne wartości wyznaczonych odpowiedzi skokowych zadanego modelu zapisane są odpowiednio dla sterowania i zakłócenia w plikach \verb+step_response.txt+ oraz \verb+step_response2.txt+.
+Na potrzeby algorytmu DMC pobrano i znormalizowano odpowiedzi skokowe dla obu torów sygnału. Aproksymacja odpowiedzi skokowej układu została pobrana zgodnie z zaleceniem z poprzedniego ćwiczenia, jest ona zapisana w pliku \verb|step_response.txt|. Do przybliżenia odpowiedź na skok zakłócenia z punktu pracy wykorzystano dane pobrane przy skoku zakłócenia o $\triangle Z = 30$. Do przekształcenia wykorzystany został wzór (\ref{stepz_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys. \ref{R4}. Kolejne wartości wyznaczonej odpowiedzi zapisane są w pliku \verb+step_response2_fixed.txt+.
 \begin{equation}
-S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
-\label{step_norm}
-\end{equation}
-\begin{equation}
-S_i^{\mathrm{z}} = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle z} \textrm{, dla } i=1,\ldots
+S_i^{\mathrm{z}} = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle Z} \textrm{, dla } i=1,\ldots
 \label{stepz_norm}
 \end{equation}
-gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu dla danego toru, $\triangle U$ to wartość skoku sygnału sterującego (odpowiednio dla toru zakłócenia mamy $\triangle z$), zaś $S_i$ oraz $S_i^{\mathrm{z}}$ to kolejne wartości odpowiedzi skokowych odpowiednich torów wykorzystywane później przez algorytm DMC.
+gdzie $S_i^{\mathrm{z}0}$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu dla danego toru, $\triangle Z$ to wartość skoku sygnału sterującego, zaś $S_i^{\mathrm{z}}$ to kolejne wartości odpowiedzi na skok zakłócenia wykorzystywane później przez algorytm DMC.
+
+Trzeba teraz wspomnieć o popełnionej przez nas początkowo pomyłce. Przy pierwotnym wyznaczaniu odpowiedzi na skok zakłócenia omyłkowo zastosowano błędną wartość $ \triangle Z = 10 $, przez co skok ten modeluje zakłócenie o trzykrotnie większym wzmocnieniu zakłócenia niż obiekt rzeczywisty. Przedstawiono go na wykresie \ref{R6}, sama odpowiedź zapisana jest w pliku \verb|step_response2.txt|, a efekty błędnych odpowiedzi widać w dalszych zadaniach przy próbie sterowania regulatorem DMC.
 
 \begin{figure}[ht]
 \centering
 \input{images/Z3step}
-\caption{Aproksymacja dla skoku sterowania z punktu pracy o $\triangle U = 10$}
+\caption{Aproksymacja modelu dla wybranego skoku zakłóceń}
 \label{R3}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{images/Z3dmcno}
-\caption{Porównanie aproksymacji z odpowiedzią rzeczywistą dla skoku z punktu pracy o $\triangle U = 10$}
+\caption{Zamodelowana, poprawna odpowiedź obiektu na skok zakłócenia}
 \label{R4}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{images/Z3dmcin}
-\caption{Porównanie aproksymacji z odpowiedzią rzeczywistą dla skoku z punktu pracy o $\triangle U = 10$}
+\caption{Zamodelowana odpowiedź obiektu na skok sterowania}
 \label{R5}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{images/Z3dmcbno}
-\caption{Porównanie aproksymacji z odpowiedzią rzeczywistą dla skoku z punktu pracy o $\triangle U = 10$}
+\caption{Błędna zamodelowana odpowiedź obiektu na skok zakłócenia}
 \label{R6}
 \end{figure}
 
-Optymalizacja przeprowadzona została początkowo przy użyciu metody \verb+ga+ wykorzystującej algorytm genetyczny jednakże ze względu na otrzymywanie bardzo niestabilnych rozwiązań zastosowaliśmy ostatecznie metodę \verb+fmincon+ z parametrami początkowymi $[\num{0,5} ~ 20 ~ 25]$. Wartości parametrów początkowych zostały oszacowane na podstawie poprzednich wyników uzyskanych za pomocą algorytmu genetycznego. Funkcja ta została wykorzystana w skrypcie do optymalizacji parametrów $K$, $T_1$ oraz $T_2$, zaś parametr $T_{\mathrm{D}}$ był inkrementowany w kolejnych iteracjach testów.
+Optymalizacja przeprowadzona została przy użyciu metody \verb+fmincon+ z parametrami początkowymi $[\num{0,5} ~ 20 ~ 25]$. Skrypt wykorzystywany do optymalizacji jest zapisany w pliku \verb|opt.m| i jest on praktycznie identyczny do tego stosowanego w poprzednim ćwiczeniu. Wzięte też z niego został przybliżony rząd wielkości losowanych parametrów początkowych.
 
-Ostatecznie najlepszy wynik otrzymany został dla $T_{\mathrm{D}}=$, $K=\num{}$, $T_1=\num{}$, $T_2=\num{}$ (gdzie przez najlepszy rozumiany jest wynik minimalizujący sumę kwadratów błędów dla kolejnych elementów odpowiedzi). Jak widać otrzymaliśmy model z pojedynczą inercją.
+Ostatecznie optymalizując zadane wartości najlepszy wynik otrzymany został dla $T_{\mathrm{D}}=12$, $K=\num{0.0946}$, $T_1=\num{7.0433}$, $T_2=\num{75.3891}$.
 
 \chapter{Podpunkt 4}
-Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+. Ponieważ są to implementacje identyczne z zastosowanymi podczas Projektu 1 ich objaśnienie zostanie pominięte. Warto tu jedynie zaznaczyć, że w zadaniu laboratoryjnym zmieniły się ograniczenia sygnału sterującego co poskutkowało odpowiednimi zmianami w programach.
+Program do symulacji cyfrowej algorytmu DMC zapisany jest w pliku \verb+DMC.m+. Ponieważ jest to skrypt implementacyjnie identyczny z zastosowanymi podczas Projektu 2, jego dokładne objaśnienie zostanie pominięte. Jedyną różnicą jest stosowanie wyjścia i wejścia rzeczywistego obiektu, a także dodanie zmiana ograniczeń na wyjściu sygnału sterowania.
 
 \chapter{Podpunkt 5}
-Początkowo ze względu na ograniczenia czasowe zaproponowana została trajektoria składająca się ze skoku o $\triangle U=10$ w chwili $k=40$ oraz skoku o $\triangle U=-5$ w chwili $k=140$. Niestety w tak krótkim czasie układ nie był w stanie się ustabilizować i tym samym chwila drugiego skoku została wydłużona do $k=340$ zaś dane zbierane były do $k=640$.
+Zadana trajektoria zastosowana w testach to pojedynczy skok o \num{3} z punktu pracy w chwili $ k = 51 $. Dodatkowo dołączone są dwa skoki zakłócenia - z wartości $ Z = 0 $ do $ Z = 25 $ w chwili $ k = 201 $, a następny do $ Z = 10 $ w chwili $ k = 451 $.
 
-Zadanie rozpoczęte zostało od próby dobrania parametrów metodą eksperymentalną zgodnie z treścią zadania, pierwszą taką próbę oddaje rys. \ref{R4} gdzie dla regulatora PID ustawiono $K=10$, $T_{\mathrm{i}}=\infty$, $T_{\mathrm{d}}=0$ oraz $T_{\mathrm{s}}=1$.
+Parametry $ D = 280 $ i $ D_\mathrm{z} = 280 $ regulatora DMC dobrane zostały na podstawie wykresów odpowiedzi skokowych. Wartości kolejnych parametrów $ N = N_\mathrm{u} = 280 $ zostały wybrane jako identyczne do $ D $, gdyż wtedy w teorii powinniśmy otrzymać regulator idealny. Ostatni wybrany parametr to $ \lambda = 1 $.
+
+Jak wspomniano już w podpunkcie nr 3, początkowo popełniono błąd w wyznaczaniu odpowiedzi skokowej i w regulatorze zastosowany został błędny wektor $ s^{\mathrm{z}} $ - jak dla zakłócenia o trzykrotnie większym wzmocnieniu niż rzeczywiste. Widać to na przebiegu \ref{R8}, gdzie regulator odpowiada znacznie zbyt mocno na skok zakłócenia - zmiana temperatury obiektu staje się ujemna przy dodatnim skoku zakłócenia i vice versa, przeciwnie do wyników widzianych przy regulacji bez pomiaru zakłócenia z rys. \ref{R7}.
+
+Pod koniec laboratorium udało nam się zlokalizować błąd, nie zdążyliśmy jednak przeprowadzić testu regulatora z poprawionym modelem zakłócenia.
+
 
 \begin{figure}[ht]
 \centering
-%\input{images/PID1}
-\caption{Pierwsza próba regulacji PID na rzeczywistym obiekcie}
+\input{images/Z5dmcwo}
+\caption{Regulacja DMC na obiekcie bez pomiaru zakłóceń}
 \label{R7}
 \end{figure}
-Niestety ze względu na bardzo długi czas trwania pojedynczej próby w możliwym do wykorzystania czasie nie było możliwości przeprowadzenia więcej niż 2 dla każdego z regulatorów i tym samym porzucona została metoda eksperymentalna. W jej zastępstwie dla algorytmu DMC dobrano horyzont dynamiki $D$ na podstawie odpowiedzi skokowej, a następnie horyzonty sterowania i predykcji równe horyzontowi dynamiki: $D=N=N_{\mathrm{u}}=300$, dodatkowo $\lambda=1$ (skutkuje to modelem o wysokim nakładzie obliczeniowym, ale optymalnym pod względem jakości sterowania). Tak dobrany regulator DMC przetestowany został na obiekcie i wyniki przedstawiono na rys. \ref{R5}.
 
 \begin{figure}[ht]
 \centering
-%\input{images/DMC_err_3021_4}
-\caption{Regulacja DMC rzeczywistego obiektu, błąd $E = 3021$}
+\input{images/Z5dmcw}
+\caption{Regulacja DMC na obiekcie z pomiarem zakłóceń przy zastosowaniu błędnego modelu}
 \label{R8}
-\end{figure}
-Dla regulatora PID parametry zostały dobrane na podstawie modelu (uzyskanego podczas aproksymacji) przy użyciu następującego fragmentu kodu:
-
-\begin{lstlisting}[style=Matlab-editor]
-s = tf('s');
-
-sys = K/((s*T1+1)*(s*T2+1))*exp(-Td*s);
-% wartości T1, T2 oraz Td otrzymano podczas optymalizacji
-% parametrów modelu wykorzystanego przy aproksymacji
-
-pidtune(sys,'PID');
-\end{lstlisting} 
-
-następnie rozpoczęte zostało jego testowanie na obiekcie niestety ze względu na koniec czasu przewidzianego na laboratorium zebrany został jedynie początek odpowiedzi widoczny na rys. \ref{R6}. W tej sytuacji testowanie regulatora zostało dokończone z wykorzystaniem symulacji obiektu (na podstawie modelu uzyskanego podczas aproksymacji) co przedstawiono na rys. \ref{R7}. Stosowane wtedy parametry PID to: $K=\num{7,19}$, $T_\mathrm{i}=\num{102,861}$, $T_\mathrm{d}=0$ - czyli de facto regulator PI.
-
-\begin{figure}[ht]
-\centering
-%\input{images/PID2}
-\caption{Niedokończona końcowa próba regulacji PID rzeczywistego obiektu}
-\label{R9}
-\end{figure}
-
-\begin{figure}[ht]
-\centering
-%\input{images/PIDsim_err_3527}
-\caption{Regulacja PID dla aproksymowanego modelu dla skoku z punktu pracy, błąd $E = 3527$}
-\label{R10}
 \end{figure}
