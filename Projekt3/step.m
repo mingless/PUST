@@ -122,16 +122,22 @@ S=zeros(2,2,n-20);
 
 U1(20:n) = 1;
 for k = 21:n
-    S(1,1,k) = symulacja_obiektu4y1(U1(k-6), U1(k-7), U2(k-2), U2(k-3), S(1,1,k-1), S(1,1,k-2));
-    S(2,1,k) = symulacja_obiektu4y2(U1(k-2), U1(k-3), U2(k-3), U2(k-4), S(2,1,k-1), S(2,1,k-2));
+    Y1(k) = symulacja_obiektu4y1(U1(k-6), U1(k-7), U2(k-2), U2(k-3), Y1(k-1), Y1(k-2));
+    Y2(k) = symulacja_obiektu4y2(U1(k-2), U1(k-3), U2(k-3), U2(k-4), Y2(k-1), Y2(k-2));
 end
+
+S(1,1,:)=Y1(21:n);
+S(2,1,:)=Y2(21:n);
 
 U1(20:n) = 0;
 U2(20:n) = 1;
 for k = 21:n
-    S(1,2,k) = symulacja_obiektu4y1(U1(k-6), U1(k-7), U2(k-2), U2(k-3), S(1,2,k-1), S(1,2,k-2));
-    S(2,2,k) = symulacja_obiektu4y2(U1(k-2), U1(k-3), U2(k-3), U2(k-4), S(2,2,k-1), S(2,2,k-2));
+    Y1(k) = symulacja_obiektu4y1(U1(k-6), U1(k-7), U2(k-2), U2(k-3), Y1(k-1), Y1(k-2));
+    Y2(k) = symulacja_obiektu4y2(U1(k-2), U1(k-3), U2(k-3), U2(k-4), Y2(k-1), Y2(k-2));
 end
+
+S(1,2,:)=Y1(21:n);
+S(2,2,:)=Y2(21:n);
 
 % odpowiedź skokowa z zad 2 do zad 3
 
