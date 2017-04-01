@@ -30,7 +30,7 @@ Sprawdzenie możliwości sterowania i pomiaru w komunikacji ze stanowiskiem odby
 
 Pomiar wartości temperatury w punkcie pracy odbył się zgodnie z poleceniem poprzez zadanie wartości sygnałów $W1$, $G1$, a następnie zarejestrowanie wartości sygnału $T1$ po ustabilizowaniu się układu. Warto w tym momencie zauważyć, że początkowo układ silnie oscylował wokół punktu pracy oraz dla kolejnego zadania początkowo nie byliśmy w stanie zaobserwować wyraźnej odpowiedzi skokowej przy pierwszym ze sprawdzanych skoków. Dopiero po kilkudziesięciu minutach od rozpoczęcia laboratorium udało się zidentyfikować jako przyczynę tego zachowania okno otwarte w bezpośrednim sąsiedztwie układu. Po zamknięciu okna temperatura zarejestrowana w punkcie pracy, wyśrodkowana z kilku pomiarów to $T1=\num{33,2}$.
 
-Na rys. \ref{R1} przestawiono stabilizację układu w punkcie pracy, widoczny w okolicach $k=100$ skok pokazuje jak przejście obok układu(!) może wpływać na jego zachowanie.
+Na rys. \ref{R1} przestawiono zachowanie układu w punkcie pracy.
 
 \begin{figure}[ht]
 \centering
@@ -101,31 +101,40 @@ Optymalizacja przeprowadzona została przy użyciu metody \verb+fmincon+ z param
 Ostatecznie optymalizując zadane wartości najlepszy wynik otrzymany został dla $T_{\mathrm{D}}=12$, $K=\num{0.0946}$, $T_1=\num{7.0433}$, $T_2=\num{75.3891}$.
 
 \chapter{Podpunkt 4}
-Program do symulacji cyfrowej algorytmu DMC zapisany jest w pliku \verb+DMC.m+. Ponieważ wykorzystany został skrypt z Projektu 2, jego dokładne objaśnienie zostanie pominięte. Dodane zostały do niego w odpowiednich miejscach poniższe linie wynikające z obsługi rzeczywistego obiektu zamiast symulacji oraz dodaniem ograniczeń na sygnał sterujący. Dodane zostało także rysowanie wykresu na bieżąco w celu monitorowania pracy obiektu i szybszej korekcji ewentualnych błędów.
+Program do symulacji cyfrowej algorytmu DMC zapisany jest w pliku \verb+DMC.m+. Ponieważ wykorzystany został skrypt z Projektu 2, jego dokładne objaśnienie zostanie pominięte (dla przejrzystości w listingu został zastąpiony wielokropkami). Dodane zostały do niego w odpowiednich miejscach poniższe linie wynikające z obsługi rzeczywistego obiektu zamiast symulacji oraz dodaniem ograniczeń na sygnał sterujący. Dodane zostało także rysowanie wykresu na bieżąco w celu monitorowania pracy obiektu i szybszej korekcji ewentualnych błędów.
 
 \begin{lstlisting}[style=Matlab-editor]
+% rozpoczęcie komunikacji ze stanowiskiem
+
 addpath('F:\SerialCommunication');
     initSerialControl COM4
 
 % ...
 
+% wysłanie sterowania wentylatora
 sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
              [50, 0, 0, 0, 0, 0]);
 % ...
-        
+
+% odczyt temperatury
 measurements = readMeasurements(1:7);
 Y(i)=measurements(1);
 
 % ...
 
+% wypisanie pomiarów
 disp([measurements(1), U(i), measurements(5), i]);
 
+% wysłanie sterowania i zakłócenia grzałki
 sendControlsToG1AndDisturbance(U(i), Z(i));
 
+% wyświetlenie wykresu i oczekiwanie na kolejną iterację
 stairs(Y);
 pause(0.01);
 
 waitForNewIteration();
+
+% ...
 \end{lstlisting}
 
 \chapter{Podpunkt 5}
