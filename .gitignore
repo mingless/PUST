@@ -4,5 +4,7 @@
 *.toc
 *.pdf
 *.swp
+*.synctex.gz
 other/
+*/m2t/
 sprawozdanie/sprawozdanie_szablon/
