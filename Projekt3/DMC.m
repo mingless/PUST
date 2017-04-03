@@ -29,9 +29,10 @@ Yzad(1+20*ny:ny:n*ny) = 1.4;
 Yzad(1+1000*ny:ny:n*ny)= 0.2;  
 Yzad(1+1500*ny:ny:n*ny)= -0.8; 
 
- Yzad(2+20*ny:ny:n*ny) = 1.4; 
- Yzad(2+150*ny:ny:n*ny)= 0.2;  
- Yzad(2+1200*ny:ny:n*ny)= -0.8; 
+ 
+ Yzad(2+150*ny:ny:n*ny)= -0.3;  
+ Yzad(2+600*ny:ny:n*ny) = 0.9; 
+ Yzad(2+1200*ny:ny:n*ny)= -0.7; 
 
  
 
