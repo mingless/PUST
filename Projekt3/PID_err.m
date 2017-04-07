@@ -1,5 +1,4 @@
-close all;
-clear all;
+function err = PID_err(param)
 
 n = 1200;
 Yzad(1:2,1:n)=0;
@@ -25,17 +24,13 @@ err = 0;
 %Eksperymentalnie
 
 
-% K(1)=1.1; Ti(1)=9; Td(1)=0.8; Ts(1)=0.5; 
-% % K(1)=0; Ti(1)=inf; Td(1)=0; Ts(1)=0.5;
-% K(2)=3.45; Ti(2)=9; Td(2)=0.3; Ts(2)=0.5;
+K(1)=param(1); Ti(1)=param(2); Td(1)=param(3); Ts(1)=0.5; 
+% K(1)=0; Ti(1)=inf; Td(1)=0; Ts(1)=0.5;
+K(2)=param(4); Ti(2)=param(5); Td(2)=param(6); Ts(2)=0.5;
 % K(2)=0; Ti(2)=inf; Td(2)=0; Ts(2)=0.5; 
 % K(1)=0; Ti(1)=inf; Td(1)=0; Ts(1)=0.5;
 % K(2)=4.45; Ti(2)=6; Td(2)=0.1; Ts(2)=0.5;
 % K(1)=0.3; Ti(1)=1; Td(1)=0.5; Ts(1)=0.5;
-
-%parametry dobrane z fmincon(@PID_err,[1.1 9 0.8 3.45 9 0.3],[],[],[],[],[0 0 0 0 0 0],[])
-K(1)=1.1576; Ti(1)=12.5191; Td(1)=1.4089; Ts(1)=0.5;
-K(2)=0.8789; Ti(2)=7.9788; Td(2)=0.5366; Ts(2)=0.5;
 e(1:2,1:n)=0;
 
 K=K'; Ti=Ti'; Td=Td'; Ts=Ts';
@@ -58,26 +53,4 @@ end;
 
 err = trace(e'*e) %blad funkcji
 
-figure('Position',  [403 0 620 725]);
-subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
-stairs(U(2,:));
-decimal_comma(gca, 'XY');
-xlabel('k');
-ylabel('u_2');
-subplot('Position', [0.1 0.2138 0.8 0.0855]); %62 at 155
-stairs(U(1,:));
-ylim([-2 2]);
-decimal_comma(gca, 'XY');
-ylabel('u_1');
-subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
-plot(Y(2,:));
-hold on;
-plot(Yzad(2,:));
-decimal_comma(gca, 'XY');
-ylabel('y_2');
-subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
-plot(Y(1,:));
-hold on;
-plot(Yzad(1,:));
-decimal_comma(gca, 'XY');
-ylabel('y_1');
+end

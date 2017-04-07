@@ -15,10 +15,10 @@ ny = length(S(:,1,1));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %trajektorie zadane i parametry - do ustawienia
 
-n = 2000; %dlugosc symulacji
+n = 1200; %dlugosc symulacji
 
 D=100;      %parametry regulatora
-N=100; Nu=100; lambda=1;
+N=100; Nu=4; lambda=0.2;
 
 Yzad(1:n*ny,1) = 0; %init
 
@@ -26,13 +26,13 @@ Yzad(1:n*ny,1) = 0; %init
 %gdzie NY - numer wyjscia, K - czas skoku, YS - wartosc skoku
 
 Yzad(1+20*ny:ny:n*ny) = 1.4; 
-Yzad(1+1000*ny:ny:n*ny)= 0.2;  
-Yzad(1+1500*ny:ny:n*ny)= -0.8; 
+Yzad(1+600*ny:ny:n*ny)= 0.2;  
+Yzad(1+1000*ny:ny:n*ny)= -0.8; 
 
  
  Yzad(2+150*ny:ny:n*ny)= -0.3;  
- Yzad(2+600*ny:ny:n*ny) = 0.9; 
- Yzad(2+1200*ny:ny:n*ny)= -0.7; 
+ Yzad(2+400*ny:ny:n*ny) = 0.9; 
+ Yzad(2+800*ny:ny:n*ny)= -0.7; 
 
  
 
