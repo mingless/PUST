@@ -20,6 +20,9 @@ n = 1200; %dlugosc symulacji
 D=100;      %parametry regulatora
 N=100; Nu=4; lambda=0.2;
 
+szum = 1; snr = 20;
+
+
 Yzad(1:n*ny,1) = 0; %init
 
 %format wpisywania Yzad: Yzad(NY+K*ny:ny:n*ny) = YS
@@ -39,6 +42,7 @@ Yzad(1+1000*ny:ny:n*ny)= -0.8;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Y(1:n*ny,1) = 0; %inicjalizacje pionowych wektorow
+Ypom(1:n*ny,1) = 0;
 U(1:n*nu,1) = 0;
 err = 0;
 
@@ -87,7 +91,14 @@ for i=21:n
    %zamiana indeksowania: Y_N(i-K)=>Y(N+(i-K-1)*ny); U_N(i-K)=>Y(N+(i-K-1)*nu); 
    Y(1+(i-1)*ny) = symulacja_obiektu4y1(U(1+(i-7)*nu), U(1+(i-8)*nu), U(2+(i-3)*nu), U(2+(i-4)*nu), Y(1+(i-2)*ny), Y(1+(i-3)*ny));
    Y(2+(i-1)*ny) = symulacja_obiektu4y2(U(1+(i-3)*nu), U(1+(i-4)*nu), U(2+(i-4)*nu), U(2+(i-5)*nu), Y(2+(i-2)*ny), Y(2+(i-3)*ny));
-   e=Yzad(1+(i-1)*ny:i*ny)-Y(1+(i-1)*ny:i*ny); %uchyb
+   
+   if szum  %dodanie szumu
+       Ypom(1+(i-1)*ny:i*ny) = awgn(Y(1+(i-1)*ny:i*ny),snr);
+   else
+       Ypom(1+(i-1)*ny:i*ny) = Y(1+(i-1)*ny:i*ny);
+   end
+   
+   e=Yzad(1+(i-1)*ny:i*ny)-Ypom(1+(i-1)*ny:i*ny); %uchyb
    err = err + sum(e.^2);
    
    du=Ke*e-Ku*dup; %regulator
@@ -116,15 +127,23 @@ stairs(U(1:nu:n*nu));
 decimal_comma(gca, 'XY');
 ylabel('u_1');
 subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
-plot(Y(2:ny:n*ny));
+ff = plot(Y(2:ny:n*ny));
 hold on;
 plot(Yzad(2:ny:n*ny),':');
+if szum
+    plot(Ypom(2:ny:n*ny));
+    uistack(ff,'top');
+end
 decimal_comma(gca, 'XY');
 ylabel('y_2');
 subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
-plot(Y(1:ny:n*ny));
+ff = plot(Y(1:ny:n*ny));
 hold on;
 plot(Yzad(1:ny:n*ny),':');
+if szum
+    plot(Ypom(1:ny:n*ny));
+    uistack(ff,'top');
+end
 decimal_comma(gca, 'XY');
 ylabel('y_1');
 

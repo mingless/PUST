@@ -1,6 +1,9 @@
 close all;
 clear all;
 
+
+szum = 1; snr = 20;
+
 n = 1200;
 Yzad(1:2,1:n)=0;
 Yzad(1,21:end)=1.4;
@@ -48,8 +51,14 @@ r2 = K.*Td./Ts; r1 = K.*(Ts./(2.*Ti)-2.*Td./Ts - 1); r0 = K.*(1+Ts./(2.*Ti) + Td
 for k=21:n 
      Y(1,k) = symulacja_obiektu4y1(U(1,k-6), U(1,k-7), U(2,k-2), U(2,k-3), Y(1,k-1), Y(1,k-2));
      Y(2,k) = symulacja_obiektu4y2(U(1,k-2), U(1,k-3), U(2,k-3), U(2,k-4), Y(2,k-1), Y(2,k-2));
-    
-     e(:,k)=Yzad(:,k)-Y(:,k); %blad wyjscia
+     
+     if szum %dodanie szumu
+         Ypom(:,k) = awgn(Y(:,k),snr);
+     else
+         Ypom(:,k) = Y(:,k);
+     end
+     
+     e(:,k)=Yzad(:,k)-Ypom(:,k); %blad wyjscia
      
      du = r2.*e(:,k-2)+r1.*e(:,k-1)+r0.*e(:,k);
      
@@ -70,14 +79,22 @@ ylim([-2 2]);
 decimal_comma(gca, 'XY');
 ylabel('u_1');
 subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
-plot(Y(2,:));
+ff = plot(Y(2,:));
 hold on;
 plot(Yzad(2,:));
+if szum
+    plot(Ypom(2,:));
+    uistack(ff,'top');
+end
 decimal_comma(gca, 'XY');
 ylabel('y_2');
 subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
-plot(Y(1,:));
+ff = plot(Y(1,:));
 hold on;
 plot(Yzad(1,:));
+if szum
+    plot(Ypom(1,:));
+    uistack(ff,'top');
+end
 decimal_comma(gca, 'XY');
 ylabel('y_1');
