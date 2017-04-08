@@ -1,26 +1,26 @@
 clear;
 close all;
 global delay;
-fval(1:50) = 0;
+fval(1:30) = 0;
 
-Y1pp = 0;
-Y2pp = 0;
+Y1pp = 35.31;
+Y2pp = 35.94;
 s1 = fscanf(fopen('G1_step_30_T1.txt', 'r'), '%f', [1 inf]);
-s2 = fscanf(fopen('G1_step_30_T3.txt', 'r'), '%f', [1 inf]);
+s2 = fscanf(fopen('G1_step_20_T3.txt', 'r'), '%f', [1 inf]);
 
-s3 = fscanf(fopen('G2_step_30_T1.txt', 'r'), '%f', [1 inf]);
-s4 = fscanf(fopen('G2_step_30_T3.txt', 'r'), '%f', [1 inf]);
+% s3 = fscanf(fopen('G2_step_30_T1.txt', 'r'), '%f', [1 inf]);
+% s4 = fscanf(fopen('G2_step_30_T3.txt', 'r'), '%f', [1 inf]);
 
-s1 = (s1(50:end)-Y1pp)/30;
-s2 = (s2(50:end)-Y2pp)/30;
+s1 = (s1(1:end)-Y1pp)/30;
+s2 = (s2(1:end)-Y2pp)/20;
 
-s3 = (s3(50:end)-Y1pp)/30;
-s4 = (s4(50:end)-Y2pp)/30;
+% s3 = (s3(50:end)-Y1pp)/30;
+% s4 = (s4(50:end)-Y2pp)/30;
 
-for it = 12:12
+for it = 9:9
     delay = it;
 
-    [param, fval(it), flag] = fmincon(@approx_err,[0.5 20 25])
+    [param, fval(it), flag] = fminunc(@approx_err,[0.5 20 25]);
 
     % optymalne param =  [0.284889175853091 6.766718807934197e-11 92.458806630315240]
     % b1 = 0.0031
@@ -34,16 +34,11 @@ for it = 12:12
     % Yzad(50:300) = 0.5;
     % Yzad(100:300) = 1;
     fclose('all');
-    data(1:300) = 0;
-    data(delay+3:300) = 1;  %Od pewnego momentu zaczynalo brakowac pomiarow
-                            %z przeszlosci, zaczelismy wiec przesuwac
-                            %lekko aproksymowana funkcje wraz ze skokiem
-                            %mozna temu bylo zapobiec biorac od poczatku skok
-                            %w znacznie pozniejszej chwili od samego poczatku,
-                            %np w k=100. blad uzyskanej metody jednak nie
-                            %powinien byc znaczacy.
-    Y1(1:300) = s1(50-delay-2:350-delay-3);
-    Y2(1:300) = s2(50-delay-2:350-delay-3);
+    data(1:350) = 0;
+    data(delay+3:350) = 1;
+    
+    Y1(1:350) = s1(50-delay-2:400-delay-3);
+    Y2(1:350) = s2(50-delay-2:400-delay-3);
 
     K = param(1); T1 = param(2); T2 = param(3);
     alp1 = exp(-1/T1);
@@ -59,7 +54,7 @@ for it = 12:12
     plot(Ymod);
     %decimal_comma(gca, 'XY');
     hold on;
-    plot(Y1);
+%     plot(Y1);
     plot(Y2);
     %decimal_comma(gca, 'XY');
 
@@ -75,7 +70,7 @@ for it = 12:12
     plot(Ymod);
     ylabel('y');
     hold on;
-    plot(Y1);
+%     plot(Y1);
     plot(Y2);
     % decimal_comma(gca, 'XY');
 end

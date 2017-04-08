@@ -12,17 +12,17 @@ initSerialControl COM4              % initialise com port
 
 U1pp = 30;
 U2pp = 35;
-Y1pp = 0;
-Y2pp = 0;
+Y1pp = 35.31;
+Y2pp = 35.87;
 
-n = 350;            % długość symulacji
+n = 400;            % długość symulacji
 U1(1:n) = U1pp;     % zaczynamy z U1 punktu pracy
 U2(1:n) = U2pp;     % zaczynamy z U2 punktu pracy
 Y1(1:n) = Y1pp;     % Y1 punktu pracy
 Y2(1:n) = Y2pp;     % Y2 punktu pracy
 
 % skok G1 pomiar T3
-%U1(50:n) = U1pp + 10; % 10 20 30
+U1(50:n) = U1pp; % 10 20 30
 
 %% sending new values of control signals
 %            [W1,W2,W3,W4,G1,G2]
@@ -30,6 +30,7 @@ sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
              [50,50, 0, 0,U1pp,U2pp]);  % new corresponding control values
 
 figure('Position',  [403 0 620 725]);
+i=1;
 while(i<=n)
         %% obtaining measurements
         measurements = readMeasurements(1:7); % read measurements from 1 to 7
@@ -45,43 +46,42 @@ while(i<=n)
 
         subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
         stairs(U2);
-        decimal_comma(gca, 'XY');
         xlabel('k');
         ylabel('u_2');
         subplot('Position', [0.1 0.2138 0.8 0.0855]); %62 at 155
         stairs(U1);
-        decimal_comma(gca, 'XY');
         ylabel('u_1');
         subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
         plot(Y2);
-        decimal_comma(gca, 'XY');
         ylabel('y_2');
         subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
         plot(Y1);
-        decimal_comma(gca, 'XY');
         ylabel('y_1');
         pause(0.01);
 
         %% synchronising with the control process
         waitForNewIteration(); % wait for new batch of measurements to be ready
         i=i+1;
-
 end
 
-dlmwrite('T1pp.txt', Y1, ' ');
-dlmwrite('T3pp.txt', Y2, ' ');
-%dlmwrite('G1_step_10_T3.txt', Y2, ' ');
-%dlmwrite('G1_step_20_T3.txt', Y2, ' ');
-%dlmwrite('G1_step_30_T3.txt', Y2, ' ');
-%dlmwrite('G1_step_30_T1.txt', Y1, ' ');
+% dlmwrite('T1pp.txt', Y1, ' ');
+% dlmwrite('T3pp.txt', Y2, ' ');
+% dlmwrite('G1_step_10_T1.txt', Y1, ' ');
+% dlmwrite('G1_step_10_T3.txt', Y2, ' ');
+
+% dlmwrite('G1_step_20_T1.txt', Y1, ' ');
+% dlmwrite('G1_step_20_T3.txt', Y2, ' ');
+
+% dlmwrite('G1_step_30_T1.txt', Y1, ' ');
+% dlmwrite('G1_step_30_T3.txt', Y2, ' ');
 
 %dlmwrite('G2_step_30_T3.txt', Y2, ' ');
 %dlmwrite('G2_step_30_T1.txt', Y1, ' ');
 
 
-S=zeros(2,2,n-50);
-S(1,1,:)=Y1(51:n);
-S(2,1,:)=Y2(51:n);
+% S=zeros(2,2,n-50);
+% S(1,1,:)=Y1(51:n);
+% S(2,1,:)=Y2(51:n);
 
 % odpowiedź skokowa z zad 2 do zad 3
 

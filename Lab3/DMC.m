@@ -10,7 +10,15 @@ initSerialControl COM4              % initialise com port
 %prawdopodbnie mozna to uproscic korzystajac z cell, ale to komplikuje
 %i spowalnia obliczenia
 
-load('step_responses.mat');
+s11 = fscanf(fopen('s11', 'r'), '%f', [1 inf]);
+s12 = fscanf(fopen('s12', 'r'), '%f', [1 inf]);
+fclose('all');
+S = zeros(2,2,350);
+S(1,1,1:end)=s11;
+S(2,2,1:end)=s11;
+S(1,2,1:end)=s12;
+S(2,1,1:end)=s12;
+
 
 nu = length(S(1,:,1));
 ny = length(S(:,1,1));
@@ -19,35 +27,33 @@ ny = length(S(:,1,1));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %trajektorie zadane i parametry - do ustawienia
 
-n = 700; %dlugosc symulacji
+n = 1000; %dlugosc symulacji
 
-D=100;      %parametry regulatora
-N=100; Nu=100; lambda=1;
+D=350;      %parametry regulatora
+N=350; Nu=350; lambda=1;
 
 U1pp = 30;
 U2pp = 35;
-Y1pp = 0;
-Y2pp = 0;
+Y1pp = 35.31;
+Y2pp = 35.94;
 
-Yzad(1:n*ny,1) = 0; %init
+Yzad(1:ny:n*ny,1) = Y1pp; %init
+Yzad(2:ny:n*ny,1) = Y2pp; %init
 
 %format wpisywania Yzad: Yzad(NY+K*ny:ny:n*ny) = YS
 %gdzie NY - numer wyjscia, K - czas skoku, YS - wartosc skoku
 
-Yzad(1+20*ny:ny:n*ny) = 1.4;
-Yzad(1+1000*ny:ny:n*ny)= 0.2;
-Yzad(1+1500*ny:ny:n*ny)= -0.8;
-
-Yzad(2+20*ny:ny:n*ny) = 1.4;
-Yzad(2+150*ny:ny:n*ny)= 0.2;
-Yzad(2+1200*ny:ny:n*ny)= -0.8;
-
-
+Yzad(1+50*ny:ny:n*ny) = Y1pp + 3;
+Yzad(2+350*ny:ny:n*ny)= Y2pp + 1.5;
+Yzad(1+650*ny:ny:n*ny)= Y1pp - 0.5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Y(1:n*ny,1) = 0; %inicjalizacje pionowych wektorow
-U(1:n*nu,1) = 0;
+Y(1:ny:n*ny,1) = Y1pp; %inicjalizacje pionowych wektorow
+Y(2:ny:n*ny,1) = Y2pp;
+U(1:nu:n*nu,1) = 0;
+U(2:nu:n*nu,1) = 0;
+
 err = 0;
 
 %inicjalizacja macierzy dUp
@@ -60,8 +66,8 @@ dup(1:(D-1)*nu,1)=0;
 M = zeros(N*ny,Nu*nu);
 
 for i=1:N
-    for j=1:Nu
-        if (i>=j)
+  for j=1:Nu
+      if (i>=j)
             M(1+(i-1)*ny:i*ny, 1+(j-1)*nu:j*nu)=S(1:ny,1:nu,i-j+1);
       end; %znajduje miejsce na odpowiednie S_n (ny x nu) i je tam wpisuje
   end;
@@ -69,8 +75,8 @@ end;
 
 Mp=zeros(N*ny,(D-1)*nu);
 for i=1:N
-    for j=1:D-1
-        if i+j<=D
+  for j=1:D-1
+      if i+j<=D
             Mp(1+(i-1)*ny:i*ny, 1+(j-1)*nu:j*nu)=S(1:ny,1:nu,i+j)-S(1:ny,1:nu,j);
       else
           Mp(1+(i-1)*ny:i*ny, 1+(j-1)*nu:j*nu)=S(1:ny,1:nu,D)-S(1:ny,1:nu,j);
@@ -98,33 +104,12 @@ sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
 
 figure('Position',  [403 0 620 725]);
 
-for i=1:n
+for i=2:n
     %% obtaining measurements
     measurements = readMeasurements(1:7); % read measurements from 1 to 7
     Y(1+(i-1)*ny) = measurements(1);
     Y(2+(i-1)*ny) = measurements(3);
-    %% processing of the measurements and new control values calculation
-    disp([measurements(1:3), i]); % process measurements
-
-    %zamiana indeksowania: Y_N(i-K)=>Y(N+(i-K-1)*ny); U_N(i-K)=>Y(N+(i-K-1)*nu);
-    if U(1+(i-1)*nu) > 100
-        U(1+(i-1)*nu) = 100;
-    end
-    if U(2+(i-1)*nu) > 100
-        U(2+(i-1)*nu) = 100;
-    end
-    if U(1+(i-1)*nu) < 0
-        U(1+(i-1)*nu) = 0;
-    end
-    if U(2+(i-1)*nu) < 0
-        U(2+(i-1)*nu) = 0;
-    end
-
-
-    %% sending new values of control signals
-    %            [W1,W2,W3,W4,G1,G2]
-    sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
-                 [50,50, 0, 0,U(1+(i-1)*nu),U2(2+(i-1)*nu)]);  % new corresponding control values
+    
 
     e=Yzad(1+(i-1)*ny:i*ny)-Y(1+(i-1)*ny:i*ny); %uchyb
     err = err + sum(e.^2);
@@ -138,16 +123,44 @@ for i=1:n
     end
     dup(1:nu)=du;
 
+    %% processing of the measurements and new control values calculation
+    disp([measurements(1:3), i]); % process measurements
+    
     U(1+(i-1)*nu:i*nu)=U(1+(i-2)*nu:(i-1)*nu)+dup(1:nu); %wyznaczenie nowego sterowania
+    
+    U1 = U(1+(i-1)*nu) + U1pp;
+    U2 = U(2+(i-1)*nu) + U2pp;
+    
+    %zamiana indeksowania: Y_N(i-K)=>Y(N+(i-K-1)*ny); U_N(i-K)=>Y(N+(i-K-1)*nu);
+    if U1 > 100
+        U1 = 100;
+    end
+    if U2 > 100
+        U2 = 100;
+    end
+    if U1 < 0
+        U1 = 0;
+    end
+    if U2 < 0
+        U2 = 0;
+    end
+
+
+    %% sending new values of control signals
+    %            [W1,W2,W3,W4,G1,G2]
+    sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
+                 [50,50, 0, 0,U1,U2]);  % new corresponding control values
+    
+    
 
 
     subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
-    stairs(U(2:nu:n*nu));
+    stairs(U(2:nu:n*nu)+U2pp);
     decimal_comma(gca, 'XY');
     xlabel('k');
     ylabel('u_2');
     subplot('Position', [0.1 0.2138 0.8 0.0855]); %62 at 155
-    stairs(U(1:nu:n*nu));
+    stairs(U(1:nu:n*nu)+U1pp);
     decimal_comma(gca, 'XY');
     ylabel('u_1');
     subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
@@ -156,6 +169,7 @@ for i=1:n
     plot(Yzad(2:ny:n*ny),':');
     decimal_comma(gca, 'XY');
     ylabel('y_2');
+    hold off;
     subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
     plot(Y(1:ny:n*ny));
     hold on;
@@ -163,6 +177,7 @@ for i=1:n
     decimal_comma(gca, 'XY');
     ylabel('y_1');
     pause(0.01);
+    hold off;
 
     %% synchronising with the control process
     waitForNewIteration(); % wait for new batch of measurements to be ready
