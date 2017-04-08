@@ -4,6 +4,7 @@
 *.toc
 *.pdf
 *.swp
+*.asv
 *.synctex.gz
 other/
 */m2t/

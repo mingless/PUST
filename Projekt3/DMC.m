@@ -1,4 +1,5 @@
 clear all;
+close all;
 
 %zdaje sie dzialac poprawnie
 
@@ -20,7 +21,7 @@ n = 1200; %dlugosc symulacji
 D=100;      %parametry regulatora
 N=100; Nu=4; lambda=0.2;
 
-szum = 0; snr = 20; %dodanie szumu pomiarowego
+szum = 0; snr = 15; %dodanie szumu pomiarowego
 zakl = 1; %dodanie niemierzalne zaklocenie do wyjscia.
 
 Z(1:n*ny,1) = 0; %init
@@ -100,8 +101,7 @@ for i=21:n
    Y(2+(i-1)*ny) = symulacja_obiektu4y2(U(1+(i-3)*nu), U(1+(i-4)*nu), U(2+(i-4)*nu), U(2+(i-5)*nu), Y(2+(i-2)*ny), Y(2+(i-3)*ny));
    
    if zakl
-       Y(1+(i-1)*ny) = Y(1+(i-1)*ny) + Z(1+(i-1)*ny);
-       Y(2+(i-1)*ny) = Y(2+(i-1)*ny) + Z(2+(i-1)*ny);
+       Y(1+(i-1)*ny:i*ny) = Y(1+(i-1)*ny:i*ny) + Z(1+(i-1)*ny:i*ny);
    end
    
    if szum  %dodanie szumu
@@ -128,7 +128,10 @@ end
 
 err
 
-if ~zakl
+if ~zakl %plot tylko z U(1,2) i Y(1,2)
+    if exist('YoldDMC.mat','file')
+        load('YoldDMC.mat');
+    end
     figure('Position',  [403 0 620 725]);
     subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
     stairs(U(2:nu:n*nu));
@@ -143,9 +146,9 @@ if ~zakl
     ff = plot(Y(2:ny:n*ny));
     hold on;
     plot(Yzad(2:ny:n*ny),':');
-    if szum
-        plot(Ypom(2:ny:n*ny));
-        uistack(ff,'top');
+    if szum && exist('YoldDMC.mat','file')
+        plot(YoldDMC(2:ny:n*ny));
+%         uistack(ff,'top');
     end
     decimal_comma(gca, 'XY');
     ylabel('y_2');
@@ -153,13 +156,14 @@ if ~zakl
     ff = plot(Y(1:ny:n*ny));
     hold on;
     plot(Yzad(1:ny:n*ny),':');
-    if szum
-        plot(Ypom(1:ny:n*ny));
-        uistack(ff,'top');
+    if szum && exist('YoldDMC.mat','file')
+        fg = plot(YoldDMC(1:ny:n*ny));
+        legend([ff fg],'Z zak³óceniami','Bez zak³óceñ');
+%         uistack(ff,'top');
     end
     decimal_comma(gca, 'XY');
     ylabel('y_1');
-else
+else %splotuj tez Z(1,2)
     figure('Position',  [403 0 620 935]);
     subplot('Position', [0.1 0.0535 0.8 0.0663]); %62 at 50
     stairs(U(2:nu:n*nu));

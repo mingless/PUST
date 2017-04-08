@@ -3,12 +3,12 @@ clear all;
 
 n = 1200;
 
-szum = 0; snr = 20;
+szum = 0; snr = 15;
 zakl = 1;
 
 Z(1:2,1:n) = 0.0;
-Z(1,301:end)=-0.1;
-Z(2,701:end)=-0.1;
+Z(1,301:end)=0.5;
+Z(2,701:end)=0.5;
 
 
 Ypom(1:2,1:n)=0;
@@ -36,7 +36,7 @@ err = 0;
 
 
 % K(1)=1.1; Ti(1)=9; Td(1)=0.8; Ts(1)=0.5; 
-% % K(1)=0; Ti(1)=inf; Td(1)=0; Ts(1)=0.5;
+% K(1)=0; Ti(1)=inf; Td(1)=0; Ts(1)=0.5;
 % K(2)=3.45; Ti(2)=9; Td(2)=0.3; Ts(2)=0.5;
 % K(2)=0; Ti(2)=inf; Td(2)=0; Ts(2)=0.5; 
 % K(1)=0; Ti(1)=inf; Td(1)=0; Ts(1)=0.5;
@@ -74,12 +74,17 @@ for k=21:n
      
      du = r2.*e(:,k-2)+r1.*e(:,k-1)+r0.*e(:,k);
      
+     %du = du([2 1]); %obrocenie konfiguracji regulatora
+     
      U(:,k)=du(:)+U(:,k-1); 
 end; 
 
 err = trace(e'*e) %blad funkcji
 
 if ~zakl %plot tylko z U(1,2) i Y(1,2)
+    if exist('YoldPID.mat','file')
+        load('YoldPID.mat');
+    end
     figure('Position',  [403 0 620 725]);
     subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
     stairs(U(2,:));
@@ -94,20 +99,22 @@ if ~zakl %plot tylko z U(1,2) i Y(1,2)
     subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
     ff = plot(Y(2,:));
     hold on;
-    plot(Yzad(2,:));
-    if szum
-        plot(Ypom(2,:));
-        uistack(ff,'top');
+    plot(Yzad(2,:),':');
+    if szum && exist('YoldPID.mat','file')
+        plot(YoldPID(2,:));
+%         uistack(ff,'top');
     end
     decimal_comma(gca, 'XY');
     ylabel('y_2');
     subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
     ff = plot(Y(1,:));
     hold on;
-    plot(Yzad(1,:));
-    if szum
-        plot(Ypom(1,:));
-        uistack(ff,'top');
+    plot(Yzad(1,:),':');
+    if szum && exist('YoldPID.mat','file')
+        fg = plot(YoldPID(1,:));
+        legend([ff fg], 'Z zak³óceniami','Bez zak³óceñ');
+%         legend('show');
+%         uistack(ff,'top');
     end
     decimal_comma(gca, 'XY');
     ylabel('y_1');
@@ -135,7 +142,7 @@ else %splotuj tez Z(1,2)
     subplot('Position', [0.1 0.5027 0.8 0.2139]); %200 at 470
     ff = plot(Y(2,:));
     hold on;
-    plot(Yzad(2,:));
+    plot(Yzad(2,:),':');
     if szum
         plot(Ypom(2,:));
         uistack(ff,'top');
@@ -145,7 +152,7 @@ else %splotuj tez Z(1,2)
     subplot('Position', [0.1 0.7594 0.8 0.2139]); %200 at 710
     ff = plot(Y(1,:));
     hold on;
-    plot(Yzad(1,:));
+    plot(Yzad(1,:),':');
     if szum
         plot(Ypom(1,:));
         uistack(ff,'top');
