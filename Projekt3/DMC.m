@@ -20,10 +20,18 @@ n = 1200; %dlugosc symulacji
 D=100;      %parametry regulatora
 N=100; Nu=4; lambda=0.2;
 
-szum = 1; snr = 20;
+szum = 0; snr = 20; %dodanie szumu pomiarowego
+zakl = 1; %dodanie niemierzalne zaklocenie do wyjscia.
+
+Z(1:n*ny,1) = 0; %init
+Yzad(1:n*ny,1) = 0;
 
 
-Yzad(1:n*ny,1) = 0; %init
+%format wpisywania Z: Z(NY+K*ny:ny:n*ny) = ZS
+%gdzie NY - numer wyjscia, K - czas skoku, ZS - wartosc skoku
+Z(1+300*ny:ny:n*ny) = -0.1;
+Z(2+700*ny:ny:n*ny) = -0.1;
+
 
 %format wpisywania Yzad: Yzad(NY+K*ny:ny:n*ny) = YS
 %gdzie NY - numer wyjscia, K - czas skoku, YS - wartosc skoku
@@ -32,10 +40,9 @@ Yzad(1+20*ny:ny:n*ny) = 1.4;
 Yzad(1+600*ny:ny:n*ny)= 0.2;  
 Yzad(1+1000*ny:ny:n*ny)= -0.8; 
 
- 
- Yzad(2+150*ny:ny:n*ny)= -0.3;  
- Yzad(2+400*ny:ny:n*ny) = 0.9; 
- Yzad(2+800*ny:ny:n*ny)= -0.7; 
+Yzad(2+150*ny:ny:n*ny)= -0.3;  
+Yzad(2+400*ny:ny:n*ny) = 0.9; 
+Yzad(2+800*ny:ny:n*ny)= -0.7; 
 
  
 
@@ -92,6 +99,11 @@ for i=21:n
    Y(1+(i-1)*ny) = symulacja_obiektu4y1(U(1+(i-7)*nu), U(1+(i-8)*nu), U(2+(i-3)*nu), U(2+(i-4)*nu), Y(1+(i-2)*ny), Y(1+(i-3)*ny));
    Y(2+(i-1)*ny) = symulacja_obiektu4y2(U(1+(i-3)*nu), U(1+(i-4)*nu), U(2+(i-4)*nu), U(2+(i-5)*nu), Y(2+(i-2)*ny), Y(2+(i-3)*ny));
    
+   if zakl
+       Y(1+(i-1)*ny) = Y(1+(i-1)*ny) + Z(1+(i-1)*ny);
+       Y(2+(i-1)*ny) = Y(2+(i-1)*ny) + Z(2+(i-1)*ny);
+   end
+   
    if szum  %dodanie szumu
        Ypom(1+(i-1)*ny:i*ny) = awgn(Y(1+(i-1)*ny:i*ny),snr);
    else
@@ -116,34 +128,74 @@ end
 
 err
 
-figure('Position',  [403 0 620 725]);
-subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
-stairs(U(2:nu:n*nu));
-decimal_comma(gca, 'XY');
-xlabel('k');
-ylabel('u_2');
-subplot('Position', [0.1 0.2138 0.8 0.0855]); %62 at 155
-stairs(U(1:nu:n*nu));
-decimal_comma(gca, 'XY');
-ylabel('u_1');
-subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
-ff = plot(Y(2:ny:n*ny));
-hold on;
-plot(Yzad(2:ny:n*ny),':');
-if szum
-    plot(Ypom(2:ny:n*ny));
-    uistack(ff,'top');
+if ~zakl
+    figure('Position',  [403 0 620 725]);
+    subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
+    stairs(U(2:nu:n*nu));
+    decimal_comma(gca, 'XY');
+    xlabel('k');
+    ylabel('u_2');
+    subplot('Position', [0.1 0.2138 0.8 0.0855]); %62 at 155
+    stairs(U(1:nu:n*nu));
+    decimal_comma(gca, 'XY');
+    ylabel('u_1');
+    subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
+    ff = plot(Y(2:ny:n*ny));
+    hold on;
+    plot(Yzad(2:ny:n*ny),':');
+    if szum
+        plot(Ypom(2:ny:n*ny));
+        uistack(ff,'top');
+    end
+    decimal_comma(gca, 'XY');
+    ylabel('y_2');
+    subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
+    ff = plot(Y(1:ny:n*ny));
+    hold on;
+    plot(Yzad(1:ny:n*ny),':');
+    if szum
+        plot(Ypom(1:ny:n*ny));
+        uistack(ff,'top');
+    end
+    decimal_comma(gca, 'XY');
+    ylabel('y_1');
+else
+    figure('Position',  [403 0 620 935]);
+    subplot('Position', [0.1 0.0535 0.8 0.0663]); %62 at 50
+    stairs(U(2:nu:n*nu));
+    decimal_comma(gca, 'XY');
+    xlabel('k');
+    ylabel('u_2');
+    subplot('Position', [0.1 0.1658 0.8 0.0663]); %62 at 155
+    stairs(U(1:nu:n*nu));
+    decimal_comma(gca, 'XY');
+    ylabel('u_1');
+    subplot('Position', [0.1 0.2781 0.8 0.0663]); %62 at 50
+    stairs(Z(2:nu:n*nu));
+    decimal_comma(gca, 'XY');
+    ylabel('u_2');
+    subplot('Position', [0.1 0.3904 0.8 0.0663]); %62 at 155
+    stairs(Z(1:nu:n*nu));
+    decimal_comma(gca, 'XY');
+    ylabel('u_1');
+    subplot('Position', [0.1 0.5027 0.8 0.2139]); %200 at 260
+    ff = plot(Y(2:ny:n*ny));
+    hold on;
+    plot(Yzad(2:ny:n*ny),':');
+    if szum
+        plot(Ypom(2:ny:n*ny));
+        uistack(ff,'top');
+    end
+    decimal_comma(gca, 'XY');
+    ylabel('y_2');
+    subplot('Position', [0.1 0.7594 0.8 0.2139]); %200 at 500
+    ff = plot(Y(1:ny:n*ny));
+    hold on;
+    plot(Yzad(1:ny:n*ny),':');
+    if szum
+        plot(Ypom(1:ny:n*ny));
+        uistack(ff,'top');
+    end
+    decimal_comma(gca, 'XY');
+    ylabel('y_1');
 end
-decimal_comma(gca, 'XY');
-ylabel('y_2');
-subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
-ff = plot(Y(1:ny:n*ny));
-hold on;
-plot(Yzad(1:ny:n*ny),':');
-if szum
-    plot(Ypom(1:ny:n*ny));
-    uistack(ff,'top');
-end
-decimal_comma(gca, 'XY');
-ylabel('y_1');
-

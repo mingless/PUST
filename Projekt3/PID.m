@@ -1,10 +1,17 @@
 close all;
 clear all;
 
-
-szum = 1; snr = 20;
-
 n = 1200;
+
+szum = 0; snr = 20;
+zakl = 1;
+
+Z(1:2,1:n) = 0.0;
+Z(1,301:end)=-0.1;
+Z(2,701:end)=-0.1;
+
+
+Ypom(1:2,1:n)=0;
 Yzad(1:2,1:n)=0;
 Yzad(1,21:end)=1.4;
 Yzad(1,601:end)=0.2;
@@ -52,6 +59,11 @@ for k=21:n
      Y(1,k) = symulacja_obiektu4y1(U(1,k-6), U(1,k-7), U(2,k-2), U(2,k-3), Y(1,k-1), Y(1,k-2));
      Y(2,k) = symulacja_obiektu4y2(U(1,k-2), U(1,k-3), U(2,k-3), U(2,k-4), Y(2,k-1), Y(2,k-2));
      
+     if zakl
+         Y(1,k) = Y(1,k) + Z(1,k);
+         Y(2,k) = Y(2,k) + Z(2,k);
+     end
+     
      if szum %dodanie szumu
          Ypom(:,k) = awgn(Y(:,k),snr);
      else
@@ -67,34 +79,78 @@ end;
 
 err = trace(e'*e) %blad funkcji
 
-figure('Position',  [403 0 620 725]);
-subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
-stairs(U(2,:));
-decimal_comma(gca, 'XY');
-xlabel('k');
-ylabel('u_2');
-subplot('Position', [0.1 0.2138 0.8 0.0855]); %62 at 155
-stairs(U(1,:));
-ylim([-2 2]);
-decimal_comma(gca, 'XY');
-ylabel('u_1');
-subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
-ff = plot(Y(2,:));
-hold on;
-plot(Yzad(2,:));
-if szum
-    plot(Ypom(2,:));
-    uistack(ff,'top');
+if ~zakl %plot tylko z U(1,2) i Y(1,2)
+    figure('Position',  [403 0 620 725]);
+    subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
+    stairs(U(2,:));
+    decimal_comma(gca, 'XY');
+    xlabel('k');
+    ylabel('u_2');
+    subplot('Position', [0.1 0.2138 0.8 0.0855]); %62 at 155
+    stairs(U(1,:));
+    % ylim([-5 5]);
+    decimal_comma(gca, 'XY');
+    ylabel('u_1');
+    subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
+    ff = plot(Y(2,:));
+    hold on;
+    plot(Yzad(2,:));
+    if szum
+        plot(Ypom(2,:));
+        uistack(ff,'top');
+    end
+    decimal_comma(gca, 'XY');
+    ylabel('y_2');
+    subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
+    ff = plot(Y(1,:));
+    hold on;
+    plot(Yzad(1,:));
+    if szum
+        plot(Ypom(1,:));
+        uistack(ff,'top');
+    end
+    decimal_comma(gca, 'XY');
+    ylabel('y_1');
+else %splotuj tez Z(1,2)
+    h = figure('Position',  [403 0 620 935]); 
+    subplot('Position', [0.1 0.0535 0.8 0.0663]); %62 at 50
+    stairs(U(2,:));
+    decimal_comma(gca, 'XY');
+    xlabel('k');
+    ylabel('u_2');
+    subplot('Position', [0.1 0.1658 0.8 0.0663]); %62 at 155
+    stairs(U(1,:));
+    % ylim([-5 5]);
+    decimal_comma(gca, 'XY');
+    ylabel('u_1');
+    subplot('Position', [0.1 0.2781 0.8 0.0663]); %62 at 260
+    stairs(Z(2,:));
+    decimal_comma(gca, 'XY');
+    ylabel('z_2');
+    subplot('Position', [0.1 0.3904 0.8 0.0663]); %62 at 365
+    stairs(Z(1,:));
+    % ylim([-5 5]);
+    decimal_comma(gca, 'XY');
+    ylabel('z_1');
+    subplot('Position', [0.1 0.5027 0.8 0.2139]); %200 at 470
+    ff = plot(Y(2,:));
+    hold on;
+    plot(Yzad(2,:));
+    if szum
+        plot(Ypom(2,:));
+        uistack(ff,'top');
+    end
+    decimal_comma(gca, 'XY');
+    ylabel('y_2');
+    subplot('Position', [0.1 0.7594 0.8 0.2139]); %200 at 710
+    ff = plot(Y(1,:));
+    hold on;
+    plot(Yzad(1,:));
+    if szum
+        plot(Ypom(1,:));
+        uistack(ff,'top');
+    end
+    decimal_comma(gca, 'XY');
+    ylabel('y_1');
 end
-decimal_comma(gca, 'XY');
-ylabel('y_2');
-subplot('Position', [0.1 0.6897 0.8 0.2759]); %200 at 500
-ff = plot(Y(1,:));
-hold on;
-plot(Yzad(1,:));
-if szum
-    plot(Ypom(1,:));
-    uistack(ff,'top');
-end
-decimal_comma(gca, 'XY');
-ylabel('y_1');
+    
