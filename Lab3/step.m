@@ -2,7 +2,7 @@ clear all;
 close all;
 
 addpath('F:\SerialCommunication');  % add a path to the functions
-initSerialControl COM4              % initialise com port
+initSerialControl COM17              % initialise com port
 
 % określenie temperatur w punkcie pracy
 % sterowanie:
@@ -12,8 +12,8 @@ initSerialControl COM4              % initialise com port
 
 U1pp = 30;
 U2pp = 35;
-Y1pp = 35.31;
-Y2pp = 35.87;
+Y1pp = 36.18;
+Y2pp = 38.12;
 
 n = 400;            % długość symulacji
 U1(1:n) = U1pp;     % zaczynamy z U1 punktu pracy
@@ -37,7 +37,7 @@ while(i<=n)
         Y1(i)=measurements(1);
         Y2(i)=measurements(3);
         %% processing of the measurements and new control values calculation
-        disp([measurements(1:3), i]); % process measurements
+        disp([measurements([1 2 3]), i]); % process measurements
 
         %% sending new values of control signals
         %            [W1,W2,W3,W4,G1,G2]
@@ -77,6 +77,9 @@ end
 
 %dlmwrite('G2_step_30_T3.txt', Y2, ' ');
 %dlmwrite('G2_step_30_T1.txt', Y1, ' ');
+
+dlmwrite('New_PP1.txt', Y1, ' ');
+dlmwrite('New_PP2.txt', Y2, ' ');
 
 
 % S=zeros(2,2,n-50);
