@@ -5,8 +5,8 @@ fval(1:30) = 0;
 
 Y1pp = 35.31;
 Y2pp = 35.94;
-s1 = fscanf(fopen('G1_step_30_T1.txt', 'r'), '%f', [1 inf]);
-s2 = fscanf(fopen('G1_step_20_T3.txt', 'r'), '%f', [1 inf]);
+s1 = fscanf(fopen('data/G1_step_30_T1.txt', 'r'), '%f', [1 inf]);
+s2 = fscanf(fopen('data/G1_step_20_T3.txt', 'r'), '%f', [1 inf]);
 
 % s3 = fscanf(fopen('G2_step_30_T1.txt', 'r'), '%f', [1 inf]);
 % s4 = fscanf(fopen('G2_step_30_T3.txt', 'r'), '%f', [1 inf]);
@@ -54,8 +54,8 @@ for it = 9:9
     plot(Ymod);
     %decimal_comma(gca, 'XY');
     hold on;
-%     plot(Y1);
-    plot(Y2);
+    plot(Y1);
+%     plot(Y2);
     %decimal_comma(gca, 'XY');
 
     % figure('Position',  [403 246 660 420]);
@@ -70,7 +70,7 @@ for it = 9:9
     plot(Ymod);
     ylabel('y');
     hold on;
-%     plot(Y1);
-    plot(Y2);
+    plot(Y1);
+%     plot(Y2);
     % decimal_comma(gca, 'XY');
 end

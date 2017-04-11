@@ -8,8 +8,8 @@ global delay
 Y1pp = 35.31;
 Y2pp = 35.94;
 
-s1 = fscanf(fopen('G1_step_30_T1.txt', 'r'), '%f', [1 inf]);
-s2 = fscanf(fopen('G1_step_20_T3.txt', 'r'), '%f', [1 inf]);
+s1 = fscanf(fopen('data/G1_step_30_T1.txt', 'r'), '%f', [1 inf]);
+s2 = fscanf(fopen('data/G1_step_20_T3.txt', 'r'), '%f', [1 inf]);
 
 s1 = (s1(1:end)-Y1pp)/30;
 s2 = (s2(1:end)-Y2pp)/20;
@@ -32,6 +32,6 @@ b = [b1 b2 -a1 -a2]';
 
 Ymod = modelout(data,b,delay);
 
-err = sum((Ymod - Y2').^2);
+err = sum((Ymod - Y1').^2);
 
 end
