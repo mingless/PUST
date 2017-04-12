@@ -1,7 +1,7 @@
 Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
 
 \chapter{Podpunkt 1}
-Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($\boldsymbol{U}_{\mathrm{pp}}$, $\boldsymbol{Y}_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $u_1=u_2=y_1=y_2=0$, otrzymujemy na wyjściu oczekiwaną przez nas stałą wartość $y_1=y_2=\num{0}$.
+Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($\boldsymbol{U}_{\mathrm{pp}}$, $\boldsymbol{Y}_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $u_1=u_2=0$, otrzymujemy na wyjściu oczekiwaną przez nas stałą wartość $y_1=y_2=\num{0}$.
 
 \begin{figure}[ht]
 \centering
@@ -28,7 +28,7 @@ Dla reprezentacji odpowiedzi skokowych wybranych zostało sześć różnych wart
 \label{Z2U2}
 \end{figure}
 
-Symulując odpowiedź układu dla różnych wartości sygnałów sterujących otrzymujemy charakterystyki statyczne $y_{i}(u_1,u_2)$ widoczne na rys. \ref{Z2Y1stat} i \ref{Z2Y2stat} (ze względów estetycznych dodane zostało kolorowanie, nie reprezentuje ono żadnych wartości).
+Symulując odpowiedź układu dla różnych wartości sygnałów sterujących otrzymujemy charakterystyki statyczne $y_{i}(u_1,u_2)$ widoczne na rys. \ref{Z2Y1stat} i \ref{Z2Y2stat}.
 
 \begin{figure}[ht]
 \centering
@@ -44,214 +44,319 @@ Symulując odpowiedź układu dla różnych wartości sygnałów sterujących ot
 \label{Z2Y2stat}
 \end{figure}
 
-Z otrzymanych wykresów można zauważyć, że właściwości statyczne i dynamiczne otrzymanego obiektu są liniowe. Na wszystkich torach jest to układ dynamicznie samostabilizujący się, a jego opóźnienie dla poszczególnych torów wynosi: TU OPÓŹNIENIA. Dodatkowo widzimy, że czas stabilizacji jest najkrótszy dla toru $u_2 -> y_1$.
+Z otrzymanych wykresów można zauważyć, że właściwości statyczne i dynamiczne otrzymanego obiektu są liniowe. Na wszystkich torach jest to układ dynamicznie samostabilizujący się, a jego opóźnienie dla poszczególnych torów zgadzają się z opóźneniami podanymi w definicji modelu w treści zadania. Dodatkowo widzimy, że czas stabilizacji jest najkrótszy dla toru $u_2 -> y_1$.
 
 Stosując wzór
 \begin{equation}
 K = \frac{ \triangle Y }{ \triangle U}
 \end{equation}
-otrzymujemy następujące wzmocnienia statyczne: dla toru ??? $ K = \num{1,493} $, dla toru ?? ETC.
+otrzymujemy następujące wzmocnienia statyczne (przy zapisie $ K^{ij} $, gdzie $ i $ to numer wyjścia, a $ j $ - wejścia):
+\begin{equation}
+  K^{11} = \num{2,5}, \quad K^{12} = \num{1,2}, \quad K^{21} = \num{1,05}, \quad K^{22} = \num{1,35}  
+ \end{equation}
 
 
 \chapter{Podpunkt 3}
-Na potrzeby algorytmu DMC wyznaczone zostały odpowiedzi skokowe wszystkich 4 torów procesu. Odpowiedzi wyznaczono dla skoku jednostkowego, a ich wykresy widoczne są odpowiednio na rys. \ref{Z3}.
+Na potrzeby algorytmu DMC wyznaczone zostały odpowiedzi skokowe wszystkich 4 torów procesu. Odpowiedzi wyznaczono dla skoku jednostkowego w chwili $ k=0 $, a ich wykresy widoczne są odpowiednio na rys. \ref{Z3} przy notacji $ s^{ij} $ gdzie $ i $ to numer zmiennej wyjściowej, a $ j $ wejściowej.
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z3}
-\caption{Odpowiedzi modelu na skoki sygnałów sterujących}
+\caption{Odpowiedzi modelu na skok sygnałów sterujących}
 \label{Z3}
 \end{figure}
 
 
 \chapter{Podpunkt 4}
+\section{DMC}
 Programy do symulacji cyfrowej algorytmów PID i DMC dla symulowanego procesu umieszczone zostały w plikach \verb+DMC.m+ oraz \verb+PID.m+.
 
-W algorytmie DMC przed główną pętlą regulatora obliczane są kolejno macierze $ \boldsymbol{M} $, $ \boldsymbol{M}^\mathrm{p}$, $ \boldsymbol{M}^\mathrm{z} $ oraz $ \boldsymbol{K} $.
+W algorytmie DMC przed główną pętlą regulatora obliczane są kolejno macierze $ \boldsymbol{M} $, $ \boldsymbol{M}^\mathrm{p}$, oraz $ \boldsymbol{K} $. Parametr $ \lambda $ ustalono jako wspólny dla każdego z wejść i wyjść.
 
 
 \begin{lstlisting}[style=Matlab-editor]
+%inicjalizacja macierzy dUp
+dup(1:(D-1)*nu,1)=0;
+
 %generacja macierzy
-M=zeros(N,Nu);
+M = zeros(N*ny,Nu*nu);
+
 for i=1:N
-   for j=1:Nu
-      if (i>=j)
-         M(i,j)=s(i-j+1);
-      end;
-   end;
+	for j=1:Nu
+		if (i>=j)
+			M(1+(i-1)*ny:i*ny, 1+(j-1)*nu:j*nu)=...
+			S(1:ny,1:nu,i-j+1);
+		end; %znajduje miejsce na odpowiednie S_n (ny x nu) 
+	end;	     %i je tam wpisuje
 end;
 
-Mp=zeros(N,D-1);
+Mp=zeros(N*ny,(D-1)*nu);
 for i=1:N
-   for j=1:D-1
-      if i+j<=D
-         Mp(i,j)=s(i+j)-s(j);
-      else
-         Mp(i,j)=s(D)-s(j);
-      end;
-   end;
+	for j=1:D-1
+		if i+j<=D
+			Mp(1+(i-1)*ny:i*ny, 1+(j-1)*nu:j*nu)=...
+			S(1:ny,1:nu,i+j)-S(1:ny,1:nu,j);
+		else
+			Mp(1+(i-1)*ny:i*ny, 1+(j-1)*nu:j*nu)=...
+			S(1:ny,1:nu,D)-S(1:ny,1:nu,j);
+		end; %analogicznie do macierzy M
+	end;
 end;
 
-Mz=zeros(N,Dz-1);
-for i=1:N
-   for j=1:Dz-1
-      if i+j<=Dz
-         Mz(i,j)=sz(i+j)-sz(j);
-      else
-         Mz(i,j)=sz(Dz)-sz(j);
-      end;
-   end;
-end;
-Mz = [sz(1:N)' Mz];
-
-K=((M'*M+lambda*eye(Nu))^-1)*M';
+K=((M'*M+lambda*eye(Nu*nu))^-1)*M';
 \end{lstlisting} 
 
-Następnie, ponieważ do skutecznej regulacji nie jest nam potrzebne obliczenie predykcji sterowania w chwilach przyszłych, dla optymalizacji prędkości działania symulacji wykorzystywany jest tylko pierwszy wiersz macierzy $ \boldsymbol{K} $. Wyliczamy go tuż przed główną pętlą, dodajemy ewentualny szum do zakłóceń i rozpoczynamy symulację.
+Następnie, ponieważ do skutecznej regulacji nie jest nam potrzebne obliczenie predykcji sterowania w chwilach przyszłych, dla optymalizacji prędkości działania symulacji wykorzystywany jest tylko pierwszy wiersz macierzy $ \boldsymbol{K} $. Wyliczamy go tuż przed główną pętlą:
 
 
 \begin{lstlisting}[style=Matlab-editor]
-%przeksztalcanie wyliczonych macierzy do potrzebnych nam parametrow
-
-Ku=K(1,:)*Mp;
-Kz=K(1,:)*Mz;
-Ke=sum(K(1,:));
-
-
-Zpom = Z; %rozdzielnie zakłóceń mierzonych i wchodzących do modelu
-if szum
-    Zpom = awgn(Zpom,snr); %dodaje bialy szum gaussowski o zadanym
-                           %stosunku sygnalu do szumu (SNR) jezeli 
-                           %szum!=0
-end
-
-%glowna petla
-for i=11:n
-
-   Y(i)=symulacja_obiektu2y(U(i-5), U(i-6), Z(i-3), Z(i-4), Y(i-1), Y(i-2));
-
-   e=Yzad(i)-Y(i); %uchyb
-   err = err + e^2; %obliczanie bledu
-
-   du=Ke*e-Ku*dup'; %regulator
-   if pomiar %regulator nie bierze pod uwage pomiaru 
-   			 %zaklocen gdy pomiar=0
-       du = du - Kz*dz';
-       for n=Dz:-1:2 %aktualizacja macierzy dZ
-       		dz(n)=dz(n-1);
-       end
-       dz(1)=Zpom(i)-Zpom(i-1);
-   end
-
-   for n=D-1:-1:2 %aktualizacja macierzy dUp
-      dup(n)=dup(n-1);
-   end
-   dup(1)=du;
-   
-   U(i)=U(i-1)+dup(1); %wyliczenie nowego sterowania
+Ku=K(1:nu,:)*Mp; %pierwsze dwa rzedy K * Mp
+Ke = zeros(nu,ny);
+for j=1:ny %nu wierszy zawierajacych ny sum z K 
+	Ke(:,j)=sum(K(1:nu,j:ny:end),2); %dla poszczegolnych wyjsc
 end
 \end{lstlisting}
 
-Parametr $ D = \num{120} $ wybrano na podstawie odpowiedzi skokowej. Dalsze parametry ustawiono początkowo na $ N = \num{120} $, $ N_\mathrm{u} = \num{20} $, $ \lambda = \num{1} $. Następnie kolejno zmieniano ich wartości dla uzyskania jak najmniejszego błędu (jakościowa ocena byłaby ciężka - przebiegi różniły się bardzo nieznacznie). Kolejne kroki wyznaczania parametrów przedstawiono na poniższych rysunkach. Ostateczne otrzymane wartości to: $ N = \num{25} $, $ N_\mathrm{u} = \num{8} $, $ \lambda = \num{0,05} $
+Po tym zaczynamy główną pętlę symulacji:
+\begin{lstlisting}[style=Matlab-editor]
+for i=21:n
+%zamiana indeksowania:  Y_N(i-K)=>Y(N+(i-K-1)*ny); 
+%			U_N(i-K)=>U(N+(i-K-1)*nu); 
+Y(1+(i-1)*ny)=symulacja_obiektu4y1(U(1+(i-7)*nu), U(1+(i-8)*nu),...
+ U(2+(i-3)*nu), U(2+(i-4)*nu), Y(1+(i-2)*ny), Y(1+(i-3)*ny));
+Y(2+(i-1)*ny)=symulacja_obiektu4y2(U(1+(i-3)*nu), U(1+(i-4)*nu),...
+ U(2+(i-4)*nu), U(2+(i-5)*nu), Y(2+(i-2)*ny), Y(2+(i-3)*ny));
+
+if zakl %dodanie ewentualnego zaklocenia
+	Y(1+(i-1)*ny:i*ny) = Y(1+(i-1)*ny:i*ny) +...
+			     Z(1+(i-1)*ny:i*ny);
+end
+
+if szum  %dodanie ewentualnego szumu pomiarowego
+	Ypom(1+(i-1)*ny:i*ny) = awgn(Y(1+(i-1)*ny:i*ny),snr);
+else
+	Ypom(1+(i-1)*ny:i*ny) = Y(1+(i-1)*ny:i*ny);
+end
+
+e=Yzad(1+(i-1)*ny:i*ny)-Ypom(1+(i-1)*ny:i*ny); %uchyb
+err = err + sum(e.^2);
+
+du=Ke*e-Ku*dup; %regulator
+
+
+for ni=D-1:-1:2 %przesuniecie dup
+	dup(1+(ni-1)*nu:ni*nu)=dup(1+(ni-2)*nu:(ni-1)*nu);
+end
+
+dup(1:nu)=du;
+
+%wyznaczenie nowego sterowania
+U(1+(i-1)*nu:i*nu)=U(1+(i-2)*nu:(i-1)*nu)+dup(1:nu); 
+end
+
+\end{lstlisting}
+
+\section{PID}
+Algorytm PID zaimplementowano jako proste rozszerzenie jednowymiarowego regulatora:
+
+\begin{lstlisting}[style=Matlab-editor]
+%parametry regulatora (wektory 2x1)
+r2 = K.*Td./Ts; 
+r1 = K.*(Ts./(2.*Ti)-2.*Td./Ts - 1); 
+r0 = K.*(1+Ts./(2.*Ti) + Td./Ts);
+
+
+%glowna petla PID
+for k=21:n 
+Y(1,k) = symulacja_obiektu4y1(U(1,k-6), U(1,k-7),...
+			 U(2,k-2), U(2,k-3), Y(1,k-1), Y(1,k-2));
+Y(2,k) = symulacja_obiektu4y2(U(1,k-2), U(1,k-3),...
+			 U(2,k-3), U(2,k-4), Y(2,k-1), Y(2,k-2));
+
+if zakl %dodanie ewentualnych zaklocen
+	Y(:,k) = Y(:,k) + Z(:,k);
+end
+
+if szum %dodanie ewentualnego szumu pomiarowego
+	Ypom(:,k) = awgn(Y(:,k),snr);
+else
+	Ypom(:,k) = Y(:,k);
+end
+
+e(:,k)=Yzad(:,k)-Ypom(:,k); %blad wyjscia
+
+du = r2.*e(:,k-2)+r1.*e(:,k-1)+r0.*e(:,k);
+
+%du = du([2 1]); %obrocenie konfiguracji regulatora
+
+U(:,k)=du(:)+U(:,k-1); 
+end; 
+\end{lstlisting}
+	
 
 
 \chapter{Podpunkt 5}
-W tym zadaniu w symulacji dodaliśmy skok jednostkowy sygnału zakłóceń w chwili $ k = 61 $. Parametr $ D_\mathrm{z} = 50 $ dobrano na podstawie przebiegu odpowiedzi modelu na skok zakłóceń. Na poniższych rysunkach przedstawiono symulację regulatorów bez pomiaru i z pomiarem zakłóceń. Można zauważyć, że dodanie pomiaru wpływa na znaczne zmniejszenie błędu regulacji.
+
+\section{DMC}
+Parametr $ D = \num{100} $ wybrano na podstawie najdłużej stabilizującej się odpowiedzi skokowej. Dalsze parametry ustawiono wstępnie na $ N = N_\mathrm{u} = \num{100} $, $ \lambda = \num{1} $. Następnie kolejno zmienianio parametry celem uzyskania jak najlepszej regulacji. Kolejne kroki przedstawiono na poniższych rysunkach od \ref{Z5a} do \ref{Z5c}. Końcowe wartości to: $ N = \num{100} $, $ N_\mathrm{u} = \num{4} $, $ \lambda = \num{0,2} $
+
+\section{PID}
+Początkowo zastosowano przydzielenie regulatorów od $ u_1 $ do $ y_1 $ i od $ u_2 $ do $ y_2 $. Proces dobierania parametrów rozpoczęto poprzez wyłączenie niestrojonego aktualnie regulatora, po czym ręczną optymalizację kolejnych parametrów (rys. \ref{Z5d} i \ref{Z5e}). Następnie połączono oba otrzymane regulatory do wspólnego systemu, otrzymując przebieg z rys. \ref{Z5f}. Jak widać nie był on zbyt gładki, z powodów trudności eksperymentalnego dobierania sześciu parametrów jednocześnie, zdecydowano się wykonać ich optymalizację funkcją \verb|fmincon| z przyjmując otrzymane wcześniej parametry jako dane początkowe. Końcowy przebieg widać na rys. \ref{Z5g}, a otrzymane parametry to 	$ K=\num{1,1576} $, $ T_i=\num{12,5191} $ i $ T_d=\num{1,4089} $ dla pierwszego z regulatorów oraz $ K=\num{0,8789} $, $ T_i=\num{7,9788} $ i $ T_d=\num{0,5366} $ dla drugiego.
+
+Próba zamiany konfiguracji regulatorów (od $ u_1 $ do $ y_2 $ i od $ u_2 $ do $ y_1 $) zakończyła się rozbieżnością wyjścia symulacji, co widać na rysunkach od \ref{Z5h} do \ref{Z5j}.
+
 
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z5DMC1}
+\caption{Pierwsza iteracja DMC przy parametrach $ D=N=N_\mathrm{u}=100$, $\lambda=1$. \\Błąd $ E=\num{139,8460} $}
 \label{Z5a}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z5DMC2}
-\label{Z5a}
+\caption{Druga iteracja DMC przy parametrach $ D=N=100$, $ N_\mathrm{u}=4 $, $\lambda=1$. \\Błąd $ E=\num{136,3094} $}
+\label{Z5b}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
-\input{./im/Z5DMC2}
-\label{Z5a}
+\input{./im/Z5DMC3}
+\caption{Ostatnia iteracja DMC przy parametrach $ D=N=100$, $ N_\mathrm{u}=4 $, $\lambda=\num{0,2}$. \\Błąd $ E=\num{131.2531} $}
+\label{Z5c}
 \end{figure}
 
 \begin{figure}[ht]
-\centering
-\input{./im/Z5PID1}
-\label{Z5a}
+	\centering
+	\input{./im/Z5PID1}
+	\caption{Dobranie parametrów pierwszego regulatora:\\
+	$ K=\num{1,1} $, $ T_i=\num{9} $, $ T_d=\num{0,8} $}
+	\label{Z5d}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z5PID2}
+	\caption{Dobranie parametrów drugiego regulatora:\\
+		$ K=\num{3,45} $, $ T_i=\num{9} $, $ T_d=\num{0,3} $}
+	\label{Z5e}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z5PID3}
+	\caption{Złożenie dwóch regulatorów z poprzednich rysunków.}
+	\label{Z5f}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z5PID4}
+	\caption{Zoptymalizowana regulacja PID.\\Błąd $ E=138.5093 $}
+	\label{Z5g}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z5PID5}
+	\caption{Dobranie parametrów pierwszego regulatora po zamianie konfiguracji.}
+	\label{Z5h}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z5PID6}
+	\caption{Dobranie parametrów drugiego regulatora po zamianie konfiguracji.}
+	\label{Z5i}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z5PID7}
+	\caption{Nieudana próba regulacji po złożeniu powyższych regulatorów.}
+	\label{Z5j}
 \end{figure}
 
 
 \chapter{Podpunkt 6}
-W tym zadaniu od chwili $ k = \num{61} $ na zakłócenie staje się zmienne sinusoidalnie. Na poniższych rysunkach widać regulację obiektu bez i z pomiarem. Można zauważyć, że DMC nie jest w stanie wygładzić całkowicie przebiegu w obu trybach pracy - tryb z pomiarem wpływa jednak na zmniejszenie amplitudy odchyleń uzyskiwanych na wyjściu obiektu, co skutkuje zmniejszeniem błędu regulacji. 
+W tym zadaniu do pomiaru sygnału wyjściowego dodawany jest gaussowski biały szum o zadanym stosunku sygnału do szumu SNR za pomocą funkcji \verb|awgn|. Można zauważyć, że dla stosunkowo małego szumu ($ \mathrm{SNR}>20 $) nie wpływa on znacząco na przebieg, ale większy przejawia się już wyraźnie zarówno w przebiegu funkcji jak i w wartości błędu. 
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z6DMC1}
-\caption{Symulacja regulatora DMC przy błędach pomiaru sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
+\caption{Symulacja DMC po dodaniu szumu o $ \mathrm{SNR}=30 $.\\Błąd $ E = \num{135,1366} $}
 \label{Z6a}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z6DMC2}
-\caption{Symulacja regulatora DMC przy błędach pomiaru sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
-\label{Z6a}
+\caption{Symulacja DMC po dodaniu szumu o $ \mathrm{SNR}=20 $.\\Błąd $ E = \num{163,1662} $}
+\label{Z6b}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z6DMC3}
+\caption{Symulacja DMC po dodaniu szumu o $ \mathrm{SNR}=15 $.\\Błąd $ E = \num{240,7911} $}
+\label{Z6c}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z6PID1}
-\caption{Symulacja regulatora PID przy błędach pomiaru sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
-\label{Z6a}
+\caption{Symulacja PID po dodaniu szumu o $ \mathrm{SNR}=30 $.\\Błąd $ E = \num{142,995} $}
+\label{Z6d}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z6PID2}
-\caption{Symulacja regulatora PID przy błędach pomiaru sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
-\label{Z6a}
+\caption{Symulacja PID po dodaniu szumu o $ \mathrm{SNR}=20 $.\\Błąd $ E = \num{174,5377} $}
+\label{Z6e}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z6PID3}
-\caption{Symulacja regulatora PID przy błędach pomiaru sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
-\label{Z6a}
+\caption{Symulacja PID po dodaniu szumu o $ \mathrm{SNR}=15 $.\\Błąd $ E = \num{236,5988} $}
+\label{Z6f}
 \end{figure}
 
 \chapter{Podpunkt 7}
-Aby zasymulować rzeczywiste błędy pomiarowe, do wektora mierzonach zakłóceń dodano biały szum gaussowski o zróżnicowanych stosunkach sygnału do szumu (SNR). Dodanie ich nastąpiło za pomocą funkcji \verb|awgn()| zawartej w MATLABie.
+Przetestowano odporność regulatorów na zakłócenia dla dwóch różnych wartości skoku, występujących na obu z wyjść w różnych chwilach czasu - ich przebiegi zostaną przedstawione na wykresach.
 
-Dla $ \mathit{SNR} = 30\mathit{dB} $ i $ \mathit{SNR} = 20\mathit{dB} $ wyjście obiektu jest jeszcze stosunkowo gładkie. Zastosowanie pomiaru z $ \mathit{SNR} = 10\mathit{dB} $ skutkuje już jednak znaczącymi odchyleniami od wartości zadanej, gdzie wartość funkcji błędu zaczyna się już zbliżać do błędu dla regulatora bez pomiaru zakłóceń.
+Dla obu z nich regulacja przebiega pomyślnie - wyjście modelu powraca do wartości zadanej, ale można zauważyć bardzo znaczne odchylenia w chwili wystąpienia skoku, mocno przekraczające wartość przeregulowań lub oscylacji przy regulacji bez dodanego zakłócenia. 
+
+Regulator DMC zdaje się być nieznacznie bardziej odporny na skoki zakłócenia - wartości błędu są odrobinę niższe.
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z7DMC1}
-\caption{Symulacja regulatora DMC przy skokowych, addytywnych, niemierzalnych zakłóceniach sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
+\caption{Symulacja DMC przy ujemnym skokowym zakłóceniu o wartości $ z=\num{-0,1}$.\\Błąd $ E=3191,5 $ }
 \label{Z6a}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z7DMC2}
-\caption{Symulacja regulatora DMC przy skokowych, addytywnych, niemierzalnych zakłóceniach sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
-\label{Z6a}
+\caption{Symulacja DMC przy dodatnim skokowym zakłóceniu o wartości $ z=\num{0,5}$.\\Błąd $ E=\num{77 322} $}
+\label{Z6b}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z7PID1}
-\caption{Symulacja regulatora PID przy skokowych, addytywnych, niemierzalnych zakłóceniach sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
-\label{Z6a}
+\caption{Symulacja PID przy ujemnym skokowym zakłóceniu o wartości $ z=\num{-0,1}$.\\Błąd $ E=3415,1 $ }
+\label{Z6c}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z7PID2}
-\caption{Symulacja regulatora PID przy skokowych, addytywnych, niemierzalnych zakłóceniach sygnałów wyjściowych.\\Bez pomiaru $ E = \num{28,7563} $, z pomiarem $ E = \num{11,4920} $.}
-\label{Z6a}
+\caption{Symulacja PID przy dodatnim skokowym zakłóceniu o wartości $ z=\num{0,5}$.\\Błąd $ E=\num{82 804} $}
+\label{Z6d}
 \end{figure}
 
