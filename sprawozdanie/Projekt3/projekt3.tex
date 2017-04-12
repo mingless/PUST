@@ -1,3 +1,6 @@
+\bigskip
+\bigskip
+
 Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
 
 \chapter{Podpunkt 1}
@@ -44,7 +47,7 @@ Symulując odpowiedź układu dla różnych wartości sygnałów sterujących ot
 \label{Z2Y2stat}
 \end{figure}
 
-Z otrzymanych wykresów można zauważyć, że właściwości statyczne i dynamiczne otrzymanego obiektu są liniowe. Na wszystkich torach jest to układ dynamicznie samostabilizujący się, a jego opóźnienie dla poszczególnych torów zgadzają się z opóźneniami podanymi w definicji modelu w treści zadania. Dodatkowo widzimy, że czas stabilizacji jest najkrótszy dla toru $u_2 -> y_1$.
+Z otrzymanych wykresów można zauważyć, że właściwości statyczne i dynamiczne otrzymanego obiektu są liniowe. Na wszystkich torach jest to układ dynamicznie samostabilizujący się, a jego opóźnienie dla poszczególnych torów zgadzają się z opóźneniami podanymi w definicji modelu w treści zadania. Dodatkowo widzimy, że czas stabilizacji jest najkrótszy dla toru $u_2 \rightarrow y_1$.
 
 Stosując wzór
 \begin{equation}
@@ -52,8 +55,8 @@ K = \frac{ \triangle Y }{ \triangle U}
 \end{equation}
 otrzymujemy następujące wzmocnienia statyczne (przy zapisie $ K^{ij} $, gdzie $ i $ to numer wyjścia, a $ j $ - wejścia):
 \begin{equation}
-  K^{11} = \num{2,5}, \quad K^{12} = \num{1,2}, \quad K^{21} = \num{1,05}, \quad K^{22} = \num{1,35}  
- \end{equation}
+K^{11} = \num{2,5}, \quad K^{12} = \num{1,2}, \quad K^{21} = \num{1,05}, \quad K^{22} = \num{1,35}  
+\end{equation}
 
 
 \chapter{Podpunkt 3}
@@ -198,10 +201,10 @@ end;
 \chapter{Podpunkt 5}
 
 \section{DMC}
-Parametr $ D = \num{100} $ wybrano na podstawie najdłużej stabilizującej się odpowiedzi skokowej. Dalsze parametry ustawiono wstępnie na $ N = N_\mathrm{u} = \num{100} $, $ \lambda = \num{1} $. Następnie kolejno zmienianio parametry celem uzyskania jak najlepszej regulacji. Kolejne kroki przedstawiono na poniższych rysunkach od \ref{Z5a} do \ref{Z5c}. Końcowe wartości to: $ N = \num{100} $, $ N_\mathrm{u} = \num{4} $, $ \lambda = \num{0,2} $
+Parametr $ D = \num{100} $ wybrano na podstawie najdłużej stabilizującej się odpowiedzi skokowej. Dalsze parametry ustawiono wstępnie na $ N = N_\mathrm{u} = \num{100} $, $ \lambda = \num{1} $. Następnie kolejno zmienianio parametry celem uzyskania jak najlepszej regulacji. Kolejne kroki przedstawiono na poniższych rysunkach od \ref{Z5a} do \ref{Z5c}. Końcowe wartości to: $ N = \num{100} $, $ N_\mathrm{u} = \num{4} $, $ \lambda = \num{0,2} $.
 
 \section{PID}
-Początkowo zastosowano przydzielenie regulatorów od $ u_1 $ do $ y_1 $ i od $ u_2 $ do $ y_2 $. Proces dobierania parametrów rozpoczęto poprzez wyłączenie niestrojonego aktualnie regulatora, po czym ręczną optymalizację kolejnych parametrów (rys. \ref{Z5d} i \ref{Z5e}). Następnie połączono oba otrzymane regulatory do wspólnego systemu, otrzymując przebieg z rys. \ref{Z5f}. Jak widać nie był on zbyt gładki, z powodów trudności eksperymentalnego dobierania sześciu parametrów jednocześnie, zdecydowano się wykonać ich optymalizację funkcją \verb|fmincon| z przyjmując otrzymane wcześniej parametry jako dane początkowe. Końcowy przebieg widać na rys. \ref{Z5g}, a otrzymane parametry to 	$ K=\num{1,1576} $, $ T_i=\num{12,5191} $ i $ T_d=\num{1,4089} $ dla pierwszego z regulatorów oraz $ K=\num{0,8789} $, $ T_i=\num{7,9788} $ i $ T_d=\num{0,5366} $ dla drugiego.
+Początkowo zastosowano przydzielenie regulatorów od $ u_1 $ do $ y_1 $ i od $ u_2 $ do $ y_2 $. Proces dobierania parametrów rozpoczęto poprzez wyłączenie niestrojonego aktualnie regulatora, po czym ręczną optymalizację kolejnych parametrów (rys. \ref{Z5d} i \ref{Z5e}). Następnie połączono oba otrzymane regulatory do wspólnego systemu, otrzymując przebieg z rys. \ref{Z5f}. Jak widać nie był on zbyt gładki, z powodów trudności eksperymentalnego dobierania sześciu parametrów jednocześnie, zdecydowano się wykonać ich optymalizację funkcją \verb|fmincon| z przyjmując otrzymane wcześniej parametry jako dane początkowe. Końcowy przebieg widać na rys. \ref{Z5g}, a otrzymane parametry to $ K=\num{1,1576} $, $ T_i=\num{12,5191} $ i $ T_d=\num{1,4089} $ dla pierwszego z regulatorów oraz $ K=\num{0,8789} $, $ T_i=\num{7,9788} $ i $ T_d=\num{0,5366} $ dla drugiego.
 
 Próba zamiany konfiguracji regulatorów (od $ u_1 $ do $ y_2 $ i od $ u_2 $ do $ y_1 $) zakończyła się rozbieżnością wyjścia symulacji, co widać na rysunkach od \ref{Z5h} do \ref{Z5j}.
 
@@ -229,54 +232,54 @@ Próba zamiany konfiguracji regulatorów (od $ u_1 $ do $ y_2 $ i od $ u_2 $ do 
 \end{figure}
 
 \begin{figure}[ht]
-	\centering
-	\input{./im/Z5PID1}
-	\caption{Dobranie parametrów pierwszego regulatora:\\
-	$ K=\num{1,1} $, $ T_i=\num{9} $, $ T_d=\num{0,8} $}
-	\label{Z5d}
+\centering
+\input{./im/Z5PID1}
+\caption{Dobranie parametrów pierwszego regulatora:\\
+$ K=\num{1,1} $, $ T_i=\num{9} $, $ T_d=\num{0,8} $}
+\label{Z5d}
 \end{figure}
 
 \begin{figure}[ht]
-	\centering
-	\input{./im/Z5PID2}
-	\caption{Dobranie parametrów drugiego regulatora:\\
-		$ K=\num{3,45} $, $ T_i=\num{9} $, $ T_d=\num{0,3} $}
-	\label{Z5e}
+\centering
+\input{./im/Z5PID2}
+\caption{Dobranie parametrów drugiego regulatora:\\
+$ K=\num{3,45} $, $ T_i=\num{9} $, $ T_d=\num{0,3} $}
+\label{Z5e}
 \end{figure}
 
 \begin{figure}[ht]
-	\centering
-	\input{./im/Z5PID3}
-	\caption{Złożenie dwóch regulatorów z poprzednich rysunków.}
-	\label{Z5f}
+\centering
+\input{./im/Z5PID3}
+\caption{Złożenie dwóch regulatorów z poprzednich rysunków.}
+\label{Z5f}
 \end{figure}
 
 \begin{figure}[ht]
-	\centering
-	\input{./im/Z5PID4}
-	\caption{Zoptymalizowana regulacja PID.\\Błąd $ E=138.5093 $}
-	\label{Z5g}
+\centering
+\input{./im/Z5PID4}
+\caption{Zoptymalizowana regulacja PID.\\Błąd $ E=138.5093 $}
+\label{Z5g}
 \end{figure}
 
 \begin{figure}[ht]
-	\centering
-	\input{./im/Z5PID5}
-	\caption{Dobranie parametrów pierwszego regulatora po zamianie konfiguracji.}
-	\label{Z5h}
+\centering
+\input{./im/Z5PID5}
+\caption{Dobranie parametrów pierwszego regulatora po zamianie konfiguracji.}
+\label{Z5h}
 \end{figure}
 
 \begin{figure}[ht]
-	\centering
-	\input{./im/Z5PID6}
-	\caption{Dobranie parametrów drugiego regulatora po zamianie konfiguracji.}
-	\label{Z5i}
+\centering
+\input{./im/Z5PID6}
+\caption{Dobranie parametrów drugiego regulatora po zamianie konfiguracji.}
+\label{Z5i}
 \end{figure}
 
 \begin{figure}[ht]
-	\centering
-	\input{./im/Z5PID7}
-	\caption{Nieudana próba regulacji po złożeniu powyższych regulatorów.}
-	\label{Z5j}
+\centering
+\input{./im/Z5PID7}
+\caption{Nieudana próba regulacji po złożeniu powyższych regulatorów.}
+\label{Z5j}
 \end{figure}
 
 
@@ -336,27 +339,27 @@ Regulator DMC zdaje się być nieznacznie bardziej odporny na skoki zakłócenia
 \centering
 \input{./im/Z7DMC1}
 \caption{Symulacja DMC przy ujemnym skokowym zakłóceniu o wartości $ z=\num{-0,1}$.\\Błąd $ E=3191,5 $ }
-\label{Z6a}
+\label{Z7a}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z7DMC2}
 \caption{Symulacja DMC przy dodatnim skokowym zakłóceniu o wartości $ z=\num{0,5}$.\\Błąd $ E=\num{77 322} $}
-\label{Z6b}
+\label{Z7b}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z7PID1}
 \caption{Symulacja PID przy ujemnym skokowym zakłóceniu o wartości $ z=\num{-0,1}$.\\Błąd $ E=3415,1 $ }
-\label{Z6c}
+\label{Z7c}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \input{./im/Z7PID2}
 \caption{Symulacja PID przy dodatnim skokowym zakłóceniu o wartości $ z=\num{0,5}$.\\Błąd $ E=\num{82 804} $}
-\label{Z6d}
+\label{Z7d}
 \end{figure}
 
