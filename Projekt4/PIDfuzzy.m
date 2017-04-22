@@ -1,64 +1,107 @@
 close all;
 clear all;
 
-n = 3000; %dlugosc symulacji, skróæ do 3000 w rysunkach do pdfa i wspomnij
-          %o tym w sprawku. wyd³u¿ona do usuniêcia oscylacji
-          %przy optymalizacji
-Yzad(1:n) = 2.2;  %rozne wartosci symulacji w roznych przedzialach
-Yzad(21:n) = 2.5; %mozliwe, ze trzeba je zmienic na relatywne od
-Yzad(1001:n)=2.4;  %punktu pracy, tj w przedziale y(umin)<yzad<y(umax)
-Yzad(1501:n)=1.85; %wtedy nalezy dodac w glownej petli odpowiednio
-Yzad(2201:n)=2.25; %odjac/dodac Ypp
-U(1:n) = 1.5; %inicjalizacja sterowania
-Ypp = 2.2; %punkt pracy
-Upp = 1.5;
-Y(1:n) = Ypp; %inicjalizacja wyjscia
-u = U - Upp; %inicjalizacja sterowania liczonego w regulatorze
+%trap - parametry trapezoidalnych funkcji przynaleznosci, kolejno a b c d
+%(wejscia), latwiej odczytac z wykresu w wierszach. Liczba wierszy - liczba
+%oddzielnych regulatorow
+
+%liczba regulatorow
+reg = 1;
+
+if reg == 1
+    trapu = [-1 -1 1 1];
+    K = 0.179027601957906;
+    Ti = 3.704713046081166;
+    Td = 1.071891045104810;
+elseif reg == 2
+    trapu = [-1 -1 0.2 0.3;...
+            0.2 0.3 1 1];
+    
+    K = [0.479881301349376 0.124587984682865];
+    Ti = [1.381567530175739 4.181803394572416];
+    Td = [1.415368606139710 0.874266044528476];
+elseif reg == 3
+    trapu = [-1 -1 0.1 0.2;...
+            0.1 0.2 0.5 0.6;...
+            0.5 0.6 1 1];
+    K = [0.706031573083377 0.168500094783676 0.103530967479776];
+    Ti = [1.390545880029533 3.086305646175291 4.443456315431565];
+    Td = [1.341677508103398 0.992203908947000 0.802408171164555];
+elseif reg == 4
+    trapu = [-1 -1 0 0.1;...
+            0 0.1 0.2 0.3;...
+            0.2 0.3 0.5 0.6;...
+            0.5 0.6 1 1];
+    K = [1.168688797181049 0.285003598076519 0.157104128914089...
+       0.103530967479776];
+    Ti = [1.413006053008096 2.430061246473383 3.264464973643415...
+        4.443456315431565];
+    Td = [1.280936363820794 1.021454295522390 1.162166243563955...
+        0.802408171164555];
+elseif reg == 5
+    trapu = [-1 -1 0 0.1;...
+            0 0.1 0.15 0.25;...
+            0.15 0.25 0.35 0.45;...
+            0.35 0.45 0.5 0.6;...
+            0.5 0.6 0.9 0.9];
+    K = [1.168688797181049 0.311730038567528 0.180028180156292...
+       0.011453979233411 0.103530967479776];
+    Ti = [1.413006053008096 2.392883744574091 2.901953866871270...
+        0.555888832486690 4.443456315431565];
+    Td = [1.280936363820794 0.989670578946960 1.144162938580501...
+        0.023282995886553 0.802408171164555];
+end
+
+trapy = arrayfun(@stat_val,trapu); %przypisanie konkretnych granic Y
+trapy(1,1:2)=-inf; %rozszerzenie granic koncowych do nieskonczonosci
+trapy(end,3:4)=inf;
+
+
+
+%odkomentowac aby otrzymac K,Ti,Td nowego regulatora. Nie dziala do konca
+%poprawnie przy granicy prawej trapu = 1, nalezy je ustawic na 0.9 przy
+%wyznaczaniu parametrow
+
+% for i = 1:size(trapu,1)
+%     [K(i), Ti(i), Td(i)] = pid_params(trapu(i,2),stat_val(trapu(i,2)),...
+%                                       stat_val(trapu(i,3)));
+% end
+    
+
+n = 1000;
+Yzad(1:n) = 0;  
+Yzad(21:n) = 7;
+Yzad(201:n)= -0.2;  
+Yzad(401:n)= 2; 
+Yzad(601:n)=4.2; 
+Yzad(801:n)=0.5;
+U(1:n) = 0; 
+Y(1:n) = 0;
 err = 0;
 
-
-%K = 4; Ti = inf; Td = 0; Ts = 0.5;
-%K = 2.64; Ti = 14; Td = 3.36; Ts = 0.5; %eksperymentalnie dobrane wspolczynniki, Ts z zadania, err = 19.6632
-%K = 52.7065; Ti = 8.8554; Td = 2.9005; Ts = 0.5; %przy optymalizacji bledu
-%K = 5.036; Ti = 2.882; Td = 3.2845; Ts = 0.5;
-%K = 1.0969; Ti = 1.3559; Td = 0.5757; Ts = 0.5;
-%K=4.552003; Ti=10.038189; Td=3.660702; Ts = 0.5;
-%K=4.551979; Ti=10.038185; Td=3.660651; Ts=0.5; %final w/ err=sum(|e|) as quality index
-%K=5.903638; Ti=7.615168; Td=4.223055; Ts=0.5; %n=6000
-%K=5.513605; Ti=6.977240; Td=5.106577; Ts=0.5; %yzad as in this file, n=10000
-K=5.422910; Ti=8.551461; Td=3.914535; Ts=0.5; %calculated w/ delays
-%                               in yzad, look at PID_err. probably not  
-%  err=16.7418                  really optimal anymore, but seems to
-%                               finally stabilize, though still not cleanly
-
-%it doesn't seem like it's gonna get any prettier with optimization for
-%this error function
+Ts(1:size(trapu,1)) = 0.5;
 
 
-
-
-r2 = K*Td/Ts; r1 = K*(Ts/(2*Ti)-2*Td/Ts - 1); r0 = K*(1+Ts/(2*Ti) + Td/Ts);
+r2 = K.*Td./Ts; r1 = K.*(Ts./(2.*Ti)-2.*Td./Ts - 1); r0 = K.*(1+Ts./(2.*Ti) + Td./Ts);
+mi = zeros(1,size(trapu,1)); %init wspolczynnikow przynaleznosci
 
 %glowna petla PID
 for k=21:n 
-     Y(k)=symulacja_obiektu5Y(U(k-10), U(k-11), Y(k-1), Y(k-2)); 
+     Y(k)=symulacja_obiektu4y(U(k-5), U(k-6), Y(k-1), Y(k-2)); 
      e(k)=Yzad(k)-Y(k); %blad wyjscia
      
-     du = r2*e(k-2)+r1*e(k-1)+r0*e(k);
-     if du>0.1 %ograniczenia na szybkosc zmiany sygnalu sterowania
-         du = 0.1;
+     for i = 1:size(trapu,1)
+        mi(i) = trapmf(Y(k),trapy(i,:)); %przynaleznosc aktualnego Y(k)
      end
-     if du<-0.1
-         du = -0.1;
+     du = sum(mi.*(r2*e(k-2)+r1*e(k-1)+r0*e(k)));
+     
+     U(k)=du+U(k-1); 
+     if U(k)>1 %ograniczenia na min/max sygnalu sterowania
+         U(k) = 1;
      end
-     u(k)=du+u(k-1); 
-     if u(k)>0.5 %ograniczenia na min/max sygnalu sterowania
-         u(k) = 0.5;
+     if U(k)<-1
+         U(k) = -1;
      end
-     if u(k)<-0.5
-         u(k) = -0.5;
-     end
-     U(k)= u(k) + Upp; %przesuniecie sterowania do punktu pracy
 end; 
 
 err = sum(e.^2)
@@ -76,3 +119,11 @@ ylabel('y');
 hold on; 
 stairs(Yzad,':');
 decimal_comma(gca, 'XY');
+
+%funkcja zwracajaca wartosc y charakterystyki statycznej dla zadanego u
+function y = stat_val(u)
+    load stat.mat
+    if (u>=-1 && u<=1)
+        y = Ys( int8((u+1)*50 + 1) );
+    end
+end

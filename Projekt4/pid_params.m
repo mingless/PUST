@@ -10,9 +10,10 @@ end
 function err = PID_err( K,Ti,Td,ustart,ymin,ymax )
 
 n = 2500;
-Yzad(1:n) = ymin;  %rozne wartosci symulacji w roznych przedzialach
-Yzad(21:n) = ymax; %mozliwe, ze trzeba je zmienic na relatywne od
-Yzad(501:n)=(ymax+ymin)/2;  %punktu pracy, tj w przedziale y(umin)<yzad<y(umax)
+Yzad(1:n) = ymin;  
+Yzad(21:n) = ymax; 
+Yzad(501:n)= ymin;  
+Yzad(1001:n) = (ymax+ymin)/2;
 U(1:n) = ustart; %inicjalizacja sterowania
 Y(1:n) = ymin; %inicjalizacja wyjscia
 err = 0;
@@ -30,7 +31,7 @@ for k=21:n
      
      U(k)=du+U(k-1); 
 %      if U(k)>1 %ograniczenia na min/max sygnalu sterowania
-%          U(k) = 1;
+%          U(k) = 1; %uniemozliwiaja optymalizacje z losowymi param. pocz.
 %      end
 %      if U(k)<-1
 %          U(k) = -1;
@@ -38,7 +39,8 @@ for k=21:n
 end; 
 
 % err = sum(e.^2);
-err = sum(abs(e));
+err = sum(abs(e)); %zastosowanie tej funkcji bledu skutkuje mniejszymi
+                   %oscylacjami, ale wolniejszym zejsciem ze skoku
 
 
 end
