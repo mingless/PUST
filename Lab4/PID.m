@@ -22,11 +22,13 @@ r2 = K*Td/Ts;
 r1 = K*(Ts/(2*Ti)-2*Td/Ts - 1);
 r0 = K*(1+Ts/(2*Ti) + Td/Ts);
 
-for k=21:n
+figure('Position',  [403 246 820 420]);
+for k=3:n
     measurements = readMeasurements(1:7);
     Y(k)=measurements(1);
 
     e(k)=Yzad(k)-Y(k);
+    err = err + e(k)^2;
     %% processing of the measurements and new control values calculation
 
     du = r2*e(k-2)+r1*e(k-1)+r0*e(k);
@@ -44,10 +46,22 @@ for k=21:n
     end
 
     %% sending new values of control signals
-    disp([measurements(1), Upp, u(k), measurements(5), k, U(k), Y(k)]); % process measurements
+    disp([k, U(k), Y(k), Yzad(k), err]); % process measurements
 
     sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
     [50, 0, 0, 0, U(k), 0]);  % new corresponding control values
+
+    subplot('Position', [0.1 0.12 0.8 0.15]);
+    stairs(U);
+    ylabel('u');
+    xlabel('k');
+    subplot('Position', [0.1 0.37 0.8 0.6]);
+
+    stairs(Y);
+    ylabel('y');
+    hold on;
+    stairs(Yzad,':');
+    pause(0.01);
 
     %% synchronising with the control process
     waitForNewIteration(); % wait for new batch of measurements to be ready
@@ -56,14 +70,3 @@ end;
 
 err = sum(e.^2)
 
-figure('Position',  [403 246 820 420]);
-subplot('Position', [0.1 0.12 0.8 0.15]);
-stairs(U);
-ylabel('u');
-xlabel('k');
-subplot('Position', [0.1 0.37 0.8 0.6]);
-
-stairs(Y);
-ylabel('y');
-hold on;
-stairs(Yzad,':');

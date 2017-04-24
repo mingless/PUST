@@ -96,6 +96,7 @@ for k=3:n
     Y(k) = measurements(1);
 
     e(k)=Yzad(k)-Y(k); %blad wyjscia
+    err = err + e(k)^2
 
     for i = 1:size(trapu,1)
         mi(i) = trapmf(Y(k),trapy(i,:)); %przynaleznosc aktualnego Y(k)
@@ -112,7 +113,7 @@ for k=3:n
     end
 
     %% sending new values of control signals
-    disp([k, U(k), Y(k), Yzad(k)]); % process measurements
+    disp([k, U(k), Y(k), Yzad(k), err]); % process measurements
 
     sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
     [50, 0, 0, 0, U(k), 0]);  % new corresponding control values
