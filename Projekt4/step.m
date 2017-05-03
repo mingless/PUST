@@ -1,5 +1,5 @@
 clear all;
-close all;
+% close all;
 
 n = 200;        % długość symulacji
 U(1:n) = 0;   % zaczynamy z U punktu pracy
