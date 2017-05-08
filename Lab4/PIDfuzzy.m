@@ -61,6 +61,11 @@ Ts(1:size(trapu,1)) = 0.5;
 r2 = K.*Td./Ts; r1 = K.*(Ts./(2.*Ti)-2.*Td./Ts - 1); r0 = K.*(1+Ts./(2.*Ti) + Td./Ts);
 mi = zeros(1,size(trapu,1)); %init wspolczynnikow przynaleznosci
 
+sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
+[50, 0, 0, 0, 0, 0]);  % new corresponding control values
+
+sendNonlinearControls(U(1));
+figure('Position',  [403 246 820 420]);
 %glowna petla PID
 for k=3:n
     measurements = readMeasurements(1:7);
