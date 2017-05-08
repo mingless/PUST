@@ -1,24 +1,26 @@
 clear all;
 
 addpath('F:\SerialCommunication'); % add a path to the functions
-initSerialControl COM4 % initialise com port
+initSerialControl COM17 % initialise com port
 
-n = 1000;
-Ypp = 32.31;
+n = 1350;
+Ypp = 32.9;
 Upp = 30;
 Yzad(1:n) = Ypp + 0;
-Yzad(21:n) = Ypp + 7;
-Yzad(201:n) = Ypp - 0.2;
-Yzad(401:n) = Ypp + 2;
-Yzad(601:n) = Ypp + 4.2;
-Yzad(801:n) = Ypp + 0.5;
+Yzad(21:n) = Ypp - 1;
+Yzad(151:n) = Ypp + 3;
+Yzad(401:n) = Ypp + 9;
+Yzad(701:n) = Ypp + 7;
+Yzad(901:n) = Ypp + 11;
+Yzad(1151:n) = Ypp + 9.5;
 U(1:n) = Upp;
 Y(1:n) = Ypp;
 u = U - Upp;
 err = 0;
 
 %get step response from file
-s = fscanf(fopen('step_response.txt', 'r'),'%f', [1 Inf]);
+s = fscanf(fopen('s.txt', 'r'),'%f', [1 Inf]);
+s = s./3;
 fclose('all');
 
 
@@ -57,9 +59,13 @@ K=((M'*M+lambda*eye(Nu))^-1)*M';
 Ku=K(1,:)*Mp;
 Ke=sum(K(1,:));
 
-%main loop
+sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
+             [50, 0, 0, 0, 0, 0]);  % new corresponding control values
 
+sendNonlinearControls(U(1));
 figure('Position',  [403 246 820 420]);
+
+%main loop
 for i=3:n
     %% obtaining measurements
     measurements = readMeasurements(1:7); % read measurements from 1 to 7
@@ -89,20 +95,18 @@ for i=3:n
     disp([i, U(i), Y(i), Yzad(i), err]); % process measurements
 
     %% sending new values of control signals
-    sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
-    [50, 0, 0, 0, U(i), 0]);  % new corresponding control values
+    sendNonlinearControls(U(i));
 
     subplot('Position', [0.1 0.12 0.8 0.15]);
     stairs(U);
     ylabel('u');
     xlabel('k');
-    decimal_comma(gca, 'XY');
     subplot('Position', [0.1 0.37 0.8 0.6]);
     plot(Y);
     ylabel('y');
-    decimal_comma(gca, 'XY');
     hold on;
     stairs(Yzad,':');
+    hold off;
     pause(0.01);
     %% synchronising with the control process
     waitForNewIteration(); % wait for new batch of measurements to be ready

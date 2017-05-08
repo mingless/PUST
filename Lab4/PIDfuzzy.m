@@ -2,7 +2,7 @@ close all;
 clear all;
 
 addpath('F:\SerialCommunication'); % add a path to the functions
-initSerialControl COM4 % initialise com port
+initSerialControl COM17 % initialise com port
 
 %trap - parametry trapezoidalnych funkcji przynaleznosci, kolejno a b c d
 %(wejscia), latwiej odczytac z wykresu w wierszach. Liczba wierszy - liczba
@@ -23,37 +23,7 @@ elseif reg == 2
     K = [0.479881301349376 0.124587984682865];
     Ti = [1.381567530175739 4.181803394572416];
     Td = [1.415368606139710 0.874266044528476];
-elseif reg == 3
-    trapu = [-1 -1 0.1 0.2;...
-    0.1 0.2 0.5 0.6;...
-    0.5 0.6 1 1];
-    K = [0.706031573083377 0.168500094783676 0.103530967479776];
-    Ti = [1.390545880029533 3.086305646175291 4.443456315431565];
-    Td = [1.341677508103398 0.992203908947000 0.802408171164555];
-elseif reg == 4
-    trapu = [-1 -1 0 0.1;...
-    0 0.1 0.2 0.3;...
-    0.2 0.3 0.5 0.6;...
-    0.5 0.6 1 1];
-    K = [1.168688797181049 0.285003598076519 0.157104128914089...
-    0.103530967479776];
-    Ti = [1.413006053008096 2.430061246473383 3.264464973643415...
-    4.443456315431565];
-    Td = [1.280936363820794 1.021454295522390 1.162166243563955...
-    0.802408171164555];
-elseif reg == 5
-    trapu = [-1 -1 0 0.1;...
-    0 0.1 0.15 0.25;...
-    0.15 0.25 0.35 0.45;...
-    0.35 0.45 0.5 0.6;...
-    0.5 0.6 0.9 0.9];
-    K = [1.168688797181049 0.311730038567528 0.180028180156292...
-    0.011453979233411 0.103530967479776];
-    Ti = [1.413006053008096 2.392883744574091 2.901953866871270...
-    0.555888832486690 4.443456315431565];
-    Td = [1.280936363820794 0.989670578946960 1.144162938580501...
-    0.023282995886553 0.802408171164555];
-end
+end;
 
 trapy = arrayfun(@stat_val,trapu); %przypisanie konkretnych granic Y
 trapy(1,1:2)=-inf; %rozszerzenie granic koncowych do nieskonczonosci
@@ -71,15 +41,16 @@ trapy(end,3:4)=inf;
 % end
 
 
-n = 1000;
-Ypp = 32.31;
+n = 1200;
+Ypp = 32.9;
 Upp = 30;
 Yzad(1:n) = Ypp + 0;
 Yzad(21:n) = Ypp + 7;
-Yzad(201:n) = Ypp - 0.2;
-Yzad(401:n) = Ypp + 2;
-Yzad(601:n) = Ypp + 4.2;
-Yzad(801:n) = Ypp + 0.5;
+Yzad(201:n) = Ypp + 12;
+Yzad(401:n) = Ypp + 19;
+Yzad(601:n) = Ypp + 5;
+Yzad(801:n) = Ypp + 1;
+Yzad(1001:n) = Ypp + 9;
 U(1:n) = Upp;
 Y(1:n) = Ypp;
 err = 0;

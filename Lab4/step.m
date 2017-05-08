@@ -9,8 +9,10 @@ initSerialControl COM17              % initialise com port
 %   G1 = 25 + 5 = 30
 %   W1 = 50
 
-Upp = 30;
-Y1pp = 32.31;
+Upp = 30; % pp pierwszego
+Ypp = 32.9;
+%Upp = 50; % pp drugiego
+%Ypp = 41.56;
 
 n = 400;            % długość symulacji
 U(1:n) = Upp;
@@ -21,7 +23,8 @@ U(50:n) = Upp;
 %% sending new values of control signals
 %            [W1,W2,W3,W4,G1,G2]
 sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
-             [50, 0, 0, 0,U(1),0]);  % new corresponding control values
+             [50, 0, 0, 0, 0, 0]);  % new corresponding control values
+sendNonlinearControls(U(1));
 
 figure('Position',  [403 0 620 725]);
 i=1;
@@ -34,15 +37,13 @@ while(i<=n)
 
         %% sending new values of control signals
         %            [W1,W2,W3,W4,G1,G2]
-        sendControls([ 1, 2, 3, 4, 5, 6], ... send for these elements
-                     [50, 0, 0, 0,U(i),0]);  % new corresponding control values
-
-        subplot('Position', [0.1 0.069 0.8 0.0855]); %62 at 50
+        sendNonlinearControls(U(i));
+        
+        subplot(2, 1, 1); %62 at 50
         stairs(U);
         xlabel('k');
         ylabel('u');
-        subplot('Position', [0.1 0.2138 0.8 0.0855]); %62 at 155
-        subplot('Position', [0.1 0.3586 0.8 0.2759]); %200 at 260
+        subplot(2, 1, 2); %62 at 155
         plot(Y);
         ylabel('y');
         pause(0.01);
@@ -66,7 +67,7 @@ end
 %dlmwrite('G2_step_30_T3.txt', Y2, ' ');
 %dlmwrite('G2_step_30_T1.txt', Y1, ' ');
 
-dlmwrite('G1_step_10.txt', Y, ' ');
+dlmwrite('G1_step.txt', Y, ' ');
 
 
 % S=zeros(2,2,n-50);
