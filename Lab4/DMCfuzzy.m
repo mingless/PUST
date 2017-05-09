@@ -1,7 +1,7 @@
 clear all;
 
 addpath('F:\SerialCommunication'); % add a path to the functions
-initSerialControl COM17 % initialise com port
+initSerialControl COM3 % initialise com port
 
 n = 1350;
 Ypp = 32.9;
@@ -18,74 +18,44 @@ Y(1:n) = Ypp;
 u = U - Upp;
 err = 0;
 
-%get step response from file
-s = fscanf(fopen('s.txt', 'r'),'%f', [1 Inf]);
-s = s./3;
-fclose('all');
 
 
-D=300;
-%optimal params
-N=300; Nu=300; lambda=1; %err=15.6111
 
-reg = 1;
+% D=300;
+% %optimal params
+% N=300; Nu=300; lambda=1; %err=15.6111
+
+reg = 2;
 
 %uznajemy ze D = N = Nu dla uproszczenia. mozna dodac recznie inne wartosci
 
-if reg == 1
-    trapu = [-1 -0.9 0.9 1];
-    D = {50};
-    lambda = {800};
-elseif reg == 2
-    trapu = [-1 -0.9 0.2 0.3;...
-    0.2 0.3 0.9 1];
-    D = {30, 50};
-    lambda = {222, 335};
-elseif reg == 3
-    trapu = [-1 -0.9 0.1 0.2;...
-    0.1 0.2 0.5 0.6;...
-    0.5 0.6 0.9 1];
-    D = {30, 40, 50};
-    lambda = {150, 1800, 65};%dalsze lambdy uzyskane przy fmincon
-elseif reg == 4
-    trapu = [-1 -0.9 0 0.1;...
-    0 0.1 0.2 0.3;...
-    0.2 0.3 0.5 0.6;...
-    0.5 0.6 0.9 1];
-    D = {30, 30, 40, 50};
-    lambda = {22.8, 327.5, 6, 20.7};
-elseif reg == 5
-    trapu = [-1 -0.9 0 0.1;...
-    0 0.1 0.15 0.25;...
-    0.15 0.25 0.35 0.45;...
-    0.35 0.45 0.5 0.6;...
-    0.5 0.6 0.9 1];
-    D = {30, 30, 40, 40, 50};
-    lambda = {0.16, 8100, 4.7, 551, 18.7};
-elseif reg == 6
-    trapu = [-1 -0.9 0 0.05;...
-    0 0.05 0.10 0.15;...
-    0.10 0.15 0.20 0.25;...
-    0.20 0.25 0.35 0.45;...
-    0.35 0.45 0.5 0.6;...
-    0.5 0.6 0.9 1];
-    D = {30, 30, 30, 40, 40, 50};
-    %     lambda = {0.16, 2125, 4.3, 8, 16.9, 609};
-    lambda = {0.16 17.7 17840 4.4 555 18.5};
+
+if reg == 2
+%     trapu = [-1 -0.9 0.2 0.3;...
+%     0.2 0.3 0.9 1];
+    D = {300, 250};
+    lambda = {0.15, 0.15};
 end
 
 N = D;
 Nu = D;
 
-trapy = arrayfun(@stat_val,trapu); %przypisanie konkretnych granic Y
-trapy(1,1:2)=-inf; %rozszerzenie granic koncowych do nieskonczonosci
-trapy(end,3:4)=inf;
+% trapy = arrayfun(@stat_val,trapu); %przypisanie konkretnych granic Y
+% trapy(1,1:2)=-inf; %rozszerzenie granic koncowych do nieskonczonosci
+% trapy(end,3:4)=inf;
+
+trapy = [-inf -inf 41.18 42.18;...
+         41.18 42.18 inf inf];
 
 s = cell(1, reg);
+%get step response from file
+s{1} = fscanf(fopen('DMCs1.txt', 'r'),'%f', [1 Inf]);
+s{2} = fscanf(fopen('DMCs2.txt', 'r'),'%f', [1 Inf]);
+fclose('all');
 
-for i = 1:reg
-    s{i} = get_step_resp(trapu(i,2),trapu(i,3)); %zastapic wczytaniem z
-end                                              %pliku na laboratorium
+% for i = 1:reg
+%     s{i} = get_step_resp(trapu(i,2),trapu(i,3)); %zastapic wczytaniem z
+% end                                              %pliku na laboratorium
 
 
 
@@ -152,7 +122,7 @@ for k=3:n
 
     e=Yzad(k)-Y(k); %uchyb
     err = err + e^2;
-    U(k)=U(k-1);
+    u(k)=u(k-1);
     for i = 1:reg
         du{i}=Ke{i}*e-Ku{i}*dup{i}'; %regulator
         for n=D{i}-1:-1:2
@@ -160,10 +130,10 @@ for k=3:n
         end
         dup{i}(1)=du{i};
         mi{i} = trapmf(Y(k),trapy(i,:)); %trapezowa funkcja przynaleznosci
-        U(k) = U(k) + mi{i}*dup{i}(1);
-   end
+        u(k) = u(k) + mi{i}*dup{i}(1);
+    end
 
-
+    U(k) = u(k) + Upp;
 
    if U(k) >100 %ograniczenia na min/max sygnalu sterowania
        U(k) = 100;
@@ -209,11 +179,3 @@ ylabel('y');
 decimal_comma(gca, 'XY');
 hold on;
 stairs(Yzad,':');
-
-%funkcja zwracajaca wartosc y charakterystyki statycznej dla zadanego u
-function y = stat_val(u)
-load stat.mat
-if (u>=-1 && u<=1)
-        y = Ys( int8((u+1)*50 + 1) );
-    end
-end

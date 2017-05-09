@@ -2,7 +2,7 @@ clear all;
 close all;
 
 addpath('F:\SerialCommunication');  % add a path to the functions
-initSerialControl COM17              % initialise com port
+initSerialControl COM3              % initialise com port
 
 % określenie temperatur w punkcie pracy
 % sterowanie:
@@ -67,7 +67,7 @@ end
 %dlmwrite('G2_step_30_T3.txt', Y2, ' ');
 %dlmwrite('G2_step_30_T1.txt', Y1, ' ');
 
-dlmwrite('G1_step.txt', Y, ' ');
+%dlmwrite('G1_step.txt', Y, ' ');
 
 
 % S=zeros(2,2,n-50);

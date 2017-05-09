@@ -19,8 +19,8 @@ fval(1:30)=0;
 % Yzad(1:300) = 0;
 % Yzad(50:300) = 0.5;
 % Yzad(100:300) = 1;
-s = fscanf(fopen('G1_step_50_20.txt', 'r'), '%f', [1 inf]);
-s = (s-41.60)/20;
+s = fscanf(fopen('G1_step_10.txt', 'r'), '%f', [1 inf]);
+s = (s-32.89)/10;
 fclose('all');
 
 %WYNIKI
@@ -32,13 +32,15 @@ fclose('all');
 % Kp = 1.82, Ki = 0.0313, Kd = 19.2
 % Ti = 58.1470, Td = 10.5495
 
+% mistake; Kp = 5.47; Ti = 54.7; Kd = 7.6965, Td = 9
+
 %step 20 from 50: param = 0.2241   12.9128   69.7369, fval 0.0049,s Td = 8
 % Kp = 9.37, Ki = 0.163, Kd = 116
 % Ti = 57.4847, Td = 12.3799
 
 %parametry od daniela 5 75 1.25
 
-for delay = 9:9
+for delay = 13:13
 
         [param, fval(delay), flag] = fmincon(@approx_err,[0.5 20 25])
 
