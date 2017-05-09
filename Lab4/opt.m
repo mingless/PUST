@@ -19,8 +19,8 @@ fval(1:30)=0;
 % Yzad(1:300) = 0;
 % Yzad(50:300) = 0.5;
 % Yzad(100:300) = 1;
-s = fscanf(fopen('G1_step_10.txt', 'r'), '%f', [1 inf]);
-s = (s-32.89)/10;
+s = fscanf(fopen('G1_step_50_20.txt', 'r'), '%f', [1 inf]);
+s = (s-41.56)/20;
 fclose('all');
 
 %WYNIKI
@@ -40,7 +40,7 @@ fclose('all');
 
 %parametry od daniela 5 75 1.25
 
-for delay = 13:13
+for delay = 8:8
 
         [param, fval(delay), flag] = fmincon(@approx_err,[0.5 20 25])
 
@@ -70,12 +70,12 @@ for delay = 13:13
     %title('PID z parametrami eksperymentalnymi, err=19.68');
     subplot('Position', [0.1 0.12 0.8 0.15]);
     stairs(data);
-    ylabel('u'); 
-    xlabel('k');
+    ylabel('$u$'); 
+    xlabel('$k$');
      decimal_comma(gca, 'XY');
     subplot('Position', [0.1 0.37 0.8 0.6]);
     plot(Ymod);
-    ylabel('y'); 
+    ylabel('$y$'); 
     hold on; 
     plot(Y);
      decimal_comma(gca, 'XY');

@@ -1,0 +1,356 @@
+\bigskip
+\bigskip
+
+Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
+
+\chapter{Podpunkt 1}
+Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($\boldsymbol{U}_{\mathrm{pp}}$, $\boldsymbol{Y}_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $u_1=u_2=0$, otrzymujemy na wyjściu oczekiwaną przez nas stałą wartość $y_1=y_2=\num{0}$.
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z1}
+\caption{Sprawdzenie poprawności punktu pracy}
+\label{Z1}
+\end{figure}
+
+
+\chapter{Podpunkt 2}
+Dla reprezentacji odpowiedzi skokowych wybrano kilka różnych wartości zmian sygnału sterującego. Skok na wszystkich torach wystąpił w chwili $ k=20 $. Wykresy zamieszczono na rys. \ref{Z2steps}.
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z2steps}
+\caption{Odpowiedzi modelu na różne skoki sygnału sterowania z punktu pracy} 
+\label{Z2steps}
+\end{figure}
+
+Symulując odpowiedź układu dla różnych wartości skoku sygnału sterującego otrzymujemy charakterystykę statyczną widoczną na rys. \ref{Z2stat}.
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z2statchar}
+\caption{Wyznaczona charakterystyka statyczna modelu}
+\label{Z2stat}
+\end{figure}
+
+Z otrzymanych wykresów można zauważyć, że właściwości statyczne i dynamiczne otrzymanego obiektu zdecydowanie nie są liniowe. Na wszystkich torach jest to układ dynamicznie samostabilizujący się, a jego opóźnienie dla poszczególnych torów zgadzają się z opóźneniami podanymi w definicji modelu w treści zadania. Czas stabilizacji różni się jednak w zależności od wartości skoku.
+
+
+\chapter{Podpunkt 3}
+Symulację cyfrowych algorytmów PID oraz DMC przeprowadzono korzystając odpowiednio ze skryptów \verb|PIDfuzzy.m| oraz \verb|DMCfuzzy.m| przy ustawieniu parametru ilości regulatorów jako 1. Dokładniejsze opisy implementacji zostaną przytoczone w podpunktach 5 oraz 6, gdzie wykorzystywane są wszystkie funkcje wymienionych wyżej skryptów.
+
+
+\chapter{Podpunkt 4}
+Ponieważ metoda eksperymentalnie była ekstensywnie wykorzystywana i opisywana w poprzednich projektach, poszczególne kroki dostrajania parametrów zwyczajnych algorytmów PID i DMC zostaną pominięte - przedstawione będą jedynie końcowe rezultaty.
+
+W przypadku algorytmu PID wstępne parametry regulatora uzyskano korzystając z optymalizatora zawartego w skrypcie \verb|pid_params.m|. Następnie parametry te ręcznie modyfikowano dla uzyskania gładszego przebiegu funkcji w większej ilości okresów między skokami. Ostateczny wykres przedstawiono na rysunku \ref{Z4pid} - parametry w nim wykorzystane to $ K = \num{0,17} $, $ T_\mathrm{i} = \num{3,70} $ oraz $ T_\mathrm{d} = \num{1,07} $. 
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z4PID}
+	\caption{Symulacja modelu z końcowym prostym regulatorem PID.\\ Błąd $ E = \num{1633,1} $}
+	\label{Z4pid}
+\end{figure}
+
+W algorytmie DMC parametr $ D = 50 $ wyznaczono na podstawie czasu ustalania się odpowiedzi na skok sygnału sterowania między krańcami jego dopuszczalnej wartości (konkretnie - wykorzystano skok od \num{-0,9} do \num{0,9}). Tą też odpowiedź użyto później do generacji macierzy odpowiednich dla DMC. Parametry $ N $ oraz $ N_\mathrm{u} $ ustawiono jako równe $ D $ jako teoretycznie najlepsze oraz dla ułatwienia porównań z późniejszymi regulatorami rozmytymi. Parametr $ \lambda $ dobierano eksperymentalnie, aż do uzyskania zadowalającego przebiegu. Ostatecznie wybrano $ \lambda = \num{800} $. Wykres końcowego DMC przedstawiono na rysunku \ref{Z4dmc}.
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z4DMC}
+	\caption{Symulacja modelu z końcowym prostym regulatorem DMC.\\ Błąd $ E = \num{1309,7} $}
+	\label{Z4dmc}
+\end{figure}
+
+\chapter{Podpunkt 5}
+
+Skrypt implementujący rozmyty regulator PID zapisany jest w pliku \verb|PIDfuzzy.m|.
+
+Wstępnie ustawiane jest zadany przebieg oraz inicjalizowane są wartości stosowanych wektorów sygnałów. W szczególności ustawiane są parametry poszczególnych regulatorów:
+
+\begin{lstlisting}[style=Matlab-editor]
+%trapu - parametry trapezoidalnych funkcji przynaleznosci, kolejno 
+%a b c d (wejscia), latwiej odczytac z wykresu w wierszach. Liczba 
+%wierszy - liczba oddzielnych regulatorow
+
+%liczba regulatorow
+reg = 2;
+
+if reg == 1
+  trapu = [-1 -0.9 0.9 1]; %dobrane ekpermentalnie granice
+  K = 0.179027601957906;   
+  Ti = 3.704713046081166;  %ich parametry
+  Td = 1.071891045104810;
+elseif reg == 2
+  trapu = [-1 -0.9 0.2 0.3;...
+    0.2 0.3 0.9 1];
+
+  K = [0.479881301349376 0.124587984682865];
+  Ti = [1.381567530175739 4.181803394572416];
+  Td = [1.415368606139710 0.874266044528476];
+elseif reg == 3
+
+%...%
+
+end
+
+%stat_val zwraca wartość charakterystyki statycznej dla danego u
+trapy = arrayfun(@stat_val,trapu); %przypisanie konkretnych Y
+trapy(1,1:2)=-inf; %rozszerzenie granic koncowych do inf
+trapy(end,3:4)=inf;
+
+%funkcja pozwalajaca zoptymalizowac jeszcze nie wyznaczone
+%parametry dla danych granic regulatorow rozmytych
+
+% for i = 1:size(trapu,1)
+%     [K(i), Ti(i), Td(i)] = pid_params(trapu(i,2),...
+%                                       stat_val(trapu(i,2)),...
+% end                                   stat_val(trapu(i,3)));
+
+n = 1000; %dlugosc symulacji
+Yzad(1:n) = 0; %zadana sciezka
+Yzad(21:n) = 7;
+Yzad(201:n)= -0.2;
+Yzad(401:n)= 2;
+Yzad(601:n)=4.2;
+Yzad(801:n)=0.5;
+U(1:n) = 0; %inicjalizacja
+Y(1:n) = 0;
+err = 0;
+
+Ts(1:size(trapu,1)) = 0.5;
+
+r2 = K.*Td./Ts; 
+r1 = K.*(Ts./(2.*Ti)-2.*Td./Ts - 1);
+r0 = K.*(1+Ts./(2.*Ti) + Td./Ts);
+mi = zeros(1,size(trapu,1)); %init wspolczynnikow przynaleznosci
+\end{lstlisting}
+
+Do realizacji regulacji rozmytej wykorzystaliśmy trapezowe funkcje przynależności, której to wartości uzyskano przy pomocy funkcji \verb|trapmf|. Na podstawie ich wyników dla aktualnego $ Y(k) $ wyznaczane było sumaryczne sterowanie:
+
+\begin{lstlisting}[style=Matlab-editor]
+%glowna petla PID
+for k=21:n
+  Y(k)=symulacja_obiektu4y(U(k-5), U(k-6), Y(k-1), Y(k-2));
+  e(k)=Yzad(k)-Y(k); %blad wyjscia
+
+  for i = 1:size(trapu,1)
+    mi(i) = trapmf(Y(k),trapy(i,:)); %przynaleznosc aktualnego Y(k)
+  end
+  du = sum(mi.*(r2*e(k-2)+r1*e(k-1)+r0*e(k)));
+
+  U(k)=du+U(k-1);
+  if U(k)>1 %ograniczenia na min/max sygnalu sterowania
+    U(k) = 1;
+  end
+  if U(k)<-1
+    U(k) = -1;
+  end
+end;
+\end{lstlisting}
+
+Obszary regulacji dla poszczególnych regulatorów wyznaczano eksperymentalnie, wzorując się przedziałem nieliniowości na wykresie charakterystyki statycznej. Parametry $ K $, $ T_\mathrm{i} $ i $ T_\mathrm{d} $ wyznaczano za pomocą optymalizatora ze skryptu \verb|pid_params.m| - można je odczytać z pliku zawierającego PID. Wyniki końcowej regulacji przedstawiono na rysunkach od \ref{Z5a} do \ref{Z5e}.
+
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z5reg2}
+\caption{Symulacja modelu z rozmytym PID o dwóch regulatorach. \\Błąd $ E=\num{1236,4} $}
+\label{Z5a}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z5reg3}
+\caption{Symulacja modelu z rozmytym PID o trzech regulatorach. \\Błąd $ E=\num{1154,3} $}
+\label{Z5b}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z5reg4}
+\caption{Symulacja modelu z rozmytym PID o czterech regulatorach. \\Błąd $ E=\num{1151,1} $}
+\label{Z5c}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z5reg5}
+\caption{Symulacja modelu z rozmytym PID o pięciu regulatorach. \\
+Błąd $ E=\num{1138,9} $}
+\label{Z5d}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z5reg6}
+\caption{Symulacja modelu z rozmytym PID o sześciu regulatorach. \\
+Błąd $ E=\num{1141,1} $}
+\label{Z5e}
+\end{figure}
+
+
+\chapter{Podpunkty 6-7}
+Zadanie 6, tj. bez modyfikacji $ \lambda $ okazało się bardzo trudne (lub wręcz niemożliwe) do wykonania - niezależnie od doboru przedziałów regulatorów lokalnych przy ustaleniu $ D $, $ N $ i $ N_\mathrm{u} $ na podstawie odpowiedzi skokowej w owych przedziałach. Zdecydowano się więc na połączenie obu tych podpunktów - zostaną zaprezentowane regulatory rozmyte DMC korzystające z już dobranych $ \lambda $. Warto tu też wspomnieć, że z powodu znacznej ilości $ \lambda_i $ do wyznaczenia dla oddzielnych regulatorów lokalnych zdecydowano się ponownie na ich optymalizację - wykorzystywano w tym celu funkcję zamieszczoną w pliku \verb|dmc_err.m| wyznaczającą błąd dmc dla zadanych $ \lambda_i $, oraz optymalizatora \verb|fmincon|.
+
+Skrypt implementujący rozmyty regulator DMC z pliku \verb|DMCfuzzy.m|, podobnie jak PID z poprzedniego podpunktu, wstępnie ustawia wartości zadane oraz parametry używanych regulatorów:
+
+\begin{lstlisting}[style=Matlab-editor]
+reg = 5;
+
+%uznajemy ze D = N = Nu dla uproszczenia. mozna dodac recznie
+%inne wartosci
+
+if reg == 1
+  trapu = [-1 -0.9 0.9 1];
+  D = {50};
+  lambda = {800}; 
+elseif reg == 2
+  trapu = [-1 -0.9 0.2 0.3;...
+  0.2 0.3 0.9 1];
+  D = {30, 50};
+  lambda = {222, 335};
+elseif reg == 3
+
+%...%
+
+end
+
+N = D; % z przyjetego zalozenia optymalnego regulatora
+Nu = D;
+
+%stat_val zwraca wartość charakterystyki statycznej dla danego u
+trapy = arrayfun(@stat_val,trapu); %przypisanie konkretnych Y
+trapy(1,1:2)=-inf; %rozszerzenie granic koncowych do inf
+trapy(end,3:4)=inf;
+
+s = cell(1, reg); %inicjalizacja s
+
+for i = 1:reg
+  s{i} = get_step_resp(trapu(i,2),trapu(i,3)); %odpowiedz skokowa
+end                                              
+
+
+n = 1000; %dlugosc symulacji
+Yzad(1:n) = 0; %zadana sciezka
+Yzad(21:n) = 7;
+Yzad(201:n)= -0.2;  
+Yzad(401:n)= 2; 
+Yzad(601:n)=4.2; 
+Yzad(801:n)=0.5;
+U(1:n) = 0; %inicjalizacja
+Y(1:n) = 0;
+err = 0;
+
+\end{lstlisting}
+
+Następnie dla każdego z regulatorów lokalnych oddzielnie wyznaczane są kolejne macierze charakteryzujące regulator DMC:
+
+\begin{lstlisting}[style=Matlab-editor]
+dup = cell(1,reg); %oddzielna komorka - oddzielny regulator. 
+M = cell(1,reg);   %reszta identycznie jak w normalnym dmc
+Mp = cell(1,reg);
+K = cell(1,reg);
+Ku = cell(1,reg);
+Ke = cell(1,reg);
+du = cell(1,reg);
+
+for k = 1:reg
+  dup{k}(1:D{k}-1) = 0;
+
+  M{k}=zeros(N{k},Nu{k});
+  for i=1:N{k}
+    for j=1:Nu{k}
+      if (i>=j)
+        M{k}(i,j)=s{k}(i-j+1);
+      end;
+    end;
+  end;
+
+  Mp{k}=zeros(N{k},D{k}-1);
+  for i=1:N{k}
+    for j=1:D{k}-1
+      if i+j<=D{k}
+        Mp{k}(i,j)=s{k}(i+j)-s{k}(j);
+      else
+        Mp{k}(i,j)=s{k}(D{k})-s{k}(j);
+      end;      
+    end;
+  end;
+
+  K{k}=((M{k}'*M{k}+lambda{k}*eye(Nu{k}))^-1)*M{k}';
+  Ku{k}=K{k}(1,:)*Mp{k};
+  Ke{k}=sum(K{k}(1,:));
+end
+\end{lstlisting}
+
+Następnie wykonywana jest główna pętla symulacji, w której wyliczane są nowe zmiany sterowania dla każdego z regulatorów lokalnych. Są one potem sumowane do końcowego $ du $ w zależności od wartości trapezowej funkcji przynależności \verb|trapmf| dla aktualnego punktu $ Y(k) $.
+
+\begin{lstlisting}[style=Matlab-editor]
+%glowna petla
+for k=21:n 
+  Y(k)=symulacja_obiektu4y(U(k-5), U(k-6), Y(k-1), Y(k-2)); 
+
+  e=Yzad(k)-Y(k); %uchyb
+  err = err + e^2;
+  U(k)=U(k-1);
+  for i = 1:reg
+    du{i}=Ke{i}*e-Ku{i}*dup{i}'; %regulator
+    for n=D{i}-1:-1:2
+      dup{i}(n)=dup{i}(n-1);
+    end
+    dup{i}(1)=du{i};
+    mi{i} = trapmf(Y(k),trapy(i,:)); %trapezowa przynaleznosc
+    U(k) = U(k) + mi{i}*dup{i}(1);
+  end
+
+  if U(k)>1 %ograniczenia na min/max sygnalu sterowania
+    U(k) = 1;
+  end
+  if U(k)<-1
+    U(k) = -1;
+  end
+
+end
+\end{lstlisting}
+
+Rezultaty regulacji można ujrzeć na rysunkach od \ref{Z6a} do \ref{Z6e}. Możemy zauważyć, że regulacja rozmyta DMC skutkuje mniejszym błędem dla zadanego przebiegu niż rozmyty PID. Stosowane parametry regulatorów lokalnych można odczytać ze stosowanego skryptu.
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z6-7reg2}
+\caption{Symulacja modelu z rozmytym DMC o dwóch regulatorach. \\
+	Błąd $ E=\num{1239,6} $}
+\label{Z6a}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z6-7reg3}
+\caption{Symulacja modelu z rozmytym DMC o trzech regulatorach. \\
+	Błąd $ E=\num{1188,3} $}
+\label{Z6b}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z6-7reg4}
+\caption{Symulacja modelu z rozmytym DMC o czterech regulatorach. \\
+	Błąd $ E=\num{1028,0} $}
+\label{Z6c}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z6-7reg5}
+\caption{Symulacja modelu z rozmytym DMC o pięciu regulatorach. \\
+	Błąd $ E=\num{1007.5} $}
+\label{Z6d}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z6-7reg6}
+\caption{Symulacja modelu z rozmytym DMC o sześciu regulatorach. \\
+	Błąd $ E=\num{1007.7} $}
+\label{Z6e}
+\end{figure}

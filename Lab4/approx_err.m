@@ -7,7 +7,7 @@ global delay
 % Y(50:300) = 0.5;
 % Y(100:300) = 1;
 s = fscanf(fopen('G1_step_50_20.txt', 'r'), '%f', [1 inf]);
-s = (s-41.60)/20;
+s = (s-41.56)/20;
 fclose('all');
 % delay = 3;
 data(1:350) = 0;
