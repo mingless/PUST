@@ -189,7 +189,7 @@ Błąd $ E=\num{1141,1} $}
 \end{figure}
 
 
-\chapter{Podpunkty 6-7}
+\chapter{Podpunkty 6--7}
 Zadanie 6, tj. bez modyfikacji $ \lambda $ okazało się bardzo trudne (lub wręcz niemożliwe) do wykonania - niezależnie od doboru przedziałów regulatorów lokalnych przy ustaleniu $ D $, $ N $ i $ N_\mathrm{u} $ na podstawie odpowiedzi skokowej w owych przedziałach. Zdecydowano się więc na połączenie obu tych podpunktów - zostaną zaprezentowane regulatory rozmyte DMC korzystające z już dobranych $ \lambda $. Warto tu też wspomnieć, że z powodu znacznej ilości $ \lambda_i $ do wyznaczenia dla oddzielnych regulatorów lokalnych zdecydowano się ponownie na ich optymalizację - wykorzystywano w tym celu funkcję zamieszczoną w pliku \verb|dmc_err.m| wyznaczającą błąd dmc dla zadanych $ \lambda_i $, oraz optymalizatora \verb|fmincon|.
 
 Skrypt implementujący rozmyty regulator DMC z pliku \verb|DMCfuzzy.m|, podobnie jak PID z poprzedniego podpunktu, wstępnie ustawia wartości zadane oraz parametry używanych regulatorów:

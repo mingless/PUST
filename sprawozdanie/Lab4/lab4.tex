@@ -1,0 +1,167 @@
+\chapter{Wstęp}
+Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP\@.
+
+\bigskip
+
+Zadane wartości:
+
+\smallskip
+
+$\mathrm{W1}=50\%$
+
+\smallskip
+
+$\mathrm{G1}_{\mathrm{pp}}=U_{\mathrm{pp}}=25+5=30$
+
+\smallskip
+
+$T=1s$ (okres próbkowania)
+
+\bigskip
+
+Ograniczenia:
+
+\smallskip
+
+$0 \le \mathrm{G1}(k) \le 100$
+
+\chapter{Podpunkt 1}
+Sprawdzenie możliwości sterowania i pomiaru w komunikacji ze stanowiskiem odbyło się poprzez wysłanie do stanowiska kilku różnych wartości sterowania i zaobserwowanie odpowiedniej odpowiedzi stanowiska oraz zmian w napływających danych.
+
+Zadane wartości sterowania w punkcie pracy to: $\mathrm{W1}=50\%$, $\mathrm{G1}=25+5=30$. Zgodnie z treścią zadania wartość W1 nie była zmieniana, sterowanie odbywało się sygnałem G1, zaś sygnał T1 traktowany był jako sygnał wyjściowy.
+
+Pomiar wartości temperatury w punkcie pracy odbył się zgodnie z poleceniem poprzez zadanie wartości sygnałów sterujących W1, G1, a następnie zarejestrowanie wartości sygnału T1 po ustabilizowaniu się układu. Warto w tym momencie zauważyć, że ze względu na charakter układu i jego podatność na zakłócenia zaobserwowano drobne zmiany punktu pracy, zaś pomiędzy laboratoriami zmieniony został układ, na którym przeprowadzane były doświadczenia. Ze względu na zebrane w czasie pierwszego spotkania odpowiedzi skokowe w dalszych pracach za punkt pracy przyjęto przybliżoną średnią z otrzymywanych wtedy pomiarów, która wyniosła $\mathrm{T1}=\num{32,9}$. Na rys.~\ref{R1} i~\ref{R2} zamieszczono stabilizację w punkie pracy odpowiednio podczas pierwszego i drugiego spotkania.
+
+\begin{figure}[H]
+\centering
+\input{./im/firstStab.tex}
+\caption{Stabilizacja w punkcie pracy podczas drugiego spotkania}
+\label{R1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{./im/secondStab.tex}
+\caption{Stabilizacja w punkcie pracy podczas drugiego spotkania}
+\label{R2}
+\end{figure}
+
+\chapter{Podpunkt 2}
+Ze względu na ograniczenia czasowe po konsultacji z prowadzącym uzgodniono, że zamiast pięciu odpowiedzi skokowych z punktu pracy na potrzeby zadania wystarczą trzy odpowiedzi skokowe z punktu pracy oraz jedna wykonana z punktu w górnej części charakterystyki statycznej (zostanie ona omówiona w kolejnym podpunkcie). Dlatego też uzyskano odpowiedzi przy wartościach skoku z punktu pracy $\triangle U = \{10, 20, 30\}$ oraz skoku z punktu $U=50$ o $\triangle U = 20$. Na rys.~\ref{R3} zamieszczono wyznaczone odpowiedzi dla skoków z punktu pracy, zaś na rys.~\ref{R4} z punktu $U=50$. Na rys.\ref{R4b} przestawiono stabilizację układu w tym punkcie.
+
+\begin{figure}[H]
+\centering
+\input{./im/multiplesteps.tex}
+\caption{Odpowiedzi skokowe z punktu pracy}
+\label{R3}
+\end{figure}
+
+Różnice w wartościach przed wykonaniem samego skoku (które to powinny przyjmować wartość $U_{\mathrm{pp}}$) wynikają z ograniczonych możliwości dokładnego schłodzenia obiektu oraz delikatnych zmian punktu pracy z czasem.
+
+\begin{figure}[H]
+\centering
+\input{./im/step50_20.tex}
+\caption{Odpowiedź skokowa z punktu $\mathrm{T1}=50$}
+\label{R4}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{./im/firstStab_at50.tex}
+\caption{Stabilizacja układu w punkcie $U=50$}
+\label{R4b}
+\end{figure}
+
+
+Na podstawie zebranych odpowiedzi skokowych możemy zauważyć, że choć układ nadal jest samostabilizujący to jego właściwości nie są już liniowe. Na podstawie informacji uzyskanych w czasie laboratorium oraz zebranych odpowiedzi skokowych możemy narysować przybliżoną charakterystykę statyczną obiektu na rys.~\ref{R5}. Warto także zauważyć, że opóźnienia nieznacznie różnią się pomiędzy odpowiedziami skokowymi, ale nie wykazują żadnego trendu i porównując je z wynikami z poprzednich laboratoriów możemy te zmiany przypisać naturze obiektu i niedokładności jego schłodzenia przed wykonaniem skoku. Dla wszystkich skoków jest to wartość bliska ok. 12 próbkom.
+
+\begin{figure}[H]
+\centering
+\input{./im/statchar.tex}
+\caption{Przybliżona charakterystka statyczna obiektu}
+\label{R5}
+\end{figure}
+
+Na podstawie charakterystyki możemy zauważyć, że w rozpatrywanym przedziale odpowiedź obiektu jest przedziałami liniowa w dwóch przedziałach co będzie bardzo istotne przy projektowaniu regulatorów rozmytych.
+
+\chapter{Podpunkt 3}
+Na potrzeby algorytmu DMC przekształcona została odpowiedź skokowa dla skoku z punktu pracy o $\triangle U = 30$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskana odpowiedź skokowa została przedstawiona na rys.~\ref{R6}. Kolejne wartości wyznaczonej odpowiedzi skokowej zadanego modelu zapisane są w pliku \verb+DMC_s.txt+.
+\begin{equation}
+S_i = \frac{S_i^0 - Y_{\mathrm{pp}}}{\triangle U} \textrm{, dla } i=1,\ldots
+\label{step_norm}
+\end{equation}
+gdzie $S_i^0$ to kolejne wartości dyskretnej odpowiedzi skokowej procesu, $\triangle U$ to wartość skoku sygnału sterującego, zaś $S_i$ to kolejne wartości odpowiedzi skokowej wykorzystywanej później przez algorytm DMC\@.
+
+\begin{figure}[H]
+\centering
+\input{./im/approx30_30.tex}
+\caption{Porównanie aproksymacji z odpowiedzią rzeczywistą dla skoku z punktu pracy o $\triangle U = 30$}
+\label{R6}
+\end{figure}
+
+Optymalizacja przeprowadzona została identycznie jak przy poprzednich laboratoriach, początkowo przy użyciu metody \verb+ga+ wykorzystującej algorytm genetyczny jednakże ze względu na otrzymywanie bardzo niestabilnych rozwiązań zastosowaliśmy ostatecznie metodę \verb+fmincon+ z parametrami początkowymi $[\num{0,5} ~ 20 ~ 25]$. Wartości parametrów początkowych zostały oszacowane na podstawie poprzednich wyników uzyskanych za pomocą algorytmu genetycznego. Funkcja ta została wykorzystana w skrypcie do optymalizacji parametrów $K$, $T_1$ oraz $T_2$, zaś parametr $T_{\mathrm{D}}$ był inkrementowany w kolejnych iteracjach testów.
+
+\chapter{Podpunkt 4}
+Programy do symulacji cyfrowej algorytmów PID oraz DMC (w wersji analitycznej) dla symulowanego procesu umieszczone zostały odpowiednio w plikach \verb+PID.m+, \verb+DMC.m+. Ponieważ są to implementacje identyczne z zastosowanymi podczas podczas pierwszego laboratorium nie będą tu dokładnie dyskutowane.
+
+\chapter{Podpunkt 5}
+Początkowo po konsultacji z prowadzącym zaproponowana została trajektoria składająca się ze skoków o $\triangle U={7, 5, 7, -14, -4, 8}$ z punktu pracy w odstępach co 200s, niestety dla tak wysokich skoków i krótkich odstępów czasowych układ nie był w stanie się ustabilizować pomiędzy skokami dlatego też po nieudanej próbie trajektoria została zmieniona na składającą się ze skoków o $\triangle U={-1, 4, 6, -2, 4, \num{-1.5}}$ odpowiednio w chwilach $k={21, 151, 401, 701, 901, 1151}$, zaś cała trajektoria trwała 22 minuty i 30 sekund.
+
+Ze względu na wyraźne ograniczenia czasowe nastawy regulatora PID dobrano przy użyciu narzędzia \verb+pidtune+ na symulacji obiektu, zaś dla regulatora DMC parametr $D=300$ wyznaczono na podstawie czasu ustalania się odpowiedzi na skok sygnału sterowania. Parametry $ N $ oraz $ N_\mathrm{u} $ ustawiono jako równe $ D $ jako teoretycznie najlepsze oraz dla ułatwienia porównań z późniejszymi regulatorami rozmytymi. Parametr $ \lambda $ ustalono na $\lambda=1$. Odpowiednie wykresy wraz z wartością wskaźnika jakości zamieszczono na rys.~\ref{R7}--\ref{R8}.
+
+\begin{figure}[H]
+\centering
+\input{./im/PIDfixed.tex}
+\caption{Regulator PID dla $K=\num{5.47}$ $T_{\mathrm{i}}=\num{54.7}$ $T_{\mathrm{d}}=\num{7.69}$, błąd $E=2629$}
+\label{R7}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{./im/DMCfixed.tex}
+\caption{Regulacja DMC, błąd $E=2753$}
+\label{R8}
+\end{figure}
+
+Na podstawie przebiegów możemy zauważyć, że zgodnie z oczekiwaniem jakość regulacji nie jest wysoka. Niespodziewane było jednak uzyskanie lepszej regulacji dla regulatora PID\@.
+
+\chapter{Podpunkt 6}
+Regulator rozmyty PID zaimplementowany znajduje się w pliku \verb+PIDfuzzy.m+, jest on poza drobnymi zmianami wynikającymi ze sposobu komunikacji z obiektem identyczny z programem użytym w projekcie dlatego też nie będzie tutaj ponownie omawiany.
+
+Po konsultacji z prowadzącym uzgodniono, że ze względu na ograniczenia czasowe i bardzo długą trajektorię przeprowadzone zostaną jedynie eksperymenty dla dwóch regulatorów lokalnych. Warto także zauważyć, że ze względu na dwu-liniowy charakter charakterystyki statycznej obiektu większa liczba regulatorów nie była wymagana. Parametry lokalnych regulatorów zostały osobno poprzez użycie narzędzia \verb+pidtune+ na symulacjach obiektów odpowiadającym odpowiednio pierwszemu i drugiemu fragmentowi charakterystyki statycznej obiektu. Wyniki regulacji są nieznacznie lepsze niż dla zwykłego regulatora PID, przedstawiono je na rys.~\ref{R9}.
+
+\begin{figure}[H]
+\centering
+\input{./im/PIDfuzzy.tex}
+\caption{Regulator rozmyty PID, błąd $E=2609$}
+\label{R9}
+\end{figure}
+
+\chapter{Podpunkty 7--8}
+Regulator rozmyty DMC zaimplementowany znajduje się w pliku \verb+DMCfuzzy.m+, jest on poza drobnymi zmianami wynikającymi ze sposobu komunikacji z obiektem identyczny z programem użytym w projekcie dlatego też nie będzie tutaj ponownie omawiany.
+
+Po konsultacji z prowadzącym uzgodniono, że ze względu na ograniczenia czasowe i bardzo długą trajektorię przeprowadzone zostaną jedynie eksperymenty dla dwóch regulatorów lokalnych. Warto także zauważyć, że ze względu na dwu-liniowy charakter charakterystyki statycznej obiektu większa liczba regulatorów nie była wymagana.
+
+Na potrzeby regulatorów lokalnych zostały wykorzystane dwie odpowiedzi skokowe, jedna z punktu pracy o $\triangle U = 10$ i druga z punktu $U=50$ o $\triangle U = 20$. Warto zauważyć, że nie użyto odpowiedzi dla skoku o 30 ponieważ wkraczała już ona w zakres drugiego regulatora lokalnego. Parametry regulatorów zostały dobrane tak jak poprzednio, tzn. parametr $D$ wyznaczono z czasu ustalania się odpowiedzi na skok sygnału sterowania, wyniósł on 300 dla regulatora w pierwszym, niższym zakresie oraz 250 dla drugiego. Parametry $N$ oraz $N_\mathrm{u}$ ustawiono jako równe odpowiednim parametrom $D$. Na rys.~\ref{R10}--\ref{R12} przedstawiono wyniki dla trzech różnych wartości parametru $\lambda$. Jak widać poniżej dzięki ustawieniu odpowiednich wartości tego parametru udało się znacznie pomniejszyć wartość błędu i zwiększyć jakość regulacji.
+
+\begin{figure}[H]
+\centering
+\input{./im/DMCfuzzyLam1.tex}
+\caption{Regulator rozmyty DMC dla $\lambda = {1, 1}$, błąd $E=2848$}
+\label{R10}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{./im/DMCfuzzyLam02_5.tex}
+\caption{Regulator rozmyty DMC dla $\lambda = {\num{0,2}, 5}$, błąd $E=2390$}
+\label{R11}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{./im/DMCfuzzyLam015015.tex}
+\caption{Regulator rozmyty DMC dla $\lambda = {\num{0.15}, \num{0.15}}$, błąd $E=2331$}
+\label{R12}
+\end{figure}
+
