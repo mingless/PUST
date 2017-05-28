@@ -1,0 +1,92 @@
+//Regulator DMC
+
+
+IF (SD412 > 150) THEN
+	Zadana_DMC3 := 3650.0 + 400.0;
+ELSE
+	Zadana_DMC3 := 3650.0;
+END_IF;
+
+IF (SD412 > 250) THEN
+	Zadana_DMC2 := 3830.0 + 300.0;
+	ELSE
+	Zadana_DMC2 := 3830.0;
+END_IF;
+
+
+err1 := Zadana_DMC3 - INT_TO_REAL(D100);
+err2 := Zadana_DMC2 - INT_TO_REAL(D101);
+
+//du11 := Ke11 * err1;
+//du21 := Ke21 * err2;
+//du12 := Ke12 * err1;
+//du22 := Ke22 * err2;
+du1 := Ke11 * err1 + Ke12 * err2;
+du2 := Ke21 * err1 + Ke22 * err2;
+
+FOR it := 0 TO 78 BY 1 DO
+	//du11 := du11 - Ku11[it] * dup11[it];
+	//du21 := du21 - Ku21[it] * dup21[it];
+	//du12 := du12 - Ku12[it] * dup12[it];
+	//du22 := du22 - Ku22[it] * dup22[it];
+    du1 := du1 - Ku11[it] * dup1[it] - Ku21[it] * dup2[it];
+    du2 := du2 - Ku12[it] * dup1[it] - Ku22[it] * dup2[it];
+END_FOR;
+
+FOR it := 78 TO 1 BY -1 DO
+	//dup11[it] := dup11[it-1];
+	//dup21[it] := dup21[it-1];
+	//dup12[it] := dup12[it-1];
+	//dup22[it] := dup22[it-1];
+    dup1[it] := dup1[it-1];
+    dup2[it] := dup2[it-1];
+END_FOR;
+
+//dup11[0] := du11;
+//dup12[0] := du12;
+//dup21[0] := du21;
+//dup22[0] := du22;
+dup1[0] := du1;
+dup2[0] := du2;
+
+u_1 := u_1 + du1;
+u_2 := u_2 + du2;
+
+
+
+IF (u_1 > 700.0) THEN
+	u_1:=700.0;
+END_IF;
+
+IF (u_1 < -300.0) THEN
+	u_1:=-300.0;
+END_IF;
+
+IF (u_2 > 650.0) THEN
+	u_2:=650.0;
+END_IF;
+
+IF (u_2 < -350.0) THEN
+	u_2:=-350.0;
+END_IF;
+
+
+IF (INT_TO_REAL(D100) > 15000.0) THEN
+	u_1:=-300.0;
+END_IF;
+
+IF (INT_TO_REAL(D101) > 15000.0) THEN
+	u_2:=-350.0;
+END_IF;
+
+
+D114:=REAL_TO_INT(u_1) + 300;
+D115:=REAL_TO_INT(u_2) + 350;
+//D114:=300;
+
+//IF (SD412 > 200) THEN
+//	D114:= 500;
+//END_IF;
+
+D110:=500;
+D111:=500;

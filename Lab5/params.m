@@ -2,23 +2,19 @@
 
 n = 1000; %dlugosc symulacji
 
-D=350;      %parametry regulatora
-N=350; Nu=350; lambda=1;
-
-U1pp = 30;
-U2pp = 35;
-Y1pp = 35.31;
-Y2pp = 35.94;
+D=80;      %parametry regulatora
+N=80; Nu=80; lambda=1;
 
 
-s11 = fscanf(fopen('s11', 'r'), '%f', [1 inf]);
-s12 = fscanf(fopen('s12', 'r'), '%f', [1 inf]);
-fclose('all');
-S = zeros(2,2,350);
+% s11 = fscanf(fopen('s11', 'r'), '%f', [1 inf]);
+% s12 = fscanf(fopen('s12', 'r'), '%f', [1 inf]);
+% fclose('all');
+load step.mat
+S = zeros(2,2,135);
 S(1,1,1:end)=s11;
 S(2,2,1:end)=s11;
-S(1,2,1:end)=s12;
-S(2,1,1:end)=s12;
+S(1,2,1:end)=s21;
+S(2,1,1:end)=s21;
 
 nu = length(S(1,:,1));
 ny = length(S(:,1,1));
@@ -63,9 +59,11 @@ fprintf(file,'Ke12 := %f;\n',Ke(1,2));
 fprintf(file,'Ke21 := %f;\n',Ke(2,1));
 fprintf(file,'Ke22 := %f;\n',Ke(2,2));
 
-for i = 0:size(Ku,2)-1
-    fprintf(file, 'Ku1[%d] := %f;\n',i,Ku(1,i+1));
-    fprintf(file, 'Ku2[%d] := %f;\n',i,Ku(2,i+1));
+for i = 0:size(Ku,2)/2-1
+    fprintf(file, 'Ku11[%d] := %f;\n',i,Ku(1,2*i+1));
+    fprintf(file, 'Ku21[%d] := %f;\n',i,Ku(1,2*i+2));
+    fprintf(file, 'Ku12[%d] := %f;\n',i,Ku(2,2*i+1));
+    fprintf(file, 'Ku22[%d] := %f;\n',i,Ku(2,2*i+2));
 end
 fclose(file);
 
