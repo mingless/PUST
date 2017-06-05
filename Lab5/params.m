@@ -3,7 +3,8 @@
 n = 1000; %dlugosc symulacji
 
 D=80;      %parametry regulatora
-N=80; Nu=80; lambda=1;
+//N=80; Nu=80; lambda=1;
+N=80; Nu=80; lambda=5;
 
 
 % s11 = fscanf(fopen('s11', 'r'), '%f', [1 inf]);
