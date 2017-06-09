@@ -1,0 +1,143 @@
+\bigskip
+\bigskip
+
+Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
+
+\chapter{Podpunkt 1}
+Sprawdzenie poprawności podanych wartości punktu pracy odbywa się poprzez zasymulowanie odpowiedzi procesu w punkcie pracy ($\boldsymbol{U}_{\mathrm{pp}}$, $\boldsymbol{Y}_{\mathrm{pp}}$). Z rys. \ref{Z1} widzimy, że podane wartości są poprawne - gdy na wejściu modelu podajemy $u_1=u_2=u_3=u_4=0$, otrzymujemy na wyjściu oczekiwaną przez nas stałą wartość $y_1=y_2=y_3=\num{0}$.
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z1}
+\caption{Sprawdzenie poprawności punktu pracy}
+\label{Z1}
+\end{figure}
+
+
+\chapter{Podpunkt 2}
+
+
+Odpowiedzi wyznaczono dla skoków jednostkowego na kolejnych wejściach w chwili $ k=0 $. Są one przedstawione na poniższych rysunkach, stosując oznaczenie $ s^{ij} $, gdzie $ i $ to numer zmiennej wyjściowej, a $ j $ wejściowej.
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z2step1}
+	\caption{Odpowiedzi modelu na skoki wejść nr 1 i 2.}
+	\label{Z2a}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z2step2}
+	\caption{Odpowiedzi modelu na skoki wejść nr 3 i 4.}
+	\label{Z2b}
+\end{figure}
+
+\chapter{Podpunkt 3}
+
+Implementacja zadanych algorytmów jest praktycznie identyczna jak w projekcie 3, zostanie więc pominięty szczegółowy jej opis. Skrypty zapisane są w plikach \verb|PID.m| i \verb|DMC.m|.
+
+Jedyną różnicą algorytmu PID było zadanie odpowiedniego przypisania wejść i wyjść do siebie. Wykonano je przy użyciu następujących komend w MATLABie: 
+
+\begin{lstlisting}[style=Matlab-editor]
+K = squeeze(S(:,:,end))' %macierz wzmocnien
+cond(K([2 3 4],:))
+cond(K([1 3 4],:))
+cond(K([1 2 4],:)) % <- min, wiec ignorujemy trzecie wejscie w PID
+cond(K([1 2 3],:))
+(K([1 2 4],:).*(K([1 2 4],:)^-1))' %result: u1>y1,u2>y2,u3>y3
+\end{lstlisting}
+
+Funkcje \verb|cond| miały na celu wybranie wejścia, które nie zostanie podłączone do żadnego wyjścia - okazało się to być $ u_3 $, usunięcie którego spowodowało zwrócenie najmniejszej wartości. Następnie zastosowanie komendy z ostatniej linii zwróciło następującą macierz:
+
+\begin{equation}
+\begin{bmatrix}
+0.9258 &   0.0538 &  -0.8070 \\
+-0.9108 &   0.8613 &   0.0758 \\
+0.0464 &  -0.2432 &   0.7055 \\
+\end{bmatrix}
+\end{equation}
+
+Dobranie wejść i wyjść do siebie jest optymalne wtedy, gdy liczby na przecięciu wierszy (odpowiadających wejściom) i kolumn (odpowiadających wyjściom) są maksymalne. W naszym przypadku najlepsze okazało się podłączenie $ u_1 $ do $ y_1 $, $ u_2 $ do $ y_2 $ i $ u_4 $ do $ y_3 $.
+
+\bigskip
+
+Algorytm DMC również jest praktycznie identyczny - jedyną różnicą jest dodanie rozróżnienia między $ \lambda $ dla oddzielnych wejść oraz dodanie wag $ \psi $ dla kary za uchyby różnych wyjść.
+
+\begin{lstlisting}[style=Matlab-editor]
+%lambda i psi to wektory zawierajace kolejne współczynniki kar
+%odpowiednio uchybow i przyrostow sterowania
+Lambda = diag(repmat(lambda,1,Nu));
+Psi = diag(repmat(psi,1,N));
+K=((M'*Psi*M+Lambda)^-1)*M'*Psi;
+\end{lstlisting}
+
+
+\chapter{Podpunkt 4}
+
+Nastawy regulatora PID z powodu znacznej ilości parametrów zostały wykonane tylko w procesie optymalizacji. Wstępnie dobrano losowy zestaw parametrów początkowych, dla których funkcja nie zbiega do nieskończoności, a następnie na ich podstawie uruchomiono komendę
+
+\begin{lstlisting}[style=Matlab-editor]
+fmincon(@PID_err,[1.1 9 0.8 3.45 9 0.3 1 200 0.2],...
+        [],[],[],[],[0 0 0 0 0 0 0 0 0],[])
+\end{lstlisting}
+
+Zastosowano dolne ograniczenie parametrów jako 0. Uzyskane wartości, przy czym kolejne wiersze odpowiadają nastawom kolejnych regulatorów, to:
+
+\begin{equation}
+K = 
+\begin{bmatrix}
+\num{6,8822} \\ \num{5,7496} \\ \num{6,1748}
+\end{bmatrix} \qquad
+T_\mathrm{i} = 
+\begin{bmatrix}
+\num{1,0101} \\ \num{0,5776} \\ \num{16,4255}
+\end{bmatrix} \qquad
+T_\mathrm{d} =
+\begin{bmatrix}
+\num{6,95e-05} \\ \num{8,25e-05} \\ \num{0,0253}
+\end{bmatrix}
+\end{equation}
+
+\bigskip
+
+W przypadku DMC wartości $ D $, $ N $ i $ N_\mathrm{u} $ dobrano jako równe sobie jako teoretycznie optymalne. Ustawiono je na wartość $ 120 $, wynikającą z czasu stabilizacji najwolniejszej z odpowiedzi skokowych.
+Wszystkie parametry $ \lambda $ i $ \psi $ wstępnie ustawiono na 1.
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z4}
+	\caption{Symulacja regulatora PID.\\Błąd $ E = \num{105,1784} $}
+	\label{Z4a}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z4DMC}
+	\caption{Symulacja pierwszego regulatora DMC.\\Błąd $ E = \num{139,6528}$}
+	\label{Z4b}
+\end{figure}
+
+\chapter{Podpunkt 5}
+Parametry DMC zoptymalizowano przy użyciu ograniczeń dolnych: \num{0,01} dla $ \lambda $ i 0 dla $ \psi $. Dodatkowo wprowadzono ograniczenie nierównościowe sumy wag $ \psi $: $ \sum_{i} \psi_i \le 3  $.
+
+\begin{lstlisting}[style=Matlab-editor]
+fmincon(@DMC_err,[1 1 1 1 1 1 1 ],[0 0 0 0 1 1 1],[3],...
+        [],[],[0.01 0.01 0.01 0.01 0 0 0],[])
+\end{lstlisting}
+
+Uzyskane parametry to:
+\begin{align}
+	&\lambda_1 = \num{0,01},\quad\lambda_2 = \num{0,01},\quad\lambda_3 = \num{0,01},\quad\lambda_4 = \num{0,01}\\
+	&\psi_1 = \num{0,7659},\quad\psi_2 = \num{0,6927},\quad\psi_3 = \num{1,5414}
+\end{align}
+
+\begin{figure}[ht]
+	\centering
+	\input{./im/Z5}
+	\caption{Symulacja optymalnego regulatora DMC.\\Błąd $ E = \num{53,2703} $}
+	\label{Z5}
+\end{figure}
+
+\chapter{Podpunkt 6}
+Implementowany DMC od samego początku wykonywania przedmiotu był wykonywany w wersji wykonującej najmniejszy nakład obliczeń, nie wprowadzono w nim więc żadnych zmian.
