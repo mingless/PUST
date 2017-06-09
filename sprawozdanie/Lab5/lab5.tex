@@ -1,0 +1,146 @@
+\bigskip
+
+\bigskip
+
+Dla prostoty i przejrzystości sprawozdania wykorzystane zostały oznaczenia pierwotnie wprowadzone w skrypcie z przedmiotu STP.
+
+\bigskip
+
+Zadane wartości:
+
+\smallskip
+
+W1=W2=50\%
+
+\smallskip
+
+$\mathrm{G1_{pp}}=30$
+
+\smallskip
+
+$\mathrm{G2_{pp}}=35$
+
+\smallskip
+
+$T=4s$ (okres próbkowania)
+
+\bigskip
+
+Ograniczenia:
+
+\smallskip
+
+$0 \le \mathrm{G1}(k) \le 100$
+
+$0 \le \mathrm{G2}(k) \le 100$
+
+\chapter{Podpunkt 1}
+Sprawdzenie możliwości sterowania i pomiaru w komunikacji ze stanowiskiem odbyło się po wgraniu początkowego kodu poprzez wysłanie do stanowiska kilku różnych wartości sterowania i zaobserwowanie odpowiedniej odpowiedzi stanowiska oraz zmian w napływających danych.
+
+Pomiar wartości temperatur w punkcie pracy odbył się zgodnie z poleceniem poprzez zadanie wartości sygnałów W1, W2 oraz G1, G2, a następnie zarejestrowanie wartości sygnałów T1, T3 po ustabilizowaniu się układu. Otrzymane wartości to $\mathrm{T1_{pp}}=\num{36,5}$ oraz $\mathrm{T3_{pp}}=\num{38,3}$.
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z1T1}
+\caption{Pomiar T1 w punkcie pracy}
+\label{Z1T1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/Z1T3}
+\caption{Pomiar T3 w punkcie pracy}
+\label{Z1T3}
+\end{figure}
+
+\chapter{Podpunkty 2 i 3}
+Mechanizm zabezpieczający przed przekroczeniem pracy został zaimplementowany jako instrukacja warunkowa zerująca sygnał sterujący odpowiedniej grzałki w wypadku przekroczenia temperatury \SI{150}{\celsius}.
+
+Regulator PID zaimplementowany został na sterowniku bez większych zmian w stosunku do formy zaprezentowanej w instrukcji, stąd też ma potrzeby jego dokładnego opisywania. Kod regulatora znajduje się w pliku \verb+PID3.gx3+. Poniżej zamieszczono uzyskany przebieg.
+
+
+
+//
+
+
+\chapter{Podpunkt 2}
+Skrośne odpowiedzi skokowe procesu zbadane zostały dla trzech wartości skoku sygnału sterującego G1 z pomiarem na T3. Zgodnie z zaleceniem wybrano wartości: $\triangle U = \{10, 20, 30\}$. Na rys. \ref{Z2steps} zamieszczono wyznaczone odpowiedzi dla skoku pojawiającego się w chwili $k=\num{0}$. Z kolei na rys. \ref{Z2T1} oraz \ref{Z2T3} zamieszczono charakterystyki statyczne procesu T1(G1, G2), T3(G1, G2).
+
+\begin{figure}[ht]
+\centering
+\input{im/Z2steps}
+\caption{Odpowiedź dla skoków sygnału sterującego G1 z punktu pracy o $\triangle U = \{10, 20, 30\}$}
+\label{Z2steps}
+\end{figure}
+
+Obliczając wzmocnienie statyczne na podstawie wzoru:
+\begin{equation}
+K=\frac{Y_{\mathrm{konc}}-Y_{\mathrm{pp}}}{\triangle U}
+\end{equation}
+przy wykorzystaniu wartości ze skoku o $ \triangle U = 30 $ dostajemy $K_{\mathrm{G1 T3}} = \num{0.2414}$, z pomiaru na $T1$ dostajemy także $K_{\mathrm{G1 T1}} = \num{0.0519}$. Ponieważ obiekt jest z założenia symetryczny wzmocnienia $K_{\mathrm{G1 T1}}$, $K_{\mathrm{G2 T3}}$ oraz $K_{\mathrm{G1 T3}}$, $K_{\mathrm{G2 T1}}$ są odpowiednio parami równe.
+
+\begin{figure}[ht]
+\centering
+\input{im/Z2statT1}
+\caption{Charakterystyka statyczna procesu T1(G1, G2)}
+\label{Z2T1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{im/Z2statT3}
+\caption{Charakterystyka statyczna procesu T3(G1, G2)}
+\label{Z2T3}
+\end{figure}
+
+
+\chapter{Podpunkt 3}
+Ponieważ zgodnie z poleceniem założono, że obiekt jest doskonale symetryczny odpowiedzi dla torów G1-T3, G2-T1 oraz G1-T1, G2-T3 są parami identyczne. Dlatego też pobrano oraz znormalizowano jedynie odpowiedzi dla sterowania G1 i skopiowano je dla odpowiadająych torów. Wykorzystano dane pobrane przy skoku sterowania G1 o $\triangle U = 30$. Do przekształcenia wykorzystany został wzór (\ref{step_norm}), zaś uzyskane odpowiedzi skokowe zostały przedstawione na rys. \ref{Z3}. Kolejne wartości wyznaczonej odpowiedzi zapisane są w plikach \verb+step11.txt+, \verb+step12.txt+, \verb+step21.txt+ oraz \verb+step22.txt+.
+\begin{equation}
+S_{ij} = \frac{S_{ij}^0 - Y^{j}_{\mathrm{pp}}}{\triangle U^i} \textrm{, gdzie } i=1,2 \textrm{ to numer wejścia, zaś } j=1,2 \textrm{ to numer wyjścia.}
+\label{step_norm}
+\end{equation}
+
+\begin{figure}[ht]
+\centering
+\input{im/Z3}
+\caption{Odpowiedzi skokowe obiektu dla wszytkich torów.}
+\label{Z3}
+\end{figure}
+
+Optymalizacja przeprowadzona została przy użyciu metody \verb+fmincon+ z parametrami początkowymi $[\num{0,5} ~ 20 ~ 25]$. Skrypt wykorzystywany do optymalizacji jest zapisany w pliku \verb|opt.m| i jest on praktycznie identyczny do tego stosowanego w poprzednim ćwiczeniu. Wzięty też z niego został przybliżony rząd wielkości losowanych parametrów początkowych.
+
+\chapter{Podpunkt 4}
+Programy do regulacji cyfrowej algorytmami DMC i PID zostały umieszczone odpowiednio w plikach \verb+DMC.m+ \verb+PID.m+. Opis tych programów znajduje się w sprawozdaniu z projektu 3. W odpowiednich miejscach dodane zostały opisywane już uprzednio linie związane z komunikacją ze stanowiskiem i wyświetlaniem wykresów w czasie pobierania odpowiedzi oraz linie ograniczające sygnały sterujące do zadanego zakresu od 0 do 100.
+
+\chapter{Podpunkt 5}
+Zadana trajektoria zastosowana w testach to trzy skoki o różnych amplitudach są to odpowiednio: skok $\triangle G1 = 3$ w chwili $k=50$, skok $\triangle G2 = \num{1.5}$ w chwili $k=350$ oraz skok $\triangle G1 = \num{-0.5}$ w chwili $k=650$.
+
+Parametr $ D = 350 $ regulatora DMC dobrany został na podstawie wykresów odpowiedzi skokowych. Wartości kolejnych parametrów $ N = N_\mathrm{u} = 350 $ zostały wybrane jako identyczne do $ D $, gdyż wtedy w teorii powinniśmy otrzymać regulator idealny. Ostatni wybrany parametr to $ \lambda = 1 $ Na rys. \ref{R7} zamieszczono działanie regulatora DMC.
+
+W celu dokładniejszego dobrania parametrów regulatora PID niż pozwala na to obiekt zdecydowaliśmy się na symulację obiektu, dzięki temu mogliśmy dużo szybciej sprawdzać zestawy parametrów. Nadal jednak wykorzystywana była metoda eksperymentalna. Symulacja znajduje się w pliku \verb+PIDsim.m+.
+
+Początkowe parametry regulatora PID zostały dobrane metodą eksperymentalną, zaczęliśmy od parametrów $K = 10, ~ T_\mathrm{i} = 10, ~ T_\mathrm{d} = \num{1}$ i końcowo otrzymaliśmy $K = 10, ~ T_\mathrm{i} = 45, ~ T_\mathrm{d} = \num{0.9}$. Po sprawdzeniu odpowiedzi obiektu na dobrane parametry zdecydowaliśmy się jeszcze na zwiększenie parametru $T_\mathrm{d}$, na podstawie wyników symulacji zdecydowaliśmy o jego zwiększeniu z wartości 0,9 do wartości 15, wyniki regulacji dla obu regulatorów przedstawiono na rys. \ref{R8} i \ref{R9}. Najlepszą regulację uzyskano dla parametrów $K = 10, ~ T_\mathrm{i} = 45, ~ T_\mathrm{d} = \num{15}$.
+
+Jak widać dobrane regulatory dają zadowalające przebiegi, trudno jednak porównywać ilościowo działanie regulatorów DMC i PID ze względu na zmianę obiektu pomiędzy dwoma spotkaniami. Można jednak zauważyć, że regulator DMC jest znacznie łagodniejszy i generuje przebieg, który można uznać subiektywnie za "ładniejszy". Warto także zauważyć, że ze względu na długi czas stabilizacji regulacja nie zaczyna się zawsze z tego samego położenia, więc błąd w pierwszych kilkudziesięciu próbkach można traktować jako wynikający z niepełnej stabilizacji obiektu nie zaś z samej pracy regulatora.
+
+\begin{figure}[ht]
+\centering
+\input{im/Z5DMC}
+\caption{Regulacja DMC na obiekcie. Błąd $E = \num{935.27}$.}
+\label{R7}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{im/Z5PID2}
+\caption{Regulacja PID dla parametrów $K = 10 ~ T_\mathrm{i} = 45 ~ T_\mathrm{d} = \num{0.9}$. Błąd $E = \num{718.5}$.}
+\label{R8}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{im/Z5PID2}
+\caption{Regulacja PID dla parametrów $K = 10 ~ T_\mathrm{i} = 45 ~ T_\mathrm{d} = \num{15}$. Błąd $E = \num{627.2}$.}
+\label{R9}
+\end{figure}
