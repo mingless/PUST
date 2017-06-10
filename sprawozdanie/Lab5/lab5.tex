@@ -41,16 +41,9 @@ Pomiar wartości temperatur w punkcie pracy odbył się zgodnie z poleceniem pop
 
 \begin{figure}[ht]
 \centering
-\input{./im/Z1T1}
-\caption{Pomiar T1 w punkcie pracy}
+\input{./im/stabilizacja.tex}
+\caption{Sprawdzenie punktu pracy.}
 \label{Z1T1}
-\end{figure}
-
-\begin{figure}[ht]
-\centering
-\input{./im/Z1T3}
-\caption{Pomiar T3 w punkcie pracy}
-\label{Z1T3}
 \end{figure}
 
 \chapter{Podpunkty 2 i 3}
@@ -117,26 +110,44 @@ D114:=REAL_TO_INT(U_PID3);
 
 Poniżej zamieszczono uzyskany z użyciem regulatora przebieg dla prostej trajektorii składającej się z dwóch skoków wartości zadanej.
 
-// tu wykres
-
-
-\chapter{Podpunkt 4}
-Odpowiedzi skokowe procesu zbadane zostały dla skoku sygnału sterującego G1 o 20 z początkowej wartości 30 z pomiarem na T1 i T3. Na rys. \ref{Z2steps} zamieszczono wyznaczone odpowiedzi.
-
 \begin{figure}[ht]
 \centering
-\input{im/Z2steps}
-\caption{Odpowiedzi dla skoku sygnału sterującego G1 z punktu pracy o $\triangle U = 20$}
-\label{Z2steps}
+\input{im/PIDfinal05_45_2.tex}
+\caption{Regulator PID dla $K=\num{0.5}$ $T_{\mathrm{i}}=\num{45}$ $T_{\mathrm{d}}=\num{2}$.}
+\label{Z3PID}
 \end{figure}
 
 
-\chapter{Podpunkt 5}
-Wyświetlane na panelu wartości prezentowane są w prostej formie słupków z podanymi przy nich wartościami numerycznymi. Ponieważ element wyświetlający wartości numeryczne może także działać jako wejście umożliwiliśmy zadawanie w ten sposób wartości zadanej (uwaga - wymaga to wykomentowania ustawionej w kodzie trajektorii tak aby jedno nie kłóciło się z drugim). Poniżej zamieszczono zdjęcie panelu podczas pracy. Projekt panelu znajduje się w pliku \verb+simple_GOT.GTX+.
+\chapter{Podpunkt 4}
+Odpowiedzi skokowe procesu zbadane zostały dla skoku sygnału sterującego G1 o 20 z początkowej wartości 30 z pomiarem na T1 i T3. Na rys.~\ref{Z4step} zamieszczono wyznaczone odpowiedzi dla wszystkich torów.
 
 \begin{figure}[ht]
 \centering
-\input{im/6.jpg}
+\input{im/step_30+20.tex}
+\caption{Odpowiedzi dla skoku sygnału sterującego G1 z punktu pracy o $\triangle U = 20$.}
+\label{Z4steps}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{im/step.tex}
+\caption{Odpowiedzi po przekształceniu dla regulatora DMC.}
+\label{Z4step}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{./im/DMCfinal.tex}
+\caption{Przebieg dla regulatora DMC o $\lambda = 5$ oraz $N = N_\mathrm{u} = D = 80$.}
+\label{Z4DMCfinal}
+\end{figure}
+
+\chapter{Podpunkt 5}
+Wyświetlane na panelu wartości prezentowane są w prostej formie słupków z podanymi przy nich wartościami numerycznymi. Ponieważ element wyświetlający wartości numeryczne może także działać jako wejście umożliwiliśmy zadawanie w ten sposób wartości zadanej (uwaga --- wymaga to wykomentowania ustawionej w kodzie trajektorii tak aby jedno nie kłóciło się z drugim). Poniżej zamieszczono zdjęcie panelu podczas pracy. Projekt panelu znajduje się w pliku \verb+simple_GOT.GTX+.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{im/6.jpg}
 \caption{Zdjęcie panelu podczas pracy.}
 \end{figure}
 
@@ -148,16 +159,25 @@ Zastosowana konfiguracja wymagała przede wszystkich włączenia czterech kanał
 
 Poza kanałami PWM włączone zostały także trzy kanały ``High Speed I/O'' mieżące sygnał częstotliwościowy pomiaru wysokości cieczy w zbiornikach.
 
-\begin{figure}[ht]
-\centering
-\input{im/Z5PID2}
-\caption{Regulacja PID dla parametrów $K = 10 ~ T_\mathrm{i} = 45 ~ T_\mathrm{d} = \num{0.9}$. Błąd $E = \num{718.5}$.}
-\label{R8}
-\end{figure}
+\chapter{Podpunkty 8 i 9}
+Implementacja zabezpieczenia stanowiska przed uszkodzeniem początkowo opierała się o intrukcję warunkową wyłączającą pompę i otwierającą zawory w razie osiągnięcia niebezpiecznego poziomu wody, jednkaże w czasie pracy okazało się, że nie była ona potrzebna ze względu na prędkość pompowania wody, nawet przy zamkniętych zaworach obecne w stanowisku odpływy w pełni radziły sobie z zapobiegnięciem przekroczenia bezpiecznego poziomu wody. Stąd zastosowane podejście opierało się o sprawdzenie i potwierdzenie sprawności istniejącego już mechanizmu.
+
+Ze względu na problemy ze skonfigurowaniem stanowiska i początkowe problemy z działaniem pompy (przy wypełnieniu 40\%) w ograniczonym czasie nie udało się nam wyznaczyć charakterystyki statycznej. Jednakże nawet bez charakterystyki statycznej ze względu na strukturę stanowiska łatwo zauważyć, że dla każdego z wyjść (poziom wody w zbiorniku) największy wpływ na nie ma wejście będące sterowaniem zaworu opróźniającego dany zbiornik.
+
+\chapter{Podpunkt 10}
+Dostosowanie implementacji regulatora PID do obiektu Inteco opierało się przede wszystkim o dodanie trzeciego regulatora, zmianę wejść na odpowiednie rejestry oraz zmianę sposobu zadawania wyjścia na sterowanie wypełnieniem sygnału PWM. Ograniczenia zostały uwzględnione poprzez odpowiednie przycięcie sygnałów sterujących do zakresu 1-100\%. Wynika to z faktu, że zerowe wypełnienie nie jest akceptowane i wywołuje błąd.
+
+Planowane było dobieranie nastaw osobno dla każdego z regulatorów zaczynając od górnego zbiornika, niestety mimo poświęcenia na dobór parametrów ponad godziny czasu nie udało się nam dobrać parametrów nawet dla pierwszego z regulatorów.
+
+\chapter{Podpunkty 11 i 12}
+Ze względu na ograniczenia czasowe i charakter stanowiska po konsultacji z prowadzącym uzgodniono, że podpunkty te nie będą wykonywane.
+
+\chapter{Podpunkt 13}
+Przygotowana wizualizacja procesu pokazuje w prostej formie graficznej schemat stanowiska w formie odpowiednio wypełniających się zbiorników. Obok zbiorników wizualizowana jest wartość zadana dla każdego ze zbiorników (może być zadawana z poziomu panelu), a poza tym dla każdej z istotnych wartości wyświetlana jest jej wartość numeryczna. Podjęta została próba dokładnego odwzorowania zbiorników (prostokąt, ścięty trójkąt, wycinek koła), ale niestety mimo długiej konsultacji z prowadzącym nie udało nam się tego dokonać w dostępnym oprogramowaniu, stąd też wszystkie zbiorniki widoczne są jako prostokąty. Poniżej przedstawiono zdjęcie panelu.
 
 \begin{figure}[ht]
 \centering
-\input{im/Z5PID2}
-\caption{Regulacja PID dla parametrów $K = 10 ~ T_\mathrm{i} = 45 ~ T_\mathrm{d} = \num{15}$. Błąd $E = \num{627.2}$.}
-\label{R9}
+\includegraphics[width=\textwidth]{im/2.jpg}
+\caption{Zdjęcie panelu dla obiektu Inteco.}
 \end{figure}
+
